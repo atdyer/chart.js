@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+
+    <link href="index.css" rel="stylesheet" />
+
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="chart.js"></script>
+
+</head>
+<body>
+    <script>
+        var c = chart();
+
+        var l1 = [ [0.5, 0.5], [0.563, 0.28] ];
+
+        var data = {
+            lines: [
+                {
+                    id: 'line1',
+                    data: l1
+                },
+                {
+                    id: 'line2'
+                }
+            ]
+        };
+
+        // Bind the data to the element
+        var selection = d3.select( 'body' ).selectAll( 'div' ).data( [data] );
+
+        selection
+          .enter()
+          .append( 'div' )
+            .call( c );
+
+
+    </script>
+</body>
+</html>
