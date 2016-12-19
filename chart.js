@@ -85,6 +85,21 @@ function chart () {
 
             });
 
+            // Add the mouse area
+            var mouse_area = g.append( 'rect' )
+                              .attr( 'width', width - margin.left - margin.right )
+                              .attr( 'height', height - margin.top - margin.bottom )
+                              .attr( 'stroke', 'none' )
+                              .attr( 'fill', 'none' )
+                              .attr( 'pointer-events', 'all' );
+
+            mouse_area.on( 'mousemove', function () {
+
+                var mouse = d3.mouse( this );
+                var xval = x_scale.invert( mouse[0] );
+
+            });
+
         });
 
     }
@@ -193,11 +208,11 @@ function chart () {
 
 
     function X ( d ) {
-        return x_scale( d[0] );
+        return x_scale( x_value( d ) );
     }
 
     function Y ( d ) {
-        return y_scale( d[1] );
+        return y_scale( y_value( d ) );
     }
 
     function _scale_domains () {
@@ -216,8 +231,8 @@ function chart () {
         // Expand domains to fit lines
         lines.forEach( function ( line ) {
 
-            var x_extent = d3.extent( line.data(), function ( d ) { return d[0]; } );
-            var y_extent = d3.extent( line.data(), function ( d ) { return d[1]; } );
+            var x_extent = d3.extent( line.data(), x_value );
+            var y_extent = d3.extent( line.data(), y_value );
 
             x_scale.domain( d3.extent( x_scale.domain().concat( x_extent ) ) );
             y_scale.domain( d3.extent( y_scale.domain().concat( y_extent ) ) );

@@ -9,44 +9,35 @@
 
     <link href="examples.css" rel="stylesheet">
 
+    <script src="lib/highlight.min.js"></script>
+    <link href="lib/styles/github-gist.css" rel="stylesheet">
+
 </head>
 <body>
     <div class="title">
         <h1>Example 1</h1>
         <h1>chart.js</h1>
     </div>
+    <div>
+        <p>
+            Similar to the d3 example, <a href="https://bl.ocks.org/mbostock/3883245">Line Chart</a>, this example
+            shows how to create a basic line chart with dates on the x-axis. Additionally, it shows how to set the
+            x- and y- value accessors for data that is not formatted in the default array form.
+        </p>
+    </div>
     <div id="chart"></div>
+    <div>
+        <pre id="code" class="javascript"></pre>
+    </div>
+
+    <script src="1.js"></script>
     <script>
-
-        var parseTime = d3.timeParse( '%d-%b-%y' );
-
-        d3.tsv( 'data/apple_stock.tsv', function ( d ) {
-
-            return [ parseTime( d.date ), +d.close ];
-
-        }, function ( error, data ) {
-
-            // Handle errors
-            if ( error ) throw error;
-
-            // Get available width
-            var width = d3.select( 'body' ).node().getBoundingClientRect().width;
-
-            // Create the chart
-            var c = chart()
-                .width( width )
-                .x_scale( d3.scaleTime() );
-
-            // Create the line
-            c.line()
-             .data( data )
-             .thickness( 1.5 );
-
-            // Do some plotting
-            d3.select( '#chart' ).call( c );
-
+        d3.text( '1.js', function ( error, data ) {
+            var code = d3.select( '#code' );
+            code.text( data );
+            hljs.highlightBlock( code.nodes()[0] );
         });
-
     </script>
+
 </body>
 </html>
