@@ -19,26 +19,17 @@ function chart () {
 
     // Lines
     var line = d3.line().x( X ).y( Y );
+    var lines = [];
 
-
-    function _line ( selection ) {
-
-        selection.each( function ( data ) {
-
-            console.log( data );
-
-        });
-
-    }
-
+    // Colors
+    var _current_color = 0;
+    var _colors = ["#377eb8","#e41a1c","#4daf4a","#984ea3","#ff7f00","#ffff33","#a65628","#f781bf","#999999"];
 
     function _chart ( selection ) {
 
-        selection.each( function ( data ) {
+        selection.each( function () {
 
-            console.log( data );
-
-            var svg = d3.select( this ).selectAll( 'svg' ).data( [data] );
+            var svg = d3.select( this ).selectAll( 'svg' ).data( ['chart.js'] );
 
             // If it doesn't exist, create the chart group
             var enter = svg.enter().append( 'svg' );
@@ -59,49 +50,96 @@ function chart () {
                 .select( 'g' )
                 .attr( 'transform', 'translate(' + margin.left + ',' + margin.top + ')' );
 
+            // Update the scales to fit the plotting area
+            x_scale.range( [ 0, width - margin.left - margin.right ] );
+            y_scale.range( [ height - margin.top - margin.bottom, 0 ] );
 
-            // Update the lines
-            var lines = g.selectAll( 'lines' ).data( [data.lines] );
-
-            lines = lines.enter()
-                         .append( 'g' )
-                         .merge( lines )
-                         .call( _line );
-
-            lines.exit().remove();
-
-
-            // Update the x-scale
-            x_scale
-                .domain( [ 0, 1 ] )
-                .range( [ 0, width - margin.left - margin.right ] );
-
-            // Update the y-scale
-            y_scale
-                .domain( [ 0, 1 ] )
-                .range( [ height - margin.top - margin.bottom, 0 ] );
+            // Update the domains to fit the data
+            _scale_domains();
 
             // Update the x-axis
             g.select( '.x.axis' )
              .attr( 'transform', 'translate(0,' + y_scale.range()[0] + ')' )
+             .style( 'shape-rendering', 'crispEdges' )
              .call( x_axis );
 
             // Update the y-axis
             g.select( '.y.axis' )
+             .style( 'shape-rendering', 'crispEdges' )
              .call( y_axis );
+
+            // Update lines
+            var _lines = g.selectAll( '.line' ).data( lines, function ( l ) { return l.id(); } );
+
+            _lines = _lines.enter()
+                           .append( 'path' )
+                           .attr( 'class', 'line' )
+                           .merge( _lines );
+
+            _lines.each( function ( _line ) {
+
+                _line( this );
+
+            });
 
         });
 
     }
 
 
-    function X ( d ) {
-        return x_scale( d[0] );
-    }
+    // Plotting functions
+    _chart.line = function ( id ) {
 
-    function Y ( d ) {
-        return y_scale( d[1] );
-    }
+        var _id = id || _gen_id();
+        var _color = _next_color();
+        var _data = [];
+        var _thickness = 1.0;
+
+        function _line ( path ) {
+
+            path = d3.select( path );
+            path.style( 'stroke', _color )
+                .attr( 'id', _id )
+                .attr( 'stroke-width', _thickness )
+                .attr( 'd', function ( d ) { return line( d.data() ); } );
+
+        }
+
+        _line.color = function ( _ ) {
+            if ( !arguments.length ) return _color;
+            _color = _;
+            return _line;
+        };
+
+        _line.data = function ( _ ) {
+            if ( !arguments.length ) return _data;
+            _data = _;
+            return _line;
+        };
+
+        _line.id = function () {
+            return _id;
+        };
+
+        _line.remove = function () {
+
+            var i = lines.indexOf( _line );
+            if ( i != -1 ) {
+                lines.splice( i, 1 );
+            }
+
+        };
+
+        _line.thickness = function ( _ ) {
+            if ( !arguments.length ) return _thickness;
+            _thickness = _;
+            return _line;
+        };
+
+        lines.push( _line );
+        return _line;
+
+    };
 
 
     // Getter/setter functions
@@ -135,6 +173,48 @@ function chart () {
         return _chart;
     };
 
+
+    function X ( d ) {
+        return x_scale( d[0] );
+    }
+
+    function Y ( d ) {
+        return y_scale( d[1] );
+    }
+
+    function _scale_domains () {
+
+        // Reset the domains
+        x_scale.domain( [0, 1] );
+        y_scale.domain( [0, 1] );
+
+        // Expand domains to fit lines
+        lines.forEach( function ( line ) {
+
+            var x_extent = d3.extent( line.data(), function ( d ) { return d[0]; } );
+            var y_extent = d3.extent( line.data(), function ( d ) { return d[1]; } );
+
+            x_scale.domain( d3.extent( x_scale.domain().concat( x_extent ) ) );
+            y_scale.domain( d3.extent( y_scale.domain().concat( y_extent ) ) );
+
+        });
+
+    }
+
+    function _next_color () {
+        if ( _current_color >= _colors.length ) _current_color = 0;
+        return _colors[ _current_color++ ];
+    }
+
+    function _gen_id () {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                       .toString(16)
+                       .substring(1);
+        }
+        return 'a' + s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+    }
 
     return _chart;
 

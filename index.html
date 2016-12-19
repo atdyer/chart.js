@@ -10,30 +10,23 @@
 
 </head>
 <body>
+    <div></div>
     <script>
         var c = chart();
 
-        var l1 = [ [0.5, 0.5], [0.563, 0.28] ];
+        var l1 = [ [0.0, 0.0], [1.0, 3.0] ];
+        var l2 = [ [0, 1], [1.5, 0] ];
 
-        var data = {
-            lines: [
-                {
-                    id: 'line1',
-                    data: l1
-                },
-                {
-                    id: 'line2'
-                }
-            ]
-        };
+        c.line()
+         .data( l1 );
+
+        c.line()
+            .data( l2 );
 
         // Bind the data to the element
-        var selection = d3.select( 'body' ).selectAll( 'div' ).data( [data] );
-
-        selection
-          .enter()
-          .append( 'div' )
-            .call( c );
+        var selection = d3.select( 'body' )
+                          .selectAll( 'div' )
+                          .call( c );
 
 
     </script>
