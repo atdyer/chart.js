@@ -1,0 +1,21 @@
+@import url(//fonts.googleapis.com/css?family=PT+Serif|PT+Serif:b|PT+Serif:i|PT+Sans|PT+Sans:b);
+
+body {
+    font-family: "PT Serif", serif;
+    max-width: 960px;
+    margin: 1em auto 4em auto;
+}
+
+.title {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 1px solid lightgray;
+    margin-bottom: 1em;
+}
+
+h1,
+h2,
+h3 {
+    text-rendering: optimizeLegibility;
+}

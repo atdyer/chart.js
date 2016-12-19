@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Example 1 - chart.js</title>
+
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="../chart.js"></script>
+
+    <link href="examples.css" rel="stylesheet">
+
+</head>
+<body>
+    <div class="title">
+        <h1>Example 1</h1>
+        <h1>chart.js</h1>
+    </div>
+    <div id="chart"></div>
+    <script>
+
+        var parseTime = d3.timeParse( '%d-%b-%y' );
+
+        d3.tsv( 'data/apple_stock.tsv', function ( d ) {
+
+            return [ parseTime( d.date ), +d.close ];
+
+        }, function ( error, data ) {
+
+            // Handle errors
+            if ( error ) throw error;
+
+            // Get available width
+            var width = d3.select( 'body' ).node().getBoundingClientRect().width;
+
+            // Create the chart
+            var c = chart()
+                .width( width )
+                .x_scale( d3.scaleTime() );
+
+            // Create the line
+            c.line()
+             .data( data )
+             .thickness( 1.5 );
+
+            // Do some plotting
+            d3.select( '#chart' ).call( c );
+
+        });
+
+    </script>
+</body>
+</html>

@@ -21,6 +21,9 @@ function chart () {
     var line = d3.line().x( X ).y( Y );
     var lines = [];
 
+    // Scatters
+    var scatters = [];
+
     // Colors
     var _current_color = 0;
     var _colors = ["#377eb8","#e41a1c","#4daf4a","#984ea3","#ff7f00","#ffff33","#a65628","#f781bf","#999999"];
@@ -98,8 +101,9 @@ function chart () {
         function _line ( path ) {
 
             path = d3.select( path );
-            path.style( 'stroke', _color )
-                .attr( 'id', _id )
+            path.attr( 'id', _id )
+                .attr( 'fill', 'none' )
+                .attr( 'stroke', _color )
                 .attr( 'stroke-width', _thickness )
                 .attr( 'd', function ( d ) { return line( d.data() ); } );
 
@@ -167,9 +171,23 @@ function chart () {
         return _chart;
     };
 
+    _chart.x_scale = function ( _ ) {
+        if ( !arguments.length ) return x_scale;
+        x_scale = _;
+        x_axis = d3.axisBottom( x_scale );
+        return _chart;
+    };
+
     _chart.y = function ( _ ) {
         if ( !arguments.length ) return y_value;
         y_value = _;
+        return _chart;
+    };
+
+    _chart.y_scale = function ( _ ) {
+        if ( !arguments.length ) return y_scale;
+        y_scale = _;
+        y_axis = d3.axisLeft( y_scale );
         return _chart;
     };
 
@@ -184,9 +202,16 @@ function chart () {
 
     function _scale_domains () {
 
-        // Reset the domains
-        x_scale.domain( [0, 1] );
-        y_scale.domain( [0, 1] );
+        // Set an initial domain
+        var x_initial = lines.length ? d3.extent( lines[0].data(), x_value ) :
+                        scatters.length ? d3.extent( scatters[0].data(), x_value ) :
+                        [ 0, 1 ];
+        var y_initial = lines.length ? d3.extent( lines[0].data(), y_value ) :
+                        scatters.length ? d3.extent( scatters[0].data(), y_value ) :
+                        [ 0, 1 ];
+
+        x_scale.domain( x_initial );
+        y_scale.domain( y_initial );
 
         // Expand domains to fit lines
         lines.forEach( function ( line ) {
