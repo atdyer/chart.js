@@ -217,6 +217,14 @@ function chart () {
                     .attr( 'cy', Y( d ) );
             }
 
+            if ( typeof _hover === 'function' ) {
+                _hover({
+                    id: _id,
+                    x: x_value( d ),
+                    y: y_value( d )
+                });
+            }
+
         };
 
         _line.id = function () {

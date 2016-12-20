@@ -6,7 +6,7 @@ body {
     margin: 1em auto 4em auto;
 }
 
-div {
+body > div {
     margin-bottom: 2em;
 }
 
@@ -16,6 +16,12 @@ div {
     justify-content: space-between;
     align-items: flex-end;
     border-bottom: 2px solid #ccc;
+}
+
+.spread {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
 }
 
 h1,

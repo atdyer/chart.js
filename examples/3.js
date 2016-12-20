@@ -30,8 +30,7 @@ d3.tsv( 'data/cities.tsv', type, function ( error, data ) {
      .hover( true );
 
     c.line()
-     .data( cities[2].values )
-     .hover( true );
+     .data( cities[2].values );
 
     d3.select( '#chart' ).call( c );
 

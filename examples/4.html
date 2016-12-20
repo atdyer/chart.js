@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Simple Line Chart - chart.js</title>
+    <title>Responding to Hover Events - chart.js</title>
 
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="../chart.js"></script>
@@ -14,29 +14,34 @@
 
 </head>
 <body>
+
     <div class="title">
         <h1>chart.js</h1>
-        <h1>Simple Line Chart</h1>
+        <h1>Responding to Hover Events</h1>
     </div>
     <div id="chart"></div>
+    <div class="spread">
+        <div id="city1"></div>
+        <div id="city2"></div>
+        <div id="city3"></div>
+    </div>
     <div>
         <p>
-            Similar to the d3 example, <a href="https://bl.ocks.org/mbostock/3883245">Line Chart</a>, this example
-            shows how to create a basic line chart with dates on the x-axis.
+            By passing a callback function to the <code>.hover()</code> method of a plotted type, you can respond to
+            hover events using the x- and y-values at the current hover location.
         </p>
     </div>
     <div>
         <pre><code id="code" class="js"></code></pre>
     </div>
 
-    <script src="1.js"></script>
+    <script src="4.js"></script>
     <script>
-        d3.text( '1.js', function ( error, data ) {
+        d3.text( '4.js', function ( error, data ) {
             var code = d3.select( '#code' );
             code.text( data.trim() );
             hljs.highlightBlock( code.nodes()[0] );
         });
     </script>
-
 </body>
 </html>
