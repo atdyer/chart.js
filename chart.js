@@ -71,19 +71,23 @@ function chart () {
              .style( 'shape-rendering', 'crispEdges' )
              .call( y_axis );
 
+
+
             // Update lines
             var _lines = g.selectAll( '.line' ).data( lines, function ( l ) { return l.id(); } );
 
             _lines = _lines.enter()
-                           .append( 'path' )
-                           .attr( 'class', 'line' )
+                           .append( 'g' )
                            .merge( _lines );
 
             _lines.each( function ( _line ) {
 
-                _line( this );
+                _line( d3.select( this ) );
 
             });
+
+
+
 
             // Add the mouse area
             var mouse_area = g.append( 'rect' )
@@ -93,10 +97,37 @@ function chart () {
                               .attr( 'fill', 'none' )
                               .attr( 'pointer-events', 'all' );
 
+            mouse_area.on( 'mouseover', function () {
+
+                lines.forEach( function ( line ) {
+                    if ( line.hover() ) {
+                        line.hover_show();
+                    }
+                });
+
+            });
+
             mouse_area.on( 'mousemove', function () {
 
                 var mouse = d3.mouse( this );
                 var xval = x_scale.invert( mouse[0] );
+                lines.forEach( function ( line ) {
+
+                    if ( line.hover() ) {
+                        line.hover_x( xval );
+                    }
+
+                });
+
+            });
+
+            mouse_area.on( 'mouseout', function () {
+
+                lines.forEach( function ( line ) {
+                    if ( line.hover() ) {
+                        line.hover_hide();
+                    }
+                });
 
             });
 
@@ -112,21 +143,44 @@ function chart () {
         var _color = _next_color();
         var _data = [];
         var _thickness = 1.0;
+        var _path;
 
-        function _line ( path ) {
+        // Hover stuff
+        var _dot;
+        var _hover = false;
+        var _bisector = d3.bisector( function ( d ) { return x_value( d ); } ).left;
 
-            path = d3.select( path );
-            path.attr( 'id', _id )
-                .attr( 'fill', 'none' )
-                .attr( 'stroke', _color )
-                .attr( 'stroke-width', _thickness )
-                .attr( 'd', function ( d ) { return line( d.data() ); } );
+
+        function _line ( group ) {
+
+            group.attr( 'id', _id );
+
+            _path = group.selectAll( 'path' ).data( function ( d ) { return [d]; } );
+            _dot = group.selectAll( 'circle' ).data( ['dot'] );
+
+            _path = _path.enter()
+                       .append( 'path' )
+                       .attr( 'class', 'line' )
+                       .merge( _path );
+
+            _dot = _dot.enter()
+                       .append( 'circle' )
+                       .attr( 'r', 3 )
+                       .attr( 'fill', _color )
+                       .style( 'display', 'none' )
+                       .merge( _dot );
+
+            _path.attr( 'fill', 'none' )
+                 .attr( 'stroke', _color )
+                 .attr( 'stroke-width', _thickness )
+                 .attr( 'd', function ( d ) { return line( d.data() ); } );
 
         }
 
         _line.color = function ( _ ) {
             if ( !arguments.length ) return _color;
             _color = _;
+            _dot.attr( 'fill', _color );
             return _line;
         };
 
@@ -134,6 +188,35 @@ function chart () {
             if ( !arguments.length ) return _data;
             _data = _;
             return _line;
+        };
+
+        _line.hover = function ( _ ) {
+            if ( !arguments.length ) return _hover;
+            _hover = _;
+            return _line;
+        };
+
+        _line.hover_hide = function () {
+            _dot.style( 'display', 'none' );
+        };
+
+        _line.hover_show = function () {
+            _dot.style( 'display', null );
+        };
+
+        _line.hover_x = function ( x ) {
+
+            var i = _bisector( _data, x );
+            var d0 = _data[ i -1 ];
+            var d1 = _data[ i ];
+            var d = d0 && d1 ? x - x_value( d0 ) > x_value( d1 ) - x ? d1 : d0 :
+                d0 ? d0 : d1;
+
+            if ( d ) {
+                _dot.attr( 'cx', X( d ) )
+                    .attr( 'cy', Y( d ) );
+            }
+
         };
 
         _line.id = function () {
