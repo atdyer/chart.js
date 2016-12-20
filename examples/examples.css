@@ -12,6 +12,7 @@ div {
 
 .title {
     display: flex;
+    flex-direction: row-reverse;
     justify-content: space-between;
     align-items: flex-end;
     border-bottom: 2px solid #ccc;
@@ -25,6 +26,14 @@ h3 {
 
 p {
     line-height: 1.5em;
+}
+
+a {
+    color: steelblue;
+}
+
+a:not(:hover) {
+    text-decoration: none;
 }
 
 pre,
