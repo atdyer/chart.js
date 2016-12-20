@@ -2,7 +2,9 @@ var parseTime = d3.timeParse( '%d-%b-%y' );
 
 d3.tsv( 'data/apple_stock.tsv', function ( d ) {
 
-    return [ parseTime( d.date ), +d.close ];
+    d.date = parseTime( d.date );
+    d.close = +d.close;
+    return d;
 
 }, function ( error, data ) {
 
@@ -12,11 +14,13 @@ d3.tsv( 'data/apple_stock.tsv', function ( d ) {
 
     var c = chart()
         .width( width )
+        .x( function ( d ) { return d.date; } )
+        .y( function ( d ) { return d.close; } )
         .x_scale( d3.scaleTime() );
 
     c.line()
-     .data( data )
-     .thickness( 1.5 );
+        .data( data )
+        .thickness( 1.5 );
 
     d3.select( '#chart' ).call( c );
 

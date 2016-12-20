@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Example 1 - chart.js</title>
+    <title>Example 2 - chart.js</title>
 
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="../chart.js"></script>
@@ -16,27 +16,27 @@
 <body>
     <div class="title">
         <h1>chart.js</h1>
-        <h1>Example 1</h1>
+        <h1>Example 2</h1>
     </div>
     <div id="chart"></div>
     <div>
         <p>
             Similar to the d3 example, <a href="https://bl.ocks.org/mbostock/3883245">Line Chart</a>, this example
-            shows how to create a basic line chart with dates on the x-axis.
+            shows how to create a basic line chart with dates on the x-axis. Additionally, it shows how to set the
+            x- and y- value accessors for data that is not formatted in the default array form.
         </p>
     </div>
     <div>
         <pre><code id="code" class="js"></code></pre>
     </div>
 
-    <script src="1.js"></script>
+    <script src="2.js"></script>
     <script>
-        d3.text( '1.js', function ( error, data ) {
+        d3.text( '2.js', function ( error, data ) {
             var code = d3.select( '#code' );
             code.text( data.trim() );
             hljs.highlightBlock( code.nodes()[0] );
         });
     </script>
-
 </body>
 </html>
