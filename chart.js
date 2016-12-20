@@ -148,6 +148,8 @@ function chart () {
         // Hover stuff
         var _dot;
         var _hover = false;
+        var _hover_hide = false;
+        var _hover_show = false;
         var _bisector = d3.bisector( function ( d ) { return x_value( d ); } ).left;
 
 
@@ -180,7 +182,6 @@ function chart () {
         _line.color = function ( _ ) {
             if ( !arguments.length ) return _color;
             _color = _;
-            _dot.attr( 'fill', _color );
             return _line;
         };
 
@@ -196,12 +197,22 @@ function chart () {
             return _line;
         };
 
-        _line.hover_hide = function () {
+        _line.hover_hide = function ( _ ) {
+            if ( arguments.length ) {
+                _hover_hide = _;
+                return _line;
+            }
             _dot.style( 'display', 'none' );
+            if ( typeof _hover_hide === 'function' ) _hover_hide( _id );
         };
 
-        _line.hover_show = function () {
+        _line.hover_show = function ( _ ) {
+            if ( arguments.length ) {
+                _hover_show = _;
+                return _line;
+            }
             _dot.style( 'display', null );
+            if ( typeof _hover_show === 'function' ) _hover_show( _id );
         };
 
         _line.hover_x = function ( x ) {

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Simple Line Chart - chart.js</title>
+    <title>Linking Hover Events Between Charts</title>
 
     <script src="lib/d3.v4.min.js"></script>
     <script src="../chart.js"></script>
@@ -11,27 +11,23 @@
 
     <script src="lib/highlight.min.js"></script>
     <link href="lib/styles/github-gist.css" rel="stylesheet">
-
 </head>
 <body>
+
     <div class="title">
         <h1>chart.js</h1>
-        <h1>Simple Line Chart</h1>
+        <h1>Linking Hover Events Between Charts</h1>
     </div>
-    <div id="chart"></div>
-    <div>
-        <p>
-            Similar to the d3 example, <a href="https://bl.ocks.org/mbostock/3883245">Line Chart</a>, this example
-            shows how to create a basic line chart with dates on the x-axis.
-        </p>
-    </div>
+    <div id="chart1"></div>
+    <div id="chart2"></div>
+    <div id="chart3"></div>
     <div>
         <pre><code id="code" class="js"></code></pre>
     </div>
 
-    <script src="1.js"></script>
+    <script src="5.js"></script>
     <script>
-        d3.text( '1.js', function ( error, data ) {
+        d3.text( '5.js', function ( error, data ) {
             var code = d3.select( '#code' );
             code.text( data.trim() );
             hljs.highlightBlock( code.nodes()[0] );
