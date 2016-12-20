@@ -6,18 +6,25 @@ body {
     margin: 1em auto 4em auto;
 }
 
+div {
+    margin-bottom: 2em;
+}
+
 .title {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    border-bottom: 1px solid lightgray;
-    margin-bottom: 1em;
+    border-bottom: 2px solid #ccc;
 }
 
 h1,
 h2,
 h3 {
     text-rendering: optimizeLegibility;
+}
+
+p {
+    line-height: 1.5em;
 }
 
 pre,
@@ -33,8 +40,4 @@ pre {
     margin: 2em 0 2em 0;
     max-width: 960px;
     overflow-x: auto;
-}
-
-.hljs-keyword {
-    font-weight: bold;
 }

@@ -18,6 +18,7 @@
         <h1>Example 1</h1>
         <h1>chart.js</h1>
     </div>
+    <div id="chart"></div>
     <div>
         <p>
             Similar to the d3 example, <a href="https://bl.ocks.org/mbostock/3883245">Line Chart</a>, this example
@@ -25,16 +26,15 @@
             x- and y- value accessors for data that is not formatted in the default array form.
         </p>
     </div>
-    <div id="chart"></div>
     <div>
-        <pre id="code" class="javascript"></pre>
+        <pre><code id="code" class="js"></code></pre>
     </div>
 
     <script src="1.js"></script>
     <script>
         d3.text( '1.js', function ( error, data ) {
             var code = d3.select( '#code' );
-            code.text( data );
+            code.text( data.trim() );
             hljs.highlightBlock( code.nodes()[0] );
         });
     </script>
