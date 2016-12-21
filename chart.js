@@ -1,7 +1,7 @@
-function chart ( id ) {
+function chart () {
 
     // ID
-    id = id || _gen_id();
+    var id = _gen_id();
 
     // Chart options
     var width = 760;
@@ -34,6 +34,8 @@ function chart ( id ) {
     // Hover callbacks
     var hover, mouse_over, mouse_out;
 
+
+    // The charting function
     function _chart ( selection ) {
 
         selection.each( function () {
@@ -264,7 +266,8 @@ function chart ( id ) {
     };
 
 
-    // Getter/setter functions
+
+    // Chart API
     _chart.margin = function ( _ ) {
         if ( !arguments.length ) return margin;
         margin = _;
@@ -339,6 +342,8 @@ function chart ( id ) {
     };
 
 
+
+    // Helper functions
     function X ( d ) {
         return x_scale( x_value( d ) );
     }
