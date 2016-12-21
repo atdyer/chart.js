@@ -1,4 +1,7 @@
-function chart () {
+function chart ( id ) {
+
+    // ID
+    id = id || _gen_id();
 
     // Chart options
     var width = 760;
@@ -27,6 +30,9 @@ function chart () {
     // Colors
     var _current_color = 0;
     var _colors = ["#377eb8","#e41a1c","#4daf4a","#984ea3","#ff7f00","#ffff33","#a65628","#f781bf","#999999"];
+
+    // Hover callbacks
+    var hover, mouse_over, mouse_out;
 
     function _chart ( selection ) {
 
@@ -71,8 +77,6 @@ function chart () {
              .style( 'shape-rendering', 'crispEdges' )
              .call( y_axis );
 
-
-
             // Update lines
             var _lines = g.selectAll( '.line' ).data( lines, function ( l ) { return l.id(); } );
 
@@ -85,9 +89,6 @@ function chart () {
                 _line( d3.select( this ) );
 
             });
-
-
-
 
             // Add the mouse area
             var mouse_area = g.append( 'rect' )
@@ -105,6 +106,10 @@ function chart () {
                     }
                 });
 
+                if ( typeof mouse_over === 'function' ) {
+                    mouse_over( id );
+                }
+
             });
 
             mouse_area.on( 'mousemove', function () {
@@ -119,6 +124,10 @@ function chart () {
 
                 });
 
+                if ( typeof hover === 'function' ) {
+                    hover( id, xval );
+                }
+
             });
 
             mouse_area.on( 'mouseout', function () {
@@ -128,6 +137,10 @@ function chart () {
                         line.hover_hide();
                     }
                 });
+
+                if ( typeof mouse_out === 'function' ) {
+                    mouse_out( id );
+                }
 
             });
 
@@ -148,8 +161,6 @@ function chart () {
         // Hover stuff
         var _dot;
         var _hover = false;
-        var _hover_hide = false;
-        var _hover_show = false;
         var _bisector = d3.bisector( function ( d ) { return x_value( d ); } ).left;
 
 
@@ -197,22 +208,12 @@ function chart () {
             return _line;
         };
 
-        _line.hover_hide = function ( _ ) {
-            if ( arguments.length ) {
-                _hover_hide = _;
-                return _line;
-            }
+        _line.hover_hide = function () {
             _dot.style( 'display', 'none' );
-            if ( typeof _hover_hide === 'function' ) _hover_hide( _id );
         };
 
-        _line.hover_show = function ( _ ) {
-            if ( arguments.length ) {
-                _hover_show = _;
-                return _line;
-            }
+        _line.hover_show = function () {
             _dot.style( 'display', null );
-            if ( typeof _hover_show === 'function' ) _hover_show( _id );
         };
 
         _line.hover_x = function ( x ) {
@@ -279,6 +280,35 @@ function chart () {
     _chart.height = function ( _ ) {
         if ( !arguments.length ) return height;
         height = _;
+        return _chart;
+    };
+
+    _chart.each = function ( _ ) {
+        if ( typeof _ === 'function' ) {
+            lines.forEach( _ );
+            scatters.forEach( _ );
+        }
+    };
+
+    _chart.hover = function ( _ ) {
+        if ( !arguments.length ) return hover;
+        hover = _;
+        return _chart;
+    };
+
+    _chart.id = function () {
+        return id;
+    };
+
+    _chart.mouse_out = function ( _ ) {
+        if ( !arguments.length ) return mouse_out;
+        mouse_out = _;
+        return _chart;
+    };
+
+    _chart.mouse_over = function ( _ ) {
+        if ( !arguments.length ) return mouse_over;
+        mouse_over = _;
         return _chart;
     };
 
