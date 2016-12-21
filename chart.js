@@ -21,7 +21,7 @@ function chart () {
     var y_label = '';
 
     // Lines
-    var line = d3.line().x( X ).y( Y );
+    var line = d3.line().x( _X ).y( _Y );
     var lines = [];
 
     // Scatters
@@ -32,7 +32,7 @@ function chart () {
     var _colors = ["#377eb8","#e41a1c","#4daf4a","#984ea3","#ff7f00","#ffff33","#a65628","#f781bf","#999999"];
 
     // Hover callbacks
-    var hover, mouse_over, mouse_out;
+    var mouse_in, mouse_move, mouse_out;
 
 
     // The charting function
@@ -104,12 +104,12 @@ function chart () {
 
                 lines.forEach( function ( line ) {
                     if ( line.hover() ) {
-                        line.hover_show();
+                        line.mouse_in();
                     }
                 });
 
-                if ( typeof mouse_over === 'function' ) {
-                    mouse_over( id );
+                if ( typeof mouse_in === 'function' ) {
+                    mouse_in( id );
                 }
 
             });
@@ -117,17 +117,17 @@ function chart () {
             mouse_area.on( 'mousemove', function () {
 
                 var mouse = d3.mouse( this );
-                var xval = x_scale.invert( mouse[0] );
+                var x = x_scale.invert( mouse[0] );
                 lines.forEach( function ( line ) {
 
                     if ( line.hover() ) {
-                        line.hover_x( xval );
+                        line.mouse_move( x );
                     }
 
                 });
 
-                if ( typeof hover === 'function' ) {
-                    hover( id, xval );
+                if ( typeof mouse_move === 'function' ) {
+                    mouse_move( id, x );
                 }
 
             });
@@ -136,7 +136,7 @@ function chart () {
 
                 lines.forEach( function ( line ) {
                     if ( line.hover() ) {
-                        line.hover_hide();
+                        line.mouse_out();
                     }
                 });
 
@@ -210,15 +210,15 @@ function chart () {
             return _line;
         };
 
-        _line.hover_hide = function () {
-            _dot.style( 'display', 'none' );
+        _line.id = function () {
+            return _id;
         };
 
-        _line.hover_show = function () {
+        _line.mouse_in = function () {
             _dot.style( 'display', null );
         };
 
-        _line.hover_x = function ( x ) {
+        _line.mouse_move = function ( x ) {
 
             var i = _bisector( _data, x );
             var d0 = _data[ i -1 ];
@@ -227,8 +227,8 @@ function chart () {
                 d0 ? d0 : d1;
 
             if ( d ) {
-                _dot.attr( 'cx', X( d ) )
-                    .attr( 'cy', Y( d ) );
+                _dot.attr( 'cx', _X( d ) )
+                    .attr( 'cy', _Y( d ) );
             }
 
             if ( typeof _hover === 'function' ) {
@@ -241,8 +241,8 @@ function chart () {
 
         };
 
-        _line.id = function () {
-            return _id;
+        _line.mouse_out = function () {
+            _dot.style( 'display', 'none' );
         };
 
         _line.remove = function () {
@@ -266,18 +266,12 @@ function chart () {
     };
 
 
-
     // Chart API
-    _chart.margin = function ( _ ) {
-        if ( !arguments.length ) return margin;
-        margin = _;
-        return _chart;
-    };
-
-    _chart.width = function ( _ ) {
-        if ( !arguments.length ) return width;
-        width = _;
-        return _chart;
+    _chart.each = function ( _ ) {
+        if ( typeof _ === 'function' ) {
+            lines.forEach( _ );
+            scatters.forEach( _ );
+        }
     };
 
     _chart.height = function ( _ ) {
@@ -286,21 +280,26 @@ function chart () {
         return _chart;
     };
 
-    _chart.each = function ( _ ) {
-        if ( typeof _ === 'function' ) {
-            lines.forEach( _ );
-            scatters.forEach( _ );
-        }
-    };
-
     _chart.hover = function ( _ ) {
-        if ( !arguments.length ) return hover;
-        hover = _;
+        if ( !arguments.length ) return mouse_move;
+        mouse_move = _;
         return _chart;
     };
 
     _chart.id = function () {
         return id;
+    };
+
+    _chart.margin = function ( _ ) {
+        if ( !arguments.length ) return margin;
+        margin = _;
+        return _chart;
+    };
+
+    _chart.mouse_in = function ( _ ) {
+        if ( !arguments.length ) return mouse_in;
+        mouse_in = _;
+        return _chart;
     };
 
     _chart.mouse_out = function ( _ ) {
@@ -309,9 +308,9 @@ function chart () {
         return _chart;
     };
 
-    _chart.mouse_over = function ( _ ) {
-        if ( !arguments.length ) return mouse_over;
-        mouse_over = _;
+    _chart.width = function ( _ ) {
+        if ( !arguments.length ) return width;
+        width = _;
         return _chart;
     };
 
@@ -342,30 +341,38 @@ function chart () {
     };
 
 
-
     // Helper functions
-    function X ( d ) {
-        return x_scale( x_value( d ) );
+    function _gen_id () {
+
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                       .toString(16)
+                       .substring(1);
+        }
+        return 'a' + s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+
     }
 
-    function Y ( d ) {
-        return y_scale( y_value( d ) );
+    function _next_color () {
+
+        if ( _current_color >= _colors.length ) _current_color = 0;
+        return _colors[ _current_color++ ];
+
     }
 
     function _scale_domains () {
 
-        // Set an initial domain
         var x_initial = lines.length ? d3.extent( lines[0].data(), x_value ) :
-                        scatters.length ? d3.extent( scatters[0].data(), x_value ) :
-                        [ 0, 1 ];
+            scatters.length ? d3.extent( scatters[0].data(), x_value ) :
+                [ 0, 1 ];
         var y_initial = lines.length ? d3.extent( lines[0].data(), y_value ) :
-                        scatters.length ? d3.extent( scatters[0].data(), y_value ) :
-                        [ 0, 1 ];
+            scatters.length ? d3.extent( scatters[0].data(), y_value ) :
+                [ 0, 1 ];
 
         x_scale.domain( x_initial );
         y_scale.domain( y_initial );
 
-        // Expand domains to fit lines
         lines.forEach( function ( line ) {
 
             var x_extent = d3.extent( line.data(), x_value );
@@ -378,20 +385,87 @@ function chart () {
 
     }
 
-    function _next_color () {
-        if ( _current_color >= _colors.length ) _current_color = 0;
-        return _colors[ _current_color++ ];
+    function _X ( d ) {
+        return x_scale( x_value( d ) );
     }
 
-    function _gen_id () {
-        function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                       .toString(16)
-                       .substring(1);
-        }
-        return 'a' + s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-            s4() + '-' + s4() + s4() + s4();
+    function _Y ( d ) {
+        return y_scale( y_value( d ) );
     }
+
+
+    // Tools
+    chart.linker = function () {
+
+        var charts = {};
+
+        function _linker () {}
+
+        _linker.link = function ( chart ) {
+
+            charts[ chart.id() ] = chart;
+
+            chart.hover( _linker.hover )
+                 .mouse_out( _linker.mouse_out )
+                 .mouse_in( _linker.mouse_over );
+
+        };
+
+        _linker.unlink = function ( chart ) {
+
+            delete charts[ chart.id() ];
+
+            chart.hover( null )
+                 .mouse_out( null )
+                 .mouse_in( null );
+
+        };
+
+        _linker.hover = function ( id, x ) {
+
+            for ( var key in charts ) {
+                if ( key !== id && charts.hasOwnProperty( key ) ) {
+                    charts[ key].each( function ( item ) {
+                        if ( item.hover() ){
+                            item.mouse_move( x );
+                        }
+                    });
+                }
+            }
+
+        };
+
+        _linker.mouse_out = function ( id ) {
+
+            for ( var key in charts ) {
+                if ( key !== id && charts.hasOwnProperty( key ) ) {
+                    charts[ key ].each( function ( item ) {
+                        if ( item.hover() ) {
+                            item.mouse_out();
+                        }
+                    });
+                }
+            }
+
+        };
+
+        _linker.mouse_over = function ( id ) {
+
+            for ( var key in charts ) {
+                if ( key != id && charts.hasOwnProperty( key ) ) {
+                    charts[ key ].each( function ( item ) {
+                        if ( item.hover() ) {
+                            item.mouse_in();
+                        }
+                    });
+                }
+            }
+
+        };
+
+        return _linker;
+
+    };
 
     return _chart;
 
