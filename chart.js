@@ -80,25 +80,34 @@ function chart () {
              .call( y_axis );
 
             // Update lines
-            var _lines = g.selectAll( '.line' ).data( lines, function ( l ) { return l.id(); } );
+            var _lines = g.selectAll( 'g' ).filter( '.linegroup' ).data( lines, function ( l ) { return l.id(); } );
 
-            _lines = _lines.enter()
-                           .append( 'g' )
-                           .merge( _lines );
+            _lines.exit().remove();
 
-            _lines.each( function ( _line ) {
+            _lines.enter()
+                .append( 'g' )
+                .attr( 'class', 'linegroup' )
+                .merge( _lines )
+                .each( function ( _line ) {
 
                 _line( d3.select( this ) );
 
             });
 
             // Add the mouse area
-            var mouse_area = g.append( 'rect' )
-                              .attr( 'width', width - margin.left - margin.right )
-                              .attr( 'height', height - margin.top - margin.bottom )
-                              .attr( 'stroke', 'none' )
-                              .attr( 'fill', 'none' )
-                              .attr( 'pointer-events', 'all' );
+            var mouse_area = g.selectAll( '#m' + id ).data( ['mousearea'] );
+
+            mouse_area.exit().remove();
+
+            mouse_area = mouse_area.enter()
+                                   .append( 'rect' )
+                                   .attr( 'id', 'm' + id )
+                                   .merge( mouse_area )
+                                   .attr( 'width', width - margin.left - margin.right )
+                                   .attr( 'height', height - margin.top - margin.bottom )
+                                   .attr( 'stroke', 'none' )
+                                   .attr( 'fill', 'none' )
+                                   .attr( 'pointer-events', 'all' );
 
             mouse_area.on( 'mouseover', function () {
 
@@ -180,8 +189,6 @@ function chart () {
 
             _dot = _dot.enter()
                        .append( 'circle' )
-                       .attr( 'r', 3 )
-                       .attr( 'fill', _color )
                        .style( 'display', 'none' )
                        .merge( _dot );
 
@@ -189,6 +196,9 @@ function chart () {
                  .attr( 'stroke', _color )
                  .attr( 'stroke-width', _thickness )
                  .attr( 'd', function ( d ) { return line( d.data() ); } );
+
+            _dot.attr( 'r', 3 )
+                .attr( 'fill', _color );
 
         }
 

@@ -17,7 +17,8 @@ d3.tsv( 'data/apple_stock.tsv', function ( d ) {
 
     c.line()
         .data( data )
-        .thickness( 1.5 );
+        .thickness( 1.5 )
+        .hover( true );
 
     resize();
 
