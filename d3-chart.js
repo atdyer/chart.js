@@ -94,6 +94,21 @@ function chart () {
 
             });
 
+            // Update scatters
+            var _scatters = g.selectAll( 'g' ).filter( '.scattergroup' ).data( scatters, function ( s ) { return s.id(); } );
+
+            _scatters.exit().remove();
+
+            _scatters.enter()
+                .append( 'g' )
+                .attr( 'class', 'scattergroup' )
+                .merge( _scatters )
+                .each( function ( _scatter ) {
+
+                    _scatter( d3.select( this ) );
+
+                });
+
             // Add the mouse area
             var mouse_area = g.selectAll( '#m' + id ).data( ['mousearea'] );
 
@@ -117,6 +132,12 @@ function chart () {
                     }
                 });
 
+                scatters.forEach( function ( scatter ) {
+                    if ( scatter.hover() ) {
+                        scatter.mouse_in();
+                    }
+                });
+
                 if ( typeof mouse_in === 'function' ) {
                     mouse_in( id );
                 }
@@ -127,12 +148,17 @@ function chart () {
 
                 var mouse = d3.mouse( this );
                 var x = x_scale.invert( mouse[0] );
-                lines.forEach( function ( line ) {
 
+                lines.forEach( function ( line ) {
                     if ( line.hover() ) {
                         line.mouse_move( x );
                     }
+                });
 
+                scatters.forEach( function ( scatter ) {
+                    if ( scatter.hover() ) {
+                        scatter.mouse_move( x );
+                    }
                 });
 
                 if ( typeof mouse_move === 'function' ) {
@@ -146,6 +172,12 @@ function chart () {
                 lines.forEach( function ( line ) {
                     if ( line.hover() ) {
                         line.mouse_out();
+                    }
+                });
+
+                scatters.forEach( function ( scatter ) {
+                    if ( scatter.hover() ) {
+                        scatter.mouse_out();
                     }
                 });
 
@@ -180,7 +212,7 @@ function chart () {
             group.attr( 'id', _id );
 
             _path = group.selectAll( 'path' ).data( function ( d ) { return [d]; } );
-            _dot = group.selectAll( 'circle' ).data( ['dot'] );
+            _dot = group.selectAll( '.hoverdot' ).data( ['hoverdot'] );
 
             _path = _path.enter()
                        .append( 'path' )
@@ -189,6 +221,7 @@ function chart () {
 
             _dot = _dot.enter()
                        .append( 'circle' )
+                       .attr( 'class', 'hoverdot' )
                        .style( 'display', 'none' )
                        .merge( _dot );
 
@@ -272,6 +305,120 @@ function chart () {
 
         lines.push( _line );
         return _line;
+
+    };
+
+    _chart.scatter = function ( id ) {
+
+        var _id = id || _gen_id();
+        var _color = _next_color();
+        var _data = [];
+        var _radius = 1.0;
+        var _dots;
+
+        // Hover stuff
+        var _dot;
+        var _hover = false;
+        var _bisector = d3.bisector( function ( d ) { return x_value( d ); } ).left;
+
+        function _scatter ( group ) {
+
+            group.attr( 'id', _id );
+
+            _dots = group.selectAll( '.dot' ).data( function ( d ) { return d.data(); } );
+            _dot = group.selectAll( '.hoverdot' ).data( ['hoverdot'] );
+
+            _dots = _dots.enter()
+                .append( 'circle' )
+                .attr( 'class', 'dot' )
+                .merge( _dots );
+
+            _dot = _dot.enter()
+                .append( 'circle' )
+                .attr( 'class', 'hoverdot' )
+                .style( 'display', 'none' )
+                .merge( _dot );
+
+            _dots.attr( 'r', _radius )
+                .attr( 'cx', function ( d ) { return _X( d ); } )
+                .attr( 'cy', function ( d ) { return _Y( d ); } )
+                .attr( 'fill', _color );
+
+            _dot.attr( 'r', 3 )
+                .attr( 'fill', _color );
+
+        }
+
+        _scatter.color = function ( _ ) {
+            if ( !arguments.length ) return _color;
+            _color = _;
+            return _scatter;
+        };
+
+        _scatter.data = function ( _ ) {
+            if ( !arguments.length ) return _data;
+            _data = _;
+            return _scatter;
+        };
+
+        _scatter.hover = function ( _ ) {
+            if ( !arguments.length ) return _hover;
+            _hover = _;
+            return _scatter;
+        };
+
+        _scatter.id = function () {
+            return _id;
+        };
+
+        _scatter.mouse_in = function () {
+            _dot.style( 'display', null );
+        };
+
+        _scatter.mouse_move = function ( x ) {
+
+            var i = _bisector( _data, x );
+            var d0 = _data[ i -1 ];
+            var d1 = _data[ i ];
+            var d = d0 && d1 ? x - x_value( d0 ) > x_value( d1 ) - x ? d1 : d0 :
+                d0 ? d0 : d1;
+
+            if ( d ) {
+                _dot.attr( 'cx', _X( d ) )
+                    .attr( 'cy', _Y( d ) );
+            }
+
+            if ( typeof _hover === 'function' ) {
+                _hover({
+                    id: _id,
+                    x: x_value( d ),
+                    y: y_value( d )
+                });
+            }
+
+        };
+
+        _scatter.mouse_out = function () {
+            _dot.style( 'display', 'none' );
+        };
+
+        _scatter.radius = function ( _ ) {
+            if ( !arguments.length ) return _radius;
+            _radius = _;
+            return _scatter;
+        };
+
+        _scatter.remove = function () {
+
+            var i = scatters.indexOf( _line );
+            if ( i != -1 ) {
+                scatters.splice( i, 1 );
+            }
+
+        };
+
+        scatters.push( _scatter );
+        return _scatter;
 
     };
 

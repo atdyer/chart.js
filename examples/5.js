@@ -46,8 +46,9 @@ d3.tsv( 'data/cities.tsv', type, function ( error, data ) {
       .color( "#e41a1c" )
       .hover( true );
 
-    c3.line()
+    c3.scatter()
       .data( cities[2].values )
+      .radius( 1.5 )
       .color( "#4daf4a" )
       .hover( true );
 
