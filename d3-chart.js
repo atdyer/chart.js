@@ -419,6 +419,8 @@ function chart () {
                  .mouse_out( _linker.mouse_out )
                  .mouse_in( _linker.mouse_over );
 
+            return _linker;
+
         };
 
         _linker.unlink = function ( chart ) {
@@ -428,6 +430,8 @@ function chart () {
             chart.hover( null )
                  .mouse_out( null )
                  .mouse_in( null );
+
+            return _linker;
 
         };
 

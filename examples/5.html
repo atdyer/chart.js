@@ -22,6 +22,18 @@
     <div id="chart2"></div>
     <div id="chart3"></div>
     <div>
+        <p>
+            In order to connect hover events between multiple charts, a convenient <code>linker</code> function is
+            provided. A linker is created by calling <code>chart.linker()</code>; note that an actual chart is not
+            needed, simply call the function from the library.
+            The provided linker will honor the <code>hover</code>
+            property of each plottable of every linked chart (i.e. the hover action will only occur if it has been
+            enabled with <code>.hover(true)</code>.
+            Of course, if you don't want to use the provided <code>linker</code>, you can always link
+            events between charts using chart or plottable events.
+        </p>
+    </div>
+    <div>
         <pre><code id="code" class="js"></code></pre>
     </div>
 

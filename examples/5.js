@@ -51,10 +51,10 @@ d3.tsv( 'data/cities.tsv', type, function ( error, data ) {
       .color( "#4daf4a" )
       .hover( true );
 
-    var link = chart.linker();
-    link.link( c1 );
-    link.link( c2 );
-    link.link( c3 );
+    chart.linker()
+         .link( c1 )
+         .link( c2 )
+         .link( c3 );
 
     d3.select( '#chart1' ).call( c1 );
     d3.select( '#chart2' ).call( c2 );
