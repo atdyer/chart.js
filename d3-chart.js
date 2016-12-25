@@ -506,6 +506,8 @@ function chart() {
     _chart.height = function ( _ ) {
         if ( !arguments.length ) return height;
         height = _;
+        x_minor = d3.axisBottom(x_scale)
+            .tickSizeInner(-height + margin.top + margin.bottom);
         return _chart;
     };
 
@@ -521,7 +523,14 @@ function chart() {
 
     _chart.margin = function ( _ ) {
         if ( !arguments.length ) return margin;
-        margin = _;
+        margin.top = _.top || margin.top;
+        margin.right = _.right || margin.right;
+        margin.bottom = _.bottom || margin.bottom;
+        margin.left = _.left || margin.left;
+        x_minor = d3.axisBottom(x_scale)
+            .tickSizeInner(-height + margin.top + margin.bottom);
+        y_minor = d3.axisLeft(y_scale)
+            .tickSizeInner(-width + margin.left + margin.right);
         return _chart;
     };
 
