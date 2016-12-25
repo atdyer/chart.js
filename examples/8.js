@@ -1,10 +1,6 @@
 var parseDate = d3.timeParse("%b %Y");
 
-var width = d3.select('body')
-    .node()
-    .getBoundingClientRect().width;
-
-chart();
+chart(); // Hmm, need to figure out how to not need this.
 var linker = chart.linker();
 
 d3.tsv("data/stocks.tsv", type, function ( error, data ) {
@@ -17,28 +13,44 @@ d3.tsv("data/stocks.tsv", type, function ( error, data ) {
         })
         .entries(data);
 
+    var domain = [
+        d3.min(symbols, function ( symbol ) {
+            return symbol.values[ 0 ].date;
+        }),
+        d3.max(symbols, function ( symbol ) {
+            return symbol.values[ symbol.values.length - 1 ].date;
+        })
+    ];
+
+    var width = d3.select('body')
+        .node()
+        .getBoundingClientRect().width;
+
     d3.select("#chart")
         .selectAll("div")
         .data(symbols)
         .enter()
         .append("div")
-        .each( function ( d ) {
+        .each(function ( d ) {
 
             var c = chart()
-                .x( function ( d ) { return d.date; } )
-                .y( function ( d ) { return d.price; } )
+                .width(width)
+                .height(80)
+                .margin({ left: 40 })
+                .domain(domain)
+                .x_axis(d3.axisBottom())
+                .x_grid(true)
                 .x_scale(d3.scaleTime())
-                .width( width )
-                .height( 150 )
-                .margin( {left: 40} );
+                .x(function ( d ) { return d.date; })
+                .y(function ( d ) { return d.price; });
 
             c.line()
-                .data( d.values )
-                .hover( true );
+                .data(d.values)
+                .hover(true);
 
-            linker.link( c );
+            linker.link(c);
 
-            c( d3.select( this ) );
+            c(d3.select(this));
 
         });
 });

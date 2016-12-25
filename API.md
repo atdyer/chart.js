@@ -29,9 +29,21 @@ How to create a chart.
 
 ### *chart*.**x**()
 
+### *chart*.**x_axis**()
+
+Bug. Doesn't move to top yet.
+
+### *chart*.**x_grid**()
+
 ### *chart*.**x_scale**()
 
 ### *chart*.**y**()
+
+### *chart*.**y_axis**()
+
+Bug. Doesn't move to right yet.
+
+### *chart*.**y_grid**()
 
 ### *chart*.**y_scale**()
 

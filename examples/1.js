@@ -14,6 +14,8 @@ d3.tsv('data/apple_stock.tsv', function ( d ) {
 
     var c = chart()
         .width(width)
+        .x_axis(d3.axisBottom())
+        .y_axis(d3.axisLeft())
         .x_scale(d3.scaleTime());
 
     c.line()

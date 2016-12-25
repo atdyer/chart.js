@@ -48,6 +48,8 @@ d3.tsv('data/cities.tsv', type, function ( error, data ) {
 
     var c = chart()
         .width(width)
+        .x_axis(d3.axisBottom())
+        .y_axis(d3.axisLeft())
         .x_scale(d3.scaleTime())
         .x(function ( d ) { return d.date; })
         .y(function ( d ) { return d.temperature; });

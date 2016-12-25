@@ -12,21 +12,23 @@ function chart() {
     var x_value = function ( d ) {
         return d[ 0 ];
     };
-    var x_scale = d3.scaleLinear();
-    var x_label = '';
-    var x_axis = d3.axisBottom(x_scale);
-    var x_minor = d3.axisBottom(x_scale)
-        .tickSizeInner(-height + margin.top + margin.bottom);
+    var x_scale;    // Defaults to d3.scaleLinear()
+    var x_axis;     // Defaults to d3.axisBottom()
+    var x_label;    // Defaults to none
+    var x_grid;     // Defaults to none
 
     // y-axis
     var y_value = function ( d ) {
         return d[ 1 ];
     };
-    var y_scale = d3.scaleLinear();
-    var y_label = '';
-    var y_axis = d3.axisLeft(y_scale);
-    var y_minor = d3.axisLeft(y_scale)
-        .tickSizeInner(-width + margin.left + margin.right);
+    var y_scale;    // Defaults to d3.scaleLinear()
+    var y_axis;     // Defaults to d3.axisLeft()
+    var y_label;    // Defaults to none
+    var y_grid;     // Defaults to none
+
+    // Domain and range
+    var domain;
+    var range;
 
     // Lines
     var lines = [];
@@ -78,48 +80,11 @@ function chart() {
             g = svg.select('g')
                 .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-            // Update the scales to fit the plotting area
-            x_scale.range([ 0, width - margin.left - margin.right ]);
-            y_scale.range([ height - margin.top - margin.bottom, 0 ]);
-
             // Update the domains to fit the data
             _scale_domains();
 
-            // Update the x-axis
-            g.select('.x.axis')
-                .attr('transform', 'translate(0,' + y_scale.range()[ 0 ] + ')')
-                .style('shape-rendering', 'crispEdges')
-                .call(x_axis);
-
-            var _x_minor = g.select('.x.axis.minor')
-                .attr('transform', 'translate(0,' + y_scale.range()[ 0 ] + ')')
-                .style('shape-rendering', 'crispEdges')
-                .call(x_minor);
-
-            _x_minor.selectAll('text')
-                .style('display', 'none');
-
-            _x_minor.selectAll('line')
-                .style('stroke', '#777')
-                .style('stroke-opacity', 0.35)
-                .style('stroke-dasharray', '2,2');
-
-            // Update the y-axis
-            g.select('.y.axis')
-                .style('shape-rendering', 'crispEdges')
-                .call(y_axis);
-
-            var _y_minor = g.select('.y.axis.minor')
-                .style('shape-rendering', 'crispEdges')
-                .call(y_minor);
-
-            _y_minor.selectAll('text')
-                .style('display', 'none');
-
-            _y_minor.selectAll('line')
-                .style('stroke', '#777')
-                .style('stroke-opacity', 0.35)
-                .style('stroke-dasharray', '2,2');
+            // Build the axes
+            _build_axes( g );
 
             // Update lines
             var _lines = g.selectAll('g')
@@ -496,6 +461,12 @@ function chart() {
 
 
     // Chart API
+    _chart.domain = function ( _ ) {
+        if ( !arguments.length ) return domain;
+        domain = _;
+        return _chart;
+    };
+
     _chart.each = function ( _ ) {
         if ( typeof _ === 'function' ) {
             lines.forEach(_);
@@ -506,8 +477,6 @@ function chart() {
     _chart.height = function ( _ ) {
         if ( !arguments.length ) return height;
         height = _;
-        x_minor = d3.axisBottom(x_scale)
-            .tickSizeInner(-height + margin.top + margin.bottom);
         return _chart;
     };
 
@@ -527,10 +496,6 @@ function chart() {
         margin.right = _.right || margin.right;
         margin.bottom = _.bottom || margin.bottom;
         margin.left = _.left || margin.left;
-        x_minor = d3.axisBottom(x_scale)
-            .tickSizeInner(-height + margin.top + margin.bottom);
-        y_minor = d3.axisLeft(y_scale)
-            .tickSizeInner(-width + margin.left + margin.right);
         return _chart;
     };
 
@@ -549,8 +514,6 @@ function chart() {
     _chart.width = function ( _ ) {
         if ( !arguments.length ) return width;
         width = _;
-        y_minor = d3.axisLeft(y_scale)
-            .tickSizeInner(-width + margin.left + margin.right);
         return _chart;
     };
 
@@ -560,12 +523,21 @@ function chart() {
         return _chart;
     };
 
+    _chart.x_axis = function ( _ ) {
+        if ( !arguments.length ) return x_axis;
+        x_axis = _;
+        return _chart;
+    };
+
+    _chart.x_grid = function ( _ ) {
+        if ( !arguments.length ) return x_grid;
+        x_grid = _;
+        return _chart;
+    };
+
     _chart.x_scale = function ( _ ) {
         if ( !arguments.length ) return x_scale;
         x_scale = _;
-        x_axis = d3.axisBottom(x_scale);
-        x_minor = d3.axisBottom(x_scale)
-            .tickSizeInner(-height + margin.top + margin.bottom);
         return _chart;
     };
 
@@ -575,17 +547,91 @@ function chart() {
         return _chart;
     };
 
+    _chart.y_axis = function ( _ ) {
+        if ( !arguments.length ) return y_axis;
+        y_axis = _;
+        return _chart;
+    };
+
+    _chart.y_grid = function ( _ ) {
+        if ( !arguments.length ) return y_grid;
+        y_grid = _;
+        return _chart;
+    };
+
     _chart.y_scale = function ( _ ) {
         if ( !arguments.length ) return y_scale;
         y_scale = _;
-        y_axis = d3.axisLeft(y_scale);
-        y_minor = d3.axisLeft(y_scale)
-            .tickSizeInner(-width + margin.left + margin.right);
         return _chart;
     };
 
 
     // Helper functions
+    function _build_axes( g ) {
+
+        if ( x_axis ) {
+            x_axis.scale( x_scale );
+            g.select('.x.axis')
+                .attr('transform', 'translate(0,' + y_scale.range()[ 0 ] + ')')
+                .style('shape-rendering', 'crispEdges')
+                .call(x_axis);
+
+        }
+        if ( y_axis ) {
+            y_axis.scale( y_scale );
+            g.select('.y.axis')
+                .style('shape-rendering', 'crispEdges')
+                .call(y_axis);
+        }
+
+        if ( x_grid && typeof x_grid == "boolean" ) x_grid = '2,2';
+        if ( y_grid && typeof y_grid == "boolean" ) y_grid = '2,2';
+
+        if ( x_grid ) {
+
+            var _x_minor = g.select('.x.axis.minor')
+                .attr('transform', 'translate(0,' + y_scale.range()[ 0 ] + ')')
+                .style('shape-rendering', 'crispEdges')
+                .call(
+                    d3.axisBottom(x_scale).tickSizeInner(-height + margin.top + margin.bottom)
+                );
+
+            _x_minor.selectAll('text')
+                .style('display', 'none');
+
+            _x_minor.selectAll('.domain')
+                .style('display', 'none');
+
+            _x_minor.selectAll('line')
+                .style('stroke', '#777')
+                .style('stroke-opacity', 0.35)
+                .style('stroke-dasharray', x_grid);
+
+        }
+
+        if ( y_grid ) {
+
+            var _y_minor = g.select('.y.axis.minor')
+                .style('shape-rendering', 'crispEdges')
+                .call(
+                    d3.axisLeft(y_scale).tickSizeInner(-width + margin.left + margin.right)
+                );
+
+            _y_minor.selectAll('text')
+                .style('display', 'none');
+
+            _y_minor.selectAll('.domain')
+                .style('display', 'none');
+
+            _y_minor.selectAll('line')
+                .style('stroke', '#777')
+                .style('stroke-opacity', 0.35)
+                .style('stroke-dasharray', y_grid);
+
+        }
+
+    }
+
     function _gen_id() {
 
         function s4() {
@@ -608,39 +654,36 @@ function chart() {
 
     function _scale_domains() {
 
-        var x_initial = lines.length ? d3.extent(lines[ 0 ].data(), x_value) :
-            scatters.length ? d3.extent(scatters[ 0 ].data(), x_value) :
-                [ 0, 1 ];
-        var y_initial = lines.length ? d3.extent(lines[ 0 ].data(), y_value) :
-            scatters.length ? d3.extent(scatters[ 0 ].data(), y_value) :
-                [ 0, 1 ];
+        x_scale = x_scale || d3.scaleLinear();
+        y_scale = y_scale || d3.scaleLinear();
 
-        x_scale.domain(x_initial);
-        y_scale.domain(y_initial);
+        // Update the scales to fit the plotting area
+        x_scale.range([ 0, width - margin.left - margin.right ]);
+        y_scale.range([ height - margin.top - margin.bottom, 0 ]);
 
-        lines.forEach(function ( line ) {
+        var data = [].concat( lines, scatters );
 
-            var x_extent = d3.extent(line.data(), x_value);
-            var y_extent = d3.extent(line.data(), y_value);
+        // Update domains
+        if ( domain ) {
+            x_scale.domain( domain );
+        } else {
 
-            x_scale.domain(d3.extent(x_scale.domain()
-                .concat(x_extent)));
-            y_scale.domain(d3.extent(y_scale.domain()
-                .concat(y_extent)));
+            var xmin = d3.min( data, function ( d ) { return d3.min( d.data(), x_value ); } );
+            var xmax = d3.max( data, function ( d ) { return d3.max( d.data(), x_value ); } );
 
-        });
+            x_scale.domain([ xmin, xmax ]);
+        }
 
-        scatters.forEach(function ( scatter ) {
+        if ( range ) {
+            y_scale.domain( range );
+        } else {
 
-            var x_extent = d3.extent(scatter.data(), x_value);
-            var y_extent = d3.extent(scatter.data(), y_value);
+            var ymin = d3.min( data, function ( d ) { return d3.min( d.data(), y_value ) } );
+            var ymax = d3.max( data, function ( d ) { return d3.max( d.data(), y_value ) } );
 
-            x_scale.domain(d3.extent(x_scale.domain()
-                .concat(x_extent)));
-            y_scale.domain(d3.extent(y_scale.domain()
-                .concat(y_extent)));
+            y_scale.domain([ ymin, ymax ]);
 
-        });
+        }
 
     }
 

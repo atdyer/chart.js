@@ -22,6 +22,8 @@ d3.tsv('data/cities.tsv', type, function ( error, data ) {
     var c1 = chart()
         .width(width)
         .height(height)
+        .x_axis(d3.axisBottom())
+        .y_axis(d3.axisLeft())
         .x_scale(d3.scaleTime())
         .x(function ( d ) { return d.date; })
         .y(function ( d ) { return d.temperature; });
@@ -29,6 +31,8 @@ d3.tsv('data/cities.tsv', type, function ( error, data ) {
     var c2 = chart()
         .width(width)
         .height(height)
+        .x_axis(d3.axisBottom())
+        .y_axis(d3.axisLeft())
         .x_scale(d3.scaleTime())
         .x(function ( d ) { return d.date; })
         .y(function ( d ) { return d.temperature; });
@@ -36,6 +40,8 @@ d3.tsv('data/cities.tsv', type, function ( error, data ) {
     var c3 = chart()
         .width(width)
         .height(height)
+        .x_axis(d3.axisBottom())
+        .y_axis(d3.axisLeft())
         .x_scale(d3.scaleTime())
         .x(function ( d ) { return d.date; })
         .y(function ( d ) { return d.temperature; });
