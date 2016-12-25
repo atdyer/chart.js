@@ -178,7 +178,7 @@ function chart() {
                                    .attr( 'fill', 'none' )
                                    .attr( 'pointer-events', 'all' );
 
-            mouse_area.on( 'mouseover', function () {
+            mouse_area.on( 'mouseover touchstart', function () {
 
                 lines.forEach( function ( line ) {
                     if ( line.hover() ) {
@@ -198,7 +198,7 @@ function chart() {
 
             } );
 
-            mouse_area.on( 'mousemove', function () {
+            mouse_area.on( 'mousemove touchmove', function () {
 
                 var mouse = d3.mouse( this );
                 var x = x_scale.invert( mouse[ 0 ] );
@@ -221,7 +221,7 @@ function chart() {
 
             } );
 
-            mouse_area.on( 'mouseout', function () {
+            mouse_area.on( 'mouseout touchend', function () {
 
                 lines.forEach( function ( line ) {
                     if ( line.hover() ) {
