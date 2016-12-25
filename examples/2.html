@@ -32,11 +32,11 @@
 
     <script src="2.js"></script>
     <script>
-        d3.text( '2.js', function ( error, data ) {
-            var code = d3.select( '#code' );
-            code.text( data.trim() );
-            hljs.highlightBlock( code.nodes()[ 0 ] );
-        } );
+        d3.text('2.js', function ( error, data ) {
+            var code = d3.select('#code');
+            code.text(data.trim());
+            hljs.highlightBlock(code.nodes()[ 0 ]);
+        });
     </script>
 </body>
 </html>
