@@ -46,6 +46,7 @@ d3.tsv("data/stocks.tsv", type, function ( error, data ) {
 
             c.line()
                 .data(d.values)
+                .thickness(1.5)
                 .hover(true);
 
             linker.link(c);
