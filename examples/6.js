@@ -11,25 +11,33 @@ d3.tsv( 'data/apple_stock.tsv', function ( d ) {
     if ( error ) throw error;
 
     var c = chart()
-        .x( function ( d ) { return d.date; } )
-        .y( function ( d ) { return d.close; } )
+        .x( function ( d ) {
+            return d.date;
+        } )
+        .y( function ( d ) {
+            return d.close;
+        } )
         .x_scale( d3.scaleTime() );
 
     c.line()
-        .data( data )
-        .thickness( 1.5 )
-        .hover( true );
+     .data( data )
+     .thickness( 1.5 )
+     .hover( true );
 
     resize();
 
-    function resize () {
+    function resize() {
 
-        var width = d3.select( 'body' ).node().getBoundingClientRect().width;
+        var width = d3.select( 'body' )
+                      .node()
+                      .getBoundingClientRect().width;
         c.width( width );
-        d3.select( '#chart' ).call( c );
+        d3.select( '#chart' )
+          .call( c );
 
     }
 
-    d3.select( window ).on( 'resize', resize );
+    d3.select( window )
+      .on( 'resize', resize );
 
-});
+} );

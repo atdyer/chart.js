@@ -34,8 +34,8 @@
         d3.text( '1.js', function ( error, data ) {
             var code = d3.select( '#code' );
             code.text( data.trim() );
-            hljs.highlightBlock( code.nodes()[0] );
-        });
+            hljs.highlightBlock( code.nodes()[ 0 ] );
+        } );
     </script>
 
 </body>

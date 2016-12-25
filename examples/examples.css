@@ -43,7 +43,7 @@ a:not(:hover) {
 }
 
 pre,
-code{
+code {
     font-family: "Menlo", monospace;
     line-height: normal;
 }
