@@ -221,7 +221,7 @@ function chart() {
 
             } );
 
-            mouse_area.on( 'mouseout touchend', function () {
+            mouse_area.on( 'mouseout touchend touchcancel', function () {
 
                 lines.forEach( function ( line ) {
                     if ( line.hover() ) {

@@ -9,8 +9,42 @@ d3-chart is a small, hackable, d3-esque charting library. It is designed to be u
 
 How to create a chart.
 
+### *chart*.**each**()
+
+### *chart*.**height**()
+
+### *chart*.**hover**()
+
+### *chart*.**id**()
+
+### *chart*.**margin**()
+
+### *chart*.**mouse_in**()
+
+### *chart*.**mouse_out**()
+
+### *chart*.**width**()
+
+### *chart*.**x**()
+
+### *chart*.**x_scale**()
+
+### *chart*.**y**()
+
+### *chart*.**y_scale**()
+
 ## Lines
 
-### _line_.**hover**( _option_ )
+### *chart*.**line**()
+
+### *line*.**hover**( *option* )
 
 This method enables or disables mouse hover functionality. When enabled, hovering the mouse over the chart will cause a dot to be drawn on top of the data point closest to the x-coordinate of the mouse. If _option_ is a truthy value, hover will be enabled. If _option_ is a falsey value, hover will be disabled, which is the default. If _option_ is a function, hover will be enabled and the function will be called each time the x-coordinate of the mouse changes. The function will be passed a single argument, a struct containing the ID of the line, and the x- and y- values of the data point that is currently highlighted.
+
+## Scatters
+
+### *chart*.**scatter**()
+
+## Tools
+
+### *chart*.**linker**()
