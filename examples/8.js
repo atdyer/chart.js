@@ -55,7 +55,14 @@ d3.tsv("data/stocks.tsv", type, function ( error, data ) {
 
             linker.link(c);
 
-            c(d3.select(this));
+            var test = c(d3.select(this));
+
+            test.append('text')
+                .attr('x', c.width() - c.margin().left - c.margin().right - 6)
+                .attr('y', c.height() - c.margin().top - c.margin().bottom - 6 )
+                .attr('text-anchor', 'end')
+                .style('font', '10px sans-serif')
+                .text( d.key );
 
         });
 });

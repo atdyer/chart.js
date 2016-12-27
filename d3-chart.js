@@ -98,6 +98,8 @@ function chart() {
 
         });
 
+        return selection.selectAll('svg > g');
+
     }
 
 
