@@ -34,7 +34,6 @@ function chart() {
     var areas = [];
     var area = d3.area()
         .x(_X)
-        .y0(height - margin.top - margin.bottom)
         .y1(_Y);
 
     // Lines
@@ -87,7 +86,7 @@ function chart() {
             g = svg.select('g')
                 .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-            _scale_domains();
+            _build_scales();
 
             _build_axes( g );
 
@@ -110,9 +109,12 @@ function chart() {
         var _data = [];
         var _path;
 
+        var _hover = false;
+
         function _area( group ) {
 
             group.attr('id', _id);
+            area.y0(height - margin.top - margin.bottom);
 
             _path = group.selectAll('path')
                 .data( function ( d ) {
@@ -131,14 +133,38 @@ function chart() {
 
         }
 
+        _area.color = function ( _ ) {
+            if ( !arguments.length ) return _color;
+            _color = _;
+            return _area;
+        };
+
         _area.data = function ( _ ) {
             if ( !arguments.length ) return _data;
             _data = _;
             return _area;
         };
 
+        _area.hover = function ( _ ) {
+            if ( !arguments.length ) return _hover;
+            _hover = _;
+            return _area;
+        };
+
         _area.id = function ( _ ) {
             return _id;
+        };
+
+        _area.mouse_in = function () {
+
+        };
+
+        _area.mouse_move = function ( x ) {
+
+        };
+
+        _area.mouse_out = function () {
+
         };
 
         areas.push( _area );
@@ -427,10 +453,10 @@ function chart() {
 
     _chart.margin = function ( _ ) {
         if ( !arguments.length ) return margin;
-        margin.top = _.top || margin.top;
-        margin.right = _.right || margin.right;
-        margin.bottom = _.bottom || margin.bottom;
-        margin.left = _.left || margin.left;
+        margin.top = _.top === 0 ? 0 : ( _.top || margin.top );
+        margin.right = _.right === 0 ? 0 : _.right || margin.right;
+        margin.bottom = _.bottom === 0 ? 0 : _.bottom || margin.bottom;
+        margin.left = _.left === 0 ? 0 : _.left || margin.left;
         return _chart;
     };
 
@@ -443,6 +469,12 @@ function chart() {
     _chart.mouse_out = function ( _ ) {
         if ( !arguments.length ) return mouse_out;
         mouse_out = _;
+        return _chart;
+    };
+
+    _chart.range = function ( _ ) {
+        if ( !arguments.length ) return range;
+        range = _;
         return _chart;
     };
 
@@ -585,17 +617,13 @@ function chart() {
                                .attr('fill', 'none')
                                .attr('pointer-events', 'all');
 
+        var data = [].concat( areas, lines, scatters );
+
         mouse_area.on('mouseover touchstart', function () {
 
-            lines.forEach(function ( line ) {
-                if ( line.hover() ) {
-                    line.mouse_in();
-                }
-            });
-
-            scatters.forEach(function ( scatter ) {
-                if ( scatter.hover() ) {
-                    scatter.mouse_in();
+            data.forEach(function ( d ) {
+                if ( d.hover() ) {
+                    d.mouse_in();
                 }
             });
 
@@ -610,15 +638,9 @@ function chart() {
             var mouse = d3.mouse(this);
             var x = x_scale.invert(mouse[ 0 ]);
 
-            lines.forEach(function ( line ) {
-                if ( line.hover() ) {
-                    line.mouse_move(x);
-                }
-            });
-
-            scatters.forEach(function ( scatter ) {
-                if ( scatter.hover() ) {
-                    scatter.mouse_move(x);
+            data.forEach(function ( d ) {
+                if ( d.hover() ) {
+                    d.mouse_move(x);
                 }
             });
 
@@ -630,15 +652,9 @@ function chart() {
 
         mouse_area.on('mouseout touchend touchcancel', function () {
 
-            lines.forEach(function ( line ) {
-                if ( line.hover() ) {
-                    line.mouse_out();
-                }
-            });
-
-            scatters.forEach(function ( scatter ) {
-                if ( scatter.hover() ) {
-                    scatter.mouse_out();
+            data.forEach(function ( d ) {
+                if ( d.hover() ) {
+                    d.mouse_out();
                 }
             });
 
@@ -650,27 +666,7 @@ function chart() {
 
     }
 
-    function _gen_id() {
-
-        function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-
-        return 'a' + s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-            s4() + '-' + s4() + s4() + s4();
-
-    }
-
-    function _next_color() {
-
-        if ( _current_color >= _colors.length ) _current_color = 0;
-        return _colors[ _current_color++ ];
-
-    }
-
-    function _scale_domains() {
+    function _build_scales() {
 
         x_scale = x_scale || d3.scaleLinear();
         y_scale = y_scale || d3.scaleLinear();
@@ -702,6 +698,26 @@ function chart() {
             y_scale.domain([ ymin, ymax ]);
 
         }
+
+    }
+
+    function _gen_id() {
+
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+
+        return 'a' + s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+
+    }
+
+    function _next_color() {
+
+        if ( _current_color >= _colors.length ) _current_color = 0;
+        return _colors[ _current_color++ ];
 
     }
 

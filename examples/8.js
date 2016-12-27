@@ -31,20 +31,26 @@ d3.tsv("data/stocks.tsv", type, function ( error, data ) {
         .append("div")
         .each(function ( d ) {
 
+            var range = [ 0, d3.max(d.values, function(d) { return d.price; }) ];
+
             var c = chart()
                 .width(width)
-                .height(80)
-                .margin({ left: 40 })
+                .height(69)
+                .margin({top: 8, right: 10, bottom: 2, left: 10})
                 .domain(domain)
-                .x_axis(d3.axisBottom())
-                .x_grid(true)
+                .range(range)
                 .x_scale(d3.scaleTime())
                 .x(function ( d ) { return d.date; })
                 .y(function ( d ) { return d.price; });
 
+            c.area()
+                .data(d.values)
+                .color( '#e7e7e7' );
+
             c.line()
                 .data(d.values)
                 .thickness(1.5)
+                .color( '#666' )
                 .hover(true);
 
             linker.link(c);

@@ -11,6 +11,8 @@ d3-chart is a small, hackable, d3-esque charting library. It is designed to be u
 
 How to create a chart.
 
+### *chart*.**domain**()
+
 ### *chart*.**each**()
 
 ### *chart*.**height**()
@@ -24,6 +26,8 @@ How to create a chart.
 ### *chart*.**mouse_in**()
 
 ### *chart*.**mouse_out**()
+
+### *chart*.**range**()
 
 ### *chart*.**width**()
 
