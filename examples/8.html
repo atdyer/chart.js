@@ -20,10 +20,19 @@
     <div id="chart"></div>
     <div>
         <p>
+            This example is a recreation of the charts in Mike Bostock's
+            <a href="https://bl.ocks.org/mbostock/e1192fe405703d8321a5187350910e08">Local Variables</a> example.
+        </p>
+        <p>
             The range of the values on the x- and y-axes can be controlled by using the <code>.domain()</code> and
             <code>.range()</code> functions, respectively. In order to share axes between multiple plots, calculate
             the extent of the data and set the domain/range as needed. If a domain or range is not specified, by
             default the axes will be fit to the data.
+        </p>
+        <p>
+            Additionally, custom components can be added to the chart after calling the <code>chart()</code> function.
+            The <code>chart()</code> function returns the svg group that contains the drawn elements, and you are free
+            to change them, delete them, or add new elements as you please. In this example, we add a label to each one.
         </p>
     </div>
     <div>

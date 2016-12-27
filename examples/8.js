@@ -55,9 +55,9 @@ d3.tsv("data/stocks.tsv", type, function ( error, data ) {
 
             linker.link(c);
 
-            var test = c(d3.select(this));
+            var stamp = c(d3.select(this));
 
-            test.append('text')
+            stamp.append('text')
                 .attr('x', c.width() - c.margin().left - c.margin().right - 6)
                 .attr('y', c.height() - c.margin().top - c.margin().bottom - 6 )
                 .attr('text-anchor', 'end')
