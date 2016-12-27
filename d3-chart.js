@@ -695,85 +695,84 @@ function chart() {
         return y_scale(y_value(d));
     }
 
+    return _chart;
 
-    // Tools
-    chart.linker = function () {
+}
 
-        var charts = {};
+// Tools
+chart.linker = function () {
 
-        function _linker() {
-        }
+    var charts = {};
 
-        _linker.link = function ( chart ) {
+    function _linker() {
+    }
 
-            charts[ chart.id() ] = chart;
+    _linker.link = function ( chart ) {
 
-            chart.hover(_linker.hover)
-                .mouse_out(_linker.mouse_out)
-                .mouse_in(_linker.mouse_over);
+        charts[ chart.id() ] = chart;
 
-            return _linker;
-
-        };
-
-        _linker.unlink = function ( chart ) {
-
-            delete charts[ chart.id() ];
-
-            chart.hover(null)
-                .mouse_out(null)
-                .mouse_in(null);
-
-            return _linker;
-
-        };
-
-        _linker.hover = function ( id, x ) {
-
-            for ( var key in charts ) {
-                if ( key !== id && charts.hasOwnProperty(key) ) {
-                    charts[ key ].each(function ( item ) {
-                        if ( item.hover() ) {
-                            item.mouse_move(x);
-                        }
-                    });
-                }
-            }
-
-        };
-
-        _linker.mouse_out = function ( id ) {
-
-            for ( var key in charts ) {
-                if ( key !== id && charts.hasOwnProperty(key) ) {
-                    charts[ key ].each(function ( item ) {
-                        if ( item.hover() ) {
-                            item.mouse_out();
-                        }
-                    });
-                }
-            }
-
-        };
-
-        _linker.mouse_over = function ( id ) {
-
-            for ( var key in charts ) {
-                if ( key != id && charts.hasOwnProperty(key) ) {
-                    charts[ key ].each(function ( item ) {
-                        if ( item.hover() ) {
-                            item.mouse_in();
-                        }
-                    });
-                }
-            }
-
-        };
+        chart.hover(_linker.hover)
+             .mouse_out(_linker.mouse_out)
+             .mouse_in(_linker.mouse_over);
 
         return _linker;
 
     };
 
-    return _chart;
+    _linker.unlink = function ( chart ) {
 
-}
+        delete charts[ chart.id() ];
+
+        chart.hover(null)
+             .mouse_out(null)
+             .mouse_in(null);
+
+        return _linker;
+
+    };
+
+    _linker.hover = function ( id, x ) {
+
+        for ( var key in charts ) {
+            if ( key !== id && charts.hasOwnProperty(key) ) {
+                charts[ key ].each(function ( item ) {
+                    if ( item.hover() ) {
+                        item.mouse_move(x);
+                    }
+                });
+            }
+        }
+
+    };
+
+    _linker.mouse_out = function ( id ) {
+
+        for ( var key in charts ) {
+            if ( key !== id && charts.hasOwnProperty(key) ) {
+                charts[ key ].each(function ( item ) {
+                    if ( item.hover() ) {
+                        item.mouse_out();
+                    }
+                });
+            }
+        }
+
+    };
+
+    _linker.mouse_over = function ( id ) {
+
+        for ( var key in charts ) {
+            if ( key != id && charts.hasOwnProperty(key) ) {
+                charts[ key ].each(function ( item ) {
+                    if ( item.hover() ) {
+                        item.mouse_in();
+                    }
+                });
+            }
+        }
+
+    };
+
+    return _linker;
+
+};

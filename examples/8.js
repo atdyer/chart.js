@@ -1,6 +1,4 @@
 var parseDate = d3.timeParse("%b %Y");
-
-chart(); // Hmm, need to figure out how to not need this.
 var linker = chart.linker();
 
 d3.tsv("data/stocks.tsv", type, function ( error, data ) {
