@@ -93,65 +93,10 @@ function chart() {
             // Build the axes
             _build_axes( g );
 
-            // Update area
-            var _areas = g.selectAll('g')
-                .filter('.areagroup')
-                .data(areas, function ( a ) {
-                    return a.id();
-                });
-
-            _areas.exit()
-                .remove();
-
-            _areas.enter()
-                .append('g')
-                .attr('class', 'areagroup')
-                .merge(_areas)
-                .each(function ( _area ) {
-
-                    _area(d3.select(this));
-
-                });
-
-            // Update lines
-            var _lines = g.selectAll('g')
-                .filter('.linegroup')
-                .data(lines, function ( l ) {
-                    return l.id();
-                });
-
-            _lines.exit()
-                .remove();
-
-            _lines.enter()
-                .append('g')
-                .attr('class', 'linegroup')
-                .merge(_lines)
-                .each(function ( _line ) {
-
-                    _line(d3.select(this));
-
-                });
-
-            // Update scatters
-            var _scatters = g.selectAll('g')
-                .filter('.scattergroup')
-                .data(scatters, function ( s ) {
-                    return s.id();
-                });
-
-            _scatters.exit()
-                .remove();
-
-            _scatters.enter()
-                .append('g')
-                .attr('class', 'scattergroup')
-                .merge(_scatters)
-                .each(function ( _scatter ) {
-
-                    _scatter(d3.select(this));
-
-                });
+            // Update plottables
+            _update_group( g, 'areagroup', areas );
+            _update_group( g, 'linegroup', lines );
+            _update_group( g, 'scattergroup', scatters );
 
             // Add the mouse area
             var mouse_area = g.selectAll('#m' + id)
@@ -755,6 +700,29 @@ function chart() {
             y_scale.domain([ ymin, ymax ]);
 
         }
+
+    }
+
+    function _update_group( g, c, d ) {
+
+        var _selection = g.selectAll('g')
+                      .filter('.' + c)
+                      .data(d, function ( item ) {
+                          return item.id();
+                      });
+
+        _selection.exit()
+              .remove();
+
+        _selection.enter()
+              .append('g')
+              .attr('class', c)
+              .merge(_selection)
+              .each(function ( _item ) {
+
+                  _item(d3.select(this));
+
+              });
 
     }
 
