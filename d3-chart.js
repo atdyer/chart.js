@@ -87,96 +87,15 @@ function chart() {
             g = svg.select('g')
                 .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-            // Update the domains to fit the data
             _scale_domains();
 
-            // Build the axes
             _build_axes( g );
 
-            // Update plottables
             _update_group( g, 'areagroup', areas );
             _update_group( g, 'linegroup', lines );
             _update_group( g, 'scattergroup', scatters );
 
-            // Add the mouse area
-            var mouse_area = g.selectAll('#m' + id)
-                .data([ 'mousearea' ]);
-
-            mouse_area.exit()
-                .remove();
-
-            mouse_area = mouse_area.enter()
-                .append('rect')
-                .attr('id', 'm' + id)
-                .merge(mouse_area)
-                .attr('width', width - margin.left - margin.right)
-                .attr('height', height - margin.top - margin.bottom)
-                .attr('stroke', 'none')
-                .attr('fill', 'none')
-                .attr('pointer-events', 'all');
-
-            mouse_area.on('mouseover touchstart', function () {
-
-                lines.forEach(function ( line ) {
-                    if ( line.hover() ) {
-                        line.mouse_in();
-                    }
-                });
-
-                scatters.forEach(function ( scatter ) {
-                    if ( scatter.hover() ) {
-                        scatter.mouse_in();
-                    }
-                });
-
-                if ( typeof mouse_in === 'function' ) {
-                    mouse_in(id);
-                }
-
-            });
-
-            mouse_area.on('mousemove touchmove', function () {
-
-                var mouse = d3.mouse(this);
-                var x = x_scale.invert(mouse[ 0 ]);
-
-                lines.forEach(function ( line ) {
-                    if ( line.hover() ) {
-                        line.mouse_move(x);
-                    }
-                });
-
-                scatters.forEach(function ( scatter ) {
-                    if ( scatter.hover() ) {
-                        scatter.mouse_move(x);
-                    }
-                });
-
-                if ( typeof mouse_move === 'function' ) {
-                    mouse_move(id, x);
-                }
-
-            });
-
-            mouse_area.on('mouseout touchend touchcancel', function () {
-
-                lines.forEach(function ( line ) {
-                    if ( line.hover() ) {
-                        line.mouse_out();
-                    }
-                });
-
-                scatters.forEach(function ( scatter ) {
-                    if ( scatter.hover() ) {
-                        scatter.mouse_out();
-                    }
-                });
-
-                if ( typeof mouse_out === 'function' ) {
-                    mouse_out(id);
-                }
-
-            });
+            _build_hover_area( g );
 
         });
 
@@ -645,6 +564,89 @@ function chart() {
                 .style('stroke-dasharray', y_grid);
 
         }
+
+    }
+
+    function _build_hover_area( g ) {
+
+        var mouse_area = g.selectAll('#m' + id)
+                          .data([ 'mousearea' ]);
+
+        mouse_area.exit()
+                  .remove();
+
+        mouse_area = mouse_area.enter()
+                               .append('rect')
+                               .attr('id', 'm' + id)
+                               .merge(mouse_area)
+                               .attr('width', width - margin.left - margin.right)
+                               .attr('height', height - margin.top - margin.bottom)
+                               .attr('stroke', 'none')
+                               .attr('fill', 'none')
+                               .attr('pointer-events', 'all');
+
+        mouse_area.on('mouseover touchstart', function () {
+
+            lines.forEach(function ( line ) {
+                if ( line.hover() ) {
+                    line.mouse_in();
+                }
+            });
+
+            scatters.forEach(function ( scatter ) {
+                if ( scatter.hover() ) {
+                    scatter.mouse_in();
+                }
+            });
+
+            if ( typeof mouse_in === 'function' ) {
+                mouse_in(id);
+            }
+
+        });
+
+        mouse_area.on('mousemove touchmove', function () {
+
+            var mouse = d3.mouse(this);
+            var x = x_scale.invert(mouse[ 0 ]);
+
+            lines.forEach(function ( line ) {
+                if ( line.hover() ) {
+                    line.mouse_move(x);
+                }
+            });
+
+            scatters.forEach(function ( scatter ) {
+                if ( scatter.hover() ) {
+                    scatter.mouse_move(x);
+                }
+            });
+
+            if ( typeof mouse_move === 'function' ) {
+                mouse_move(id, x);
+            }
+
+        });
+
+        mouse_area.on('mouseout touchend touchcancel', function () {
+
+            lines.forEach(function ( line ) {
+                if ( line.hover() ) {
+                    line.mouse_out();
+                }
+            });
+
+            scatters.forEach(function ( scatter ) {
+                if ( scatter.hover() ) {
+                    scatter.mouse_out();
+                }
+            });
+
+            if ( typeof mouse_out === 'function' ) {
+                mouse_out(id);
+            }
+
+        });
 
     }
 
