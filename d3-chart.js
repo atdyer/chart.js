@@ -30,6 +30,13 @@ function chart() {
     var domain;
     var range;
 
+    // Areas
+    var areas = [];
+    var area = d3.area()
+        .x(_X)
+        .y0(height - margin.top - margin.bottom)
+        .y1(_Y);
+
     // Lines
     var lines = [];
     var line = d3.line()
@@ -85,6 +92,26 @@ function chart() {
 
             // Build the axes
             _build_axes( g );
+
+            // Update area
+            var _areas = g.selectAll('g')
+                .filter('.areagroup')
+                .data(areas, function ( a ) {
+                    return a.id();
+                });
+
+            _areas.exit()
+                .remove();
+
+            _areas.enter()
+                .append('g')
+                .attr('class', 'areagroup')
+                .merge(_areas)
+                .each(function ( _area ) {
+
+                    _area(d3.select(this));
+
+                });
 
             // Update lines
             var _lines = g.selectAll('g')
@@ -212,6 +239,49 @@ function chart() {
 
 
     // Plotting functions
+    _chart.area = function ( id ) {
+
+        var _id = id || _gen_id();
+        var _color = _next_color();
+        var _data = [];
+        var _path;
+
+        function _area( group ) {
+
+            group.attr('id', _id);
+
+            _path = group.selectAll('path')
+                .data( function ( d ) {
+                    return [ d ];
+                });
+
+            _path = _path.enter()
+                .append('path')
+                .attr('class', 'area')
+                .merge(_path);
+
+            _path.attr('fill', _color)
+                .attr('d', function ( d ) {
+                    return area(d.data());
+                });
+
+        }
+
+        _area.data = function ( _ ) {
+            if ( !arguments.length ) return _data;
+            _data = _;
+            return _area;
+        };
+
+        _area.id = function ( _ ) {
+            return _id;
+        };
+
+        areas.push( _area );
+        return _area;
+
+    };
+
     _chart.line = function ( id ) {
 
         var _id = id || _gen_id();
@@ -469,6 +539,7 @@ function chart() {
 
     _chart.each = function ( _ ) {
         if ( typeof _ === 'function' ) {
+            areas.forEach(_);
             lines.forEach(_);
             scatters.forEach(_);
         }
@@ -661,7 +732,7 @@ function chart() {
         x_scale.range([ 0, width - margin.left - margin.right ]);
         y_scale.range([ height - margin.top - margin.bottom, 0 ]);
 
-        var data = [].concat( lines, scatters );
+        var data = [].concat( areas, lines, scatters );
 
         // Update domains
         if ( domain ) {
