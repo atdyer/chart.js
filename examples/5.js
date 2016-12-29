@@ -20,13 +20,14 @@ d3.tsv('data/cities.tsv', type, function ( error, data ) {
                   .getBoundingClientRect().width;
 
     var linker = chart.linker();
+    var types = [ 'scatter', 'line', 'area' ];
 
     d3.select('#chart')
         .selectAll('div')
         .data(cities)
         .enter()
         .append('div')
-        .each( function ( d ) {
+        .each( function ( d, i ) {
 
             var c = chart()
                 .width(width)
@@ -37,8 +38,11 @@ d3.tsv('data/cities.tsv', type, function ( error, data ) {
                 .x(function ( d ) { return d.date; })
                 .y(function ( d ) { return d.temperature; });
 
-            c.line()
-                .data(d.values)
+            var p =
+                types[ i ] === 'scatter' ? c.scatter() :
+                types[ i ] === 'line' ? c.line() : c.area();
+
+            p.data(d.values)
                 .hover(true);
 
             linker.link(c);

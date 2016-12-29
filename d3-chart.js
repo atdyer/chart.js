@@ -112,6 +112,10 @@ function chart() {
         var _path;
 
         var _hover = false;
+        var _line;
+        var _bisector = d3.bisector(function ( d ) {
+            return x_value(d);
+        }).left;
 
         function _area( group ) {
 
@@ -123,15 +127,27 @@ function chart() {
                     return [ d ];
                 });
 
+            _line = group.selectAll('.hoverline')
+                        .data([ 'hoverline' ]);
+
             _path = _path.enter()
                 .append('path')
                 .attr('class', 'area')
                 .merge(_path);
 
+            _line = _line.enter()
+                       .append('line')
+                       .attr('class', 'hoverline')
+                       .style('display', 'none')
+                       .merge(_line);
+
             _path.attr('fill', _color)
                 .attr('d', function ( d ) {
                     return area(d.data());
                 });
+
+            _line.style('stroke', d3.color(_color).darker())
+                 .style('shape-rendering', 'crispEdges');
 
         }
 
@@ -158,15 +174,36 @@ function chart() {
         };
 
         _area.mouse_in = function () {
-
+            _line.style('display', null);
         };
 
         _area.mouse_move = function ( x ) {
 
+            var i = _bisector(_data, x);
+            var d0 = _data[ i - 1 ];
+            var d1 = _data[ i ];
+            var d = d0 && d1 ? x - x_value(d0) > x_value(d1) - x ? d1 : d0 :
+                d0 ? d0 : d1;
+
+            if ( d ) {
+                _line.attr('x1', _X(d))
+                    .attr('x2', _X(d))
+                    .attr('y1', y_scale.range()[0])
+                    .attr('y2', _Y(d));
+            }
+
+            if ( typeof _hover === 'function' ) {
+                _hover({
+                    id: _id,
+                    x: x_value(d),
+                    y: y_value(d)
+                });
+            }
+
         };
 
         _area.mouse_out = function () {
-
+            _line.style('display', 'none');
         };
 
         areas.push( _area );
