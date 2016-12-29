@@ -35,17 +35,8 @@
             to change them, delete them, or add new elements as you please. In this example, we add a label to each one.
         </p>
     </div>
-    <div>
-        <pre><code id="code" class="js"></code></pre>
-    </div>
 
+    <script src="examples.js"></script>
     <script src="8.js"></script>
-    <script>
-        d3.text('8.js', function ( error, data ) {
-            var code = d3.select('#code');
-            code.text(data.trim());
-            hljs.highlightBlock(code.nodes()[ 0 ]);
-        });
-    </script>
 </body>
 </html>

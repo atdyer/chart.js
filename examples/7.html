@@ -18,17 +18,8 @@
         <h1>Simple Scatter Chart</h1>
     </div>
     <div id="chart"></div>
-    <div>
-        <pre><code id="code" class="js"></code></pre>
-    </div>
 
+    <script src="examples.js"></script>
     <script src="7.js"></script>
-    <script>
-        d3.text('7.js', function ( error, data ) {
-            var code = d3.select('#code');
-            code.text(data.trim());
-            hljs.highlightBlock(code.nodes()[ 0 ]);
-        });
-    </script>
 </body>
 </html>
