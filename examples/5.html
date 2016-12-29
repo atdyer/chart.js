@@ -18,14 +18,12 @@
         <h1>d3-chart</h1>
         <h1>Linking Hover Events Between Charts</h1>
     </div>
-    <div id="chart1"></div>
-    <div id="chart2"></div>
-    <div id="chart3"></div>
+    <div id="chart"></div>
     <div>
         <p>
             In order to connect hover events between multiple charts, a convenient <code>linker</code> function is
             provided. A linker is created by calling <code>chart.linker()</code>; note that an actual chart is not
-            needed, simply call the function from the library.
+            needed before creating the linker, simply call the function directly.
             The provided linker will honor the <code>hover</code>
             property of each plottable of every linked chart (i.e. the hover action will only occur if it has been
             enabled with <code>.hover(true)</code>.

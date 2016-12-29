@@ -14,64 +14,38 @@ d3.tsv('data/cities.tsv', type, function ( error, data ) {
             };
         });
 
-    var width = d3.select('body')
-        .node()
-        .getBoundingClientRect().width;
     var height = 175;
+    var width = d3.select('body')
+                  .node()
+                  .getBoundingClientRect().width;
 
-    var c1 = chart()
-        .width(width)
-        .height(height)
-        .x_axis(d3.axisBottom())
-        .y_axis(d3.axisLeft())
-        .x_scale(d3.scaleTime())
-        .x(function ( d ) { return d.date; })
-        .y(function ( d ) { return d.temperature; });
+    var linker = chart.linker();
 
-    var c2 = chart()
-        .width(width)
-        .height(height)
-        .x_axis(d3.axisBottom())
-        .y_axis(d3.axisLeft())
-        .x_scale(d3.scaleTime())
-        .x(function ( d ) { return d.date; })
-        .y(function ( d ) { return d.temperature; });
+    d3.select('#chart')
+        .selectAll('div')
+        .data(cities)
+        .enter()
+        .append('div')
+        .each( function ( d ) {
 
-    var c3 = chart()
-        .width(width)
-        .height(height)
-        .x_axis(d3.axisBottom())
-        .y_axis(d3.axisLeft())
-        .x_scale(d3.scaleTime())
-        .x(function ( d ) { return d.date; })
-        .y(function ( d ) { return d.temperature; });
+            var c = chart()
+                .width(width)
+                .height(height)
+                .x_axis(d3.axisBottom())
+                .y_axis(d3.axisLeft())
+                .x_scale(d3.scaleTime())
+                .x(function ( d ) { return d.date; })
+                .y(function ( d ) { return d.temperature; });
 
-    c1.line()
-        .data(cities[ 0 ].values)
-        .hover(true);
+            c.line()
+                .data(d.values)
+                .hover(true);
 
-    c2.line()
-        .data(cities[ 1 ].values)
-        .color("#e41a1c")
-        .hover(true);
+            linker.link(c);
 
-    c3.scatter()
-        .data(cities[ 2 ].values)
-        .radius(1.5)
-        .color("#4daf4a")
-        .hover(true);
+            c(d3.select(this));
 
-    chart.linker()
-        .link(c1)
-        .link(c2)
-        .link(c3);
-
-    d3.select('#chart1')
-        .call(c1);
-    d3.select('#chart2')
-        .call(c2);
-    d3.select('#chart3')
-        .call(c3);
+        });
 
 });
 
