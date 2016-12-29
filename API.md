@@ -15,7 +15,9 @@ How to create a chart.
 
 ### *chart*.**each**()
 
-### *chart*.**height**()
+### *chart*.**height**([*h*])
+
+Returns the outer height of the chart. Internally, the height is maintained according to the [margin convention](http://bl.ocks.org/mbostock/3019563), but the height value returned here will include the top and bottom margins. If *h* is specified, sets the external height of the chart.
 
 ### *chart*.**hover**()
 
@@ -29,7 +31,9 @@ How to create a chart.
 
 ### *chart*.**range**()
 
-### *chart*.**width**()
+### *chart*.**width**([*w*])
+
+Returns the outer width of the chart. Internally, the width is maintained according to the [margin convention](http://bl.ocks.org/mbostock/3019563), but the width value returned here will include the left and right margins. If *w* is specified, sets the external width of the chart.
 
 ### *chart*.**x**()
 

@@ -4,9 +4,10 @@ function chart() {
     var id = _gen_id();
 
     // Chart options
-    var width = 760;
-    var height = 500;
+    var outer_width = 760;
+    var outer_height = 500;
     var margin = { top: 20, right: 20, bottom: 20, left: 30 };
+    var width, height;
 
     // x-axis
     var x_value = function ( d ) {
@@ -56,6 +57,9 @@ function chart() {
     // The charting function
     function _chart( selection ) {
 
+        width = outer_width - margin.left - margin.right;
+        height = outer_height - margin.top - margin.bottom;
+
         selection.each(function () {
 
             var svg = d3.select(this)
@@ -79,8 +83,8 @@ function chart() {
 
             // Update the outer dimensions
             svg = enter.merge(svg)
-                .attr('width', width)
-                .attr('height', height);
+                .attr('width', outer_width)
+                .attr('height', outer_height);
 
             // Update the inner dimensions
             g = svg.select('g')
@@ -475,8 +479,8 @@ function chart() {
     };
 
     _chart.height = function ( _ ) {
-        if ( !arguments.length ) return height;
-        height = _;
+        if ( !arguments.length ) return outer_height;
+        outer_height = _;
         return _chart;
     };
 
@@ -518,8 +522,8 @@ function chart() {
     };
 
     _chart.width = function ( _ ) {
-        if ( !arguments.length ) return width;
-        width = _;
+        if ( !arguments.length ) return outer_width;
+        outer_width = _;
         return _chart;
     };
 
@@ -599,7 +603,7 @@ function chart() {
                 .attr('transform', 'translate(0,' + y_scale.range()[ 0 ] + ')')
                 .style('shape-rendering', 'crispEdges')
                 .call(
-                    d3.axisBottom(x_scale).tickSizeInner(-height + margin.top + margin.bottom)
+                    d3.axisBottom(x_scale).tickSizeInner(-height)
                 );
 
             _x_minor.selectAll('text')
@@ -620,7 +624,7 @@ function chart() {
             var _y_minor = g.select('.y.axis.minor')
                 .style('shape-rendering', 'crispEdges')
                 .call(
-                    d3.axisLeft(y_scale).tickSizeInner(-width + margin.left + margin.right)
+                    d3.axisLeft(y_scale).tickSizeInner(-width)
                 );
 
             _y_minor.selectAll('text')
@@ -650,8 +654,8 @@ function chart() {
                                .append('rect')
                                .attr('id', 'm' + id)
                                .merge(mouse_area)
-                               .attr('width', width - margin.left - margin.right)
-                               .attr('height', height - margin.top - margin.bottom)
+                               .attr('width', width)
+                               .attr('height', height)
                                .attr('stroke', 'none')
                                .attr('fill', 'none')
                                .attr('pointer-events', 'all');
@@ -711,8 +715,8 @@ function chart() {
         y_scale = y_scale || d3.scaleLinear();
 
         // Update the scales to fit the plotting area
-        x_scale.range([ 0, width - margin.left - margin.right ]);
-        y_scale.range([ height - margin.top - margin.bottom, 0 ]);
+        x_scale.range([ 0, width ]);
+        y_scale.range([ height, 0 ]);
 
         var data = [].concat( areas, lines, scatters );
 
