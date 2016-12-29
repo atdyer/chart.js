@@ -39,9 +39,9 @@ Returns the outer width of the chart. Internally, the width is maintained accord
 
 ### *chart*.**x_axis**()
 
-Bug. Doesn't move to top yet.
-
 ### *chart*.**x_grid**()
+
+### *chart*.**x_location**([*location*])
 
 ### *chart*.**x_scale**()
 
@@ -49,9 +49,9 @@ Bug. Doesn't move to top yet.
 
 ### *chart*.**y_axis**()
 
-Bug. Doesn't move to right yet.
-
 ### *chart*.**y_grid**()
+
+### *chart*.**y_location**([*location*])
 
 ### *chart*.**y_scale**()
 

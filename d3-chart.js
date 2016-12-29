@@ -15,7 +15,7 @@ function chart() {
     };
     var x_scale;    // Defaults to d3.scaleLinear()
     var x_axis;     // Defaults to d3.axisBottom()
-    var x_label;    // Defaults to none
+    var x_location; // Defaults to 'bottom'
     var x_grid;     // Defaults to none
 
     // y-axis
@@ -24,7 +24,7 @@ function chart() {
     };
     var y_scale;    // Defaults to d3.scaleLinear()
     var y_axis;     // Defaults to d3.axisLeft()
-    var y_label;    // Defaults to none
+    var y_location; // Defaults to 'left'
     var y_grid;     // Defaults to none
 
     // Domain and range
@@ -124,7 +124,7 @@ function chart() {
         function _area( group ) {
 
             group.attr('id', _id);
-            area.y0(height - margin.top - margin.bottom);
+            area.y0(height);
 
             _path = group.selectAll('path')
                 .data( function ( d ) {
@@ -545,6 +545,12 @@ function chart() {
         return _chart;
     };
 
+    _chart.x_location = function ( _ ) {
+        if ( !arguments.length ) return x_location;
+        x_location = _;
+        return _chart;
+    };
+
     _chart.x_scale = function ( _ ) {
         if ( !arguments.length ) return x_scale;
         x_scale = _;
@@ -569,6 +575,12 @@ function chart() {
         return _chart;
     };
 
+    _chart.y_location = function ( _ ) {
+        if ( !arguments.length ) return y_location;
+        y_location = _;
+        return _chart;
+    };
+
     _chart.y_scale = function ( _ ) {
         if ( !arguments.length ) return y_scale;
         y_scale = _;
@@ -582,7 +594,7 @@ function chart() {
         if ( x_axis ) {
             x_axis.scale( x_scale );
             g.select('.x.axis')
-                .attr('transform', 'translate(0,' + y_scale.range()[ 0 ] + ')')
+                .attr('transform', 'translate(0,' + _calculate_x_axis_location( x_location ) + ')')
                 .style('shape-rendering', 'crispEdges')
                 .call(x_axis);
 
@@ -590,6 +602,7 @@ function chart() {
         if ( y_axis ) {
             y_axis.scale( y_scale );
             g.select('.y.axis')
+                .attr('transform', 'translate(' + _calculate_y_axis_location( y_location ) + ',0)')
                 .style('shape-rendering', 'crispEdges')
                 .call(y_axis);
         }
@@ -741,6 +754,50 @@ function chart() {
             y_scale.domain([ ymin, ymax ]);
 
         }
+
+    }
+
+    function _calculate_x_axis_location( value ) {
+
+        if ( value === 'top' ) {
+            return y_scale.range()[ 1 ];
+        }
+
+        if ( typeof value === 'string' ) {
+            if ( value.slice(-1) === '%' ) {
+                var percent = parseFloat( value ) / 100.0;
+                return d3.interpolateNumber( y_scale.range()[0], y_scale.range()[1] )( percent );
+            }
+            if ( value.slice(-2) === 'px' ) {
+                return parseFloat( value );
+            }
+        }
+
+        if ( y_scale( value ) ) return y_scale( value );
+
+        return y_scale.range()[ 0 ];
+
+    }
+
+    function _calculate_y_axis_location( value ) {
+
+        if ( value === 'right' ) {
+            return x_scale.range()[ 1 ];
+        }
+
+        if ( typeof value === 'string' ) {
+            if ( value.slice(-1) === '%' ) {
+                var percent = parseFloat( value ) / 100.0;
+                return d3.interpolateNumber( x_scale.range()[0], x_scale.range()[1] )( percent );
+            }
+            if ( value.slice(-2) === 'px' ) {
+                return parseFloat( value );
+            }
+        }
+
+        if ( x_scale( value ) ) return x_scale( value );
+
+        return x_scale.range()[0];
 
     }
 
