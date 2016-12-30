@@ -32,7 +32,7 @@ d3.tsv('data/cities.tsv', type, function ( error, data ) {
 
     c.scatter()
         .data(cities[ 1 ].values)
-        .radius(1.5)
+        .attr('r', 1.5)
         .hover(true);
 
     c.line()

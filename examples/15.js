@@ -2,9 +2,7 @@ var parseTime = d3.timeParse('%d-%b-%y');
 
 d3.tsv('data/apple_stock.tsv', function ( d ) {
 
-    d.date = parseTime(d.date);
-    d.close = +d.close;
-    return d;
+    return [ parseTime(d.date), +d.close ];
 
 }, function ( error, data ) {
 
@@ -18,13 +16,18 @@ d3.tsv('data/apple_stock.tsv', function ( d ) {
         .width(width)
         .x_axis(d3.axisBottom())
         .y_axis(d3.axisLeft())
-        .x(function ( d ) { return d.date; })
-        .y(function ( d ) { return d.close; })
         .x_scale(d3.scaleTime());
 
     c.scatter()
-        .data(data)
-        .attr('r', 1.5);
+        .data(data.slice(0,25))
+        .attr('r', function ( d ) { return 4.5 + Math.pow(d[1]/100.0, 20); })
+        .attr('fill', 'steelblue')
+        .attr('fill-opacity', 0.85)
+        .attr('stroke', 'black')
+        .attr('stroke-opacity', 0.45)
+        .attr('stroke-width', 1.5)
+        .attr('stroke-dasharray', '10,4')
+        .hover(true);
 
     d3.select('#chart')
         .call(c);

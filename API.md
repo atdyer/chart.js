@@ -102,6 +102,22 @@ This method enables or disables mouse hover functionality. When enabled, hoverin
 
 ### *chart*.**scatter**()
 
+### *scatter*.**attr**()
+
+### *scatter*.**data**()
+
+### *scatter*.**hover**()
+
+### *scatter*.**id**()
+
+### *scatter*.**mouse_in**()
+
+### *scatter*.**mouse_move**()
+
+### *scatter*.**mouse_out**()
+
+### *scatter*.**remove**()
+
 ## Tools
 
 ### *chart*.**linker**()

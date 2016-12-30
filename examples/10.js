@@ -29,7 +29,7 @@ d3.tsv('data/apple_stock.tsv', function ( d ) {
 
     c.scatter()
      .data(data)
-     .radius(1.5);
+     .attr('r', 1.5);
 
     d3.select('#chart')
       .call( c );

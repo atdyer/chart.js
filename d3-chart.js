@@ -358,10 +358,12 @@ function chart() {
     _chart.scatter = function ( id ) {
 
         var _id = id || _gen_id();
-        var _color = _next_color();
         var _data = [];
-        var _radius = 1.0;
         var _dots;
+        var _attributes = d3.map();
+
+        _attributes.set('fill', _next_color());
+        _attributes.set('r', 1.0);
 
         // Hover stuff
         var _dot;
@@ -392,24 +394,28 @@ function chart() {
                 .style('display', 'none')
                 .merge(_dot);
 
-            _dots.attr('r', _radius)
+            _dots
                 .attr('cx', function ( d ) {
                     return _X(d);
                 })
                 .attr('cy', function ( d ) {
                     return _Y(d);
-                })
-                .attr('fill', _color);
+                });
 
-            _dot.attr('r', 3)
-                .attr('fill', _color);
+            _attributes.each( function ( _value, _attr) {
+                _dots.attr(_attr, _value);
+            });
+
+            _dot.attr('fill', _attributes.get('fill'));
 
         }
 
-        _scatter.color = function ( _ ) {
-            if ( !arguments.length ) return _color;
-            _color = _;
-            return _scatter;
+        _scatter.attr = function ( _ ) {
+            if ( arguments.length === 1 ) return _attributes.get( _ );
+            if ( arguments.length === 2 ) {
+                _attributes.set( arguments[0], arguments[1] );
+                return _scatter;
+            }
         };
 
         _scatter.data = function ( _ ) {
@@ -443,6 +449,15 @@ function chart() {
             if ( d ) {
                 _dot.attr('cx', _X(d))
                     .attr('cy', _Y(d));
+
+                var radius = _attributes.get('r');
+                if ( typeof radius === 'function' ) {
+                    radius = radius(d) + 2;
+                } else {
+                    radius = radius + 2;
+                }
+
+                _dot.attr('r', radius);
             }
 
             if ( typeof _hover === 'function' ) {
@@ -457,12 +472,6 @@ function chart() {
 
         _scatter.mouse_out = function () {
             _dot.style('display', 'none');
-        };
-
-        _scatter.radius = function ( _ ) {
-            if ( !arguments.length ) return _radius;
-            _radius = _;
-            return _scatter;
         };
 
         _scatter.remove = function () {

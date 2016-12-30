@@ -56,7 +56,7 @@ d3.tsv('data/cities.tsv', type, function ( error, data ) {
 
     c.scatter()
         .data(cities[ 0 ].values)
-        .radius(1.5)
+        .attr('r', 1.5)
         .hover(function ( d ) {
             print_data(d, city1);
         });
