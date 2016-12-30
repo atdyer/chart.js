@@ -123,4 +123,4 @@ This method enables or disables mouse hover functionality. When enabled, hoverin
 
 ## Tools
 
-### *chart*.**linker**()
+### *d3*.*chart*.**linker**()
