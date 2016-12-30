@@ -1,0 +1,43 @@
+{
+  "name": "d3-plot",
+  "version": "0.1.0",
+  "description": "Basic charting for d3. This plugin goes by d3-chart everywhere outside of npm, but the name was taken.",
+  "keywords": [
+    "d3",
+    "d3-module",
+    "d3-chart",
+    "d3-plot",
+    "chart",
+    "plot"
+  ],
+  "license": "BSD-3-Clause",
+  "main": "build/d3-chart.js",
+  "jsnext:main": "index",
+  "homepage": "https://github.com/atdyer/d3-chart",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/atdyer/d3-chart.git"
+  },
+  "scripts": {
+    "pretest": "rm -rf build && mkdir build && rollup -g d3-array:d3,d3-axis:d3,d3-color:d3,d3-format:d3,d3-interpolate:d3,d3-path:d3,d3-scale:d3,d3-selection:d3,d3-shape:d3 -f umd -n d3 -o build/d3-chart.js -- index.js",
+    "test": "tape 'test/**/*-test.js'",
+    "prepublish": "npm run test && uglifyjs build/d3-chart.js -c -m -o build/d3-chart.min.js",
+    "postpublish": "zip -j build/d3-chart.zip -- LICENSE README.md build/d3-chart.js build/d3-chart.min.js"
+  },
+  "devDependencies": {
+    "rollup": "0.27",
+    "tape": "4",
+    "uglify-js": "2"
+  },
+  "dependencies": {
+    "d3-array": "^1.0.2",
+    "d3-axis": "^1.0.4",
+    "d3-color": "^1.0.2",
+    "d3-format": "^1.0.2",
+    "d3-interpolate": "^1.1.2",
+    "d3-path": "^1.0.3",
+    "d3-scale": "^1.0.4",
+    "d3-selection": "^1.0.3",
+    "d3-shape": "^1.0.4"
+  }
+}

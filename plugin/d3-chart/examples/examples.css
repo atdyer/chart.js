@@ -1,0 +1,58 @@
+@import url(//fonts.googleapis.com/css?family=PT+Serif|PT+Serif:b|PT+Serif:i|PT+Sans|PT+Sans:b);
+
+body {
+    font-family: "PT Serif", serif;
+    max-width: 960px;
+    margin: 1em auto 4em auto;
+}
+
+body > div {
+    margin-bottom: 2em;
+}
+
+.title {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 2px solid #ccc;
+}
+
+.spread {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+h1,
+h2,
+h3 {
+    text-rendering: optimizeLegibility;
+}
+
+p {
+    line-height: 1.5em;
+}
+
+a {
+    color: steelblue;
+}
+
+a:not(:hover) {
+    text-decoration: none;
+}
+
+pre,
+code {
+    font-family: "Menlo", monospace;
+    line-height: normal;
+}
+
+pre {
+    background: #ffffff;
+    border-left: solid 2px #ccc;
+    padding-left: 24px !important;
+    margin: 2em 0 2em 0;
+    max-width: 960px;
+    overflow-x: auto;
+}

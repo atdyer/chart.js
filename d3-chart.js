@@ -959,3 +959,5 @@ chart.linker = function () {
     return _linker;
 
 };
+
+export {chart};
