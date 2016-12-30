@@ -24,7 +24,7 @@ d3.tsv('data/apple_stock.tsv', function ( d ) {
 
     c.line()
         .data(data)
-        .thickness(1.5);
+        .attr('stroke-width', 1.5);
 
     d3.select('#chart')
         .call(c);

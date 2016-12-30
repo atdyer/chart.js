@@ -111,9 +111,11 @@ function chart() {
     _chart.area = function ( id ) {
 
         var _id = id || _gen_id();
-        var _color = _next_color();
         var _data = [];
         var _path;
+        var _attributes = d3.map();
+
+        _attributes.set( 'fill', _next_color() );
 
         var _hover = false;
         var _line;
@@ -145,20 +147,25 @@ function chart() {
                        .style('display', 'none')
                        .merge(_line);
 
-            _path.attr('fill', _color)
-                .attr('d', function ( d ) {
+            _path.attr('d', function ( d ) {
                     return area(d.data());
                 });
 
-            _line.style('stroke', d3.color(_color).darker())
+            _attributes.each( function ( _value, _attr ) {
+                _path.attr(_attr, _value);
+            });
+
+            _line.style('stroke', d3.color(_attributes.get('fill')).darker())
                  .style('shape-rendering', 'crispEdges');
 
         }
 
-        _area.color = function ( _ ) {
-            if ( !arguments.length ) return _color;
-            _color = _;
-            return _area;
+        _area.attr = function ( _ ) {
+            if ( arguments.length === 1 ) return _attributes.get( _ );
+            if ( arguments.length === 2 ) {
+                _attributes.set( arguments[0], arguments[1] );
+                return _area;
+            }
         };
 
         _area.data = function ( _ ) {
@@ -208,6 +215,15 @@ function chart() {
 
         _area.mouse_out = function () {
             _line.style('display', 'none');
+        };
+
+        _area.remove = function () {
+
+            var i = lines.indexOf(_area);
+            if ( i != -1 ) {
+                lines.splice(i, 1);
+            }
+
         };
 
         areas.push( _area );
@@ -271,7 +287,7 @@ function chart() {
         }
 
         _line.attr = function ( _ ) {
-            if ( arguments.length === 1 ) return _attributes[ _ ];
+            if ( arguments.length === 1 ) return _attributes.get( _ );
             if ( arguments.length === 2 ) {
                 _attributes.set( arguments[0], arguments[1] );
                 return _line;

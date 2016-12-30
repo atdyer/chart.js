@@ -45,12 +45,12 @@ d3.tsv("data/stocks.tsv", type, function ( error, data ) {
 
             c.area()
                 .data(d.values)
-                .color( '#e7e7e7' );
+                .attr('fill', '#e7e7e7');
 
             c.line()
                 .data(d.values)
-                .thickness(1.5)
-                .color( '#666' )
+                .attr('stroke-width', 1.5)
+                .attr('stroke', '#666')
                 .hover(true);
 
             linker.link(c);

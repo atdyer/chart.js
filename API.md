@@ -55,11 +55,30 @@ Returns the outer width of the chart. Internally, the width is maintained accord
 
 ### *chart*.**y_scale**()
 
+## Areas
+
+### *chart*.**area**()
+
+### *area*.**attr**()
+
+### *area*.**data**()
+
+### *area*.**hover**()
+
+### *area*.**id**()
+
+### *area*.**mouse_in**()
+
+### *area*.**mouse_move**()
+
+### *area*.**mouse_out**()
+
+### *area*.**remove**()
+
+
 ## Lines
 
 ### *chart*.**line**()
-
-### *line*.**hover**( *option* )
 
 ### *line*.**attr**()
 
