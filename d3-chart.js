@@ -218,10 +218,13 @@ function chart() {
     _chart.line = function ( id ) {
 
         var _id = id || _gen_id();
-        var _color = _next_color();
         var _data = [];
-        var _thickness = 1.0;
         var _path;
+        var _attributes = d3.map();
+
+        // Defaults
+        _attributes.set( 'stroke', _next_color() );
+        _attributes.set( 'stroke-width', 1.0 );
 
         // Hover stuff
         var _dot;
@@ -254,21 +257,25 @@ function chart() {
                 .merge(_dot);
 
             _path.attr('fill', 'none')
-                .attr('stroke', _color)
-                .attr('stroke-width', _thickness)
                 .attr('d', function ( d ) {
                     return line(d.data());
                 });
 
+            _attributes.each( function ( _value, _attr ) {
+                _path.attr(_attr, _value);
+            });
+
             _dot.attr('r', 3)
-                .attr('fill', _color);
+                .attr('fill', _attributes.get('stroke'));
 
         }
 
-        _line.color = function ( _ ) {
-            if ( !arguments.length ) return _color;
-            _color = _;
-            return _line;
+        _line.attr = function ( _ ) {
+            if ( arguments.length === 1 ) return _attributes[ _ ];
+            if ( arguments.length === 2 ) {
+                _attributes.set( arguments[0], arguments[1] );
+                return _line;
+            }
         };
 
         _line.data = function ( _ ) {
@@ -325,12 +332,6 @@ function chart() {
                 lines.splice(i, 1);
             }
 
-        };
-
-        _line.thickness = function ( _ ) {
-            if ( !arguments.length ) return _thickness;
-            _thickness = _;
-            return _line;
         };
 
         lines.push(_line);
