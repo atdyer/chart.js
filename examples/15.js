@@ -12,13 +12,13 @@ d3.tsv('data/apple_stock.tsv', function ( d ) {
         .node()
         .getBoundingClientRect().width;
 
-    var c = chart()
+    var chart = d3.chart()
         .width(width)
         .x_axis(d3.axisBottom())
         .y_axis(d3.axisLeft())
         .x_scale(d3.scaleTime());
 
-    c.scatter()
+    chart.scatter()
         .data(data.slice(0,25))
         .attr('r', function ( d ) { return 4.5 + Math.pow(d[1]/100.0, 20); })
         .attr('fill', 'steelblue')
@@ -30,6 +30,6 @@ d3.tsv('data/apple_stock.tsv', function ( d ) {
         .hover(true);
 
     d3.select('#chart')
-        .call(c);
+        .call(chart);
 
 });

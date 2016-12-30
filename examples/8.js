@@ -1,5 +1,5 @@
 var parseDate = d3.timeParse("%b %Y");
-var linker = chart.linker();
+var linker = d3.chart.linker();
 
 d3.tsv("data/stocks.tsv", type, function ( error, data ) {
 
@@ -33,7 +33,7 @@ d3.tsv("data/stocks.tsv", type, function ( error, data ) {
 
             var range = [ 0, d3.max(d.values, function(d) { return d.price; }) ];
 
-            var c = chart()
+            var chart = d3.chart()
                 .width(width)
                 .height(69)
                 .margin({top: 8, right: 10, bottom: 2, left: 10})
@@ -43,23 +43,23 @@ d3.tsv("data/stocks.tsv", type, function ( error, data ) {
                 .x(function ( d ) { return d.date; })
                 .y(function ( d ) { return d.price; });
 
-            c.area()
+            chart.area()
                 .data(d.values)
                 .attr('fill', '#e7e7e7');
 
-            c.line()
+            chart.line()
                 .data(d.values)
                 .attr('stroke-width', 1.5)
                 .attr('stroke', '#666')
                 .hover(true);
 
-            linker.link(c);
+            linker.link(chart);
 
-            var stamp = c(d3.select(this));
+            var stamp = chart(d3.select(this));
 
             stamp.append('text')
-                .attr('x', c.width() - c.margin().left - c.margin().right - 6)
-                .attr('y', c.height() - c.margin().top - c.margin().bottom - 6 )
+                .attr('x', chart.width() - chart.margin().left - chart.margin().right - 6)
+                .attr('y', chart.height() - chart.margin().top - chart.margin().bottom - 6 )
                 .attr('text-anchor', 'end')
                 .style('font', '10px sans-serif')
                 .text( d.key );

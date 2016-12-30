@@ -19,7 +19,7 @@ d3.tsv('data/cities.tsv', type, function ( error, data ) {
                   .node()
                   .getBoundingClientRect().width;
 
-    var linker = chart.linker();
+    var linker = d3.chart.linker();
     var types = [ 'scatter', 'line', 'area' ];
 
     d3.select('#chart')
@@ -29,7 +29,7 @@ d3.tsv('data/cities.tsv', type, function ( error, data ) {
         .append('div')
         .each( function ( d, i ) {
 
-            var c = chart()
+            var chart = d3.chart()
                 .width(width)
                 .height(height)
                 .x_axis(d3.axisBottom())
@@ -39,15 +39,15 @@ d3.tsv('data/cities.tsv', type, function ( error, data ) {
                 .y(function ( d ) { return d.temperature; });
 
             var p =
-                types[ i ] === 'scatter' ? c.scatter() :
-                types[ i ] === 'line' ? c.line() : c.area();
+                types[ i ] === 'scatter' ? chart.scatter() :
+                types[ i ] === 'line' ? chart.line() : chart.area();
 
             p.data(d.values)
                 .hover(true);
 
-            linker.link(c);
+            linker.link(chart);
 
-            c(d3.select(this));
+            chart(d3.select(this));
 
         });
 

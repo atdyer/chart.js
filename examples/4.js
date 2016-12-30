@@ -46,7 +46,7 @@ d3.tsv('data/cities.tsv', type, function ( error, data ) {
         .node()
         .getBoundingClientRect().width;
 
-    var c = chart()
+    var chart = d3.chart()
         .width(width)
         .x_axis(d3.axisBottom())
         .y_axis(d3.axisLeft())
@@ -54,27 +54,27 @@ d3.tsv('data/cities.tsv', type, function ( error, data ) {
         .x(function ( d ) { return d.date; })
         .y(function ( d ) { return d.temperature; });
 
-    c.scatter()
+    chart.scatter()
         .data(cities[ 0 ].values)
         .attr('r', 1.5)
         .hover(function ( d ) {
             print_data(d, city1);
         });
 
-    c.line()
+    chart.line()
         .data(cities[ 1 ].values)
         .hover(function ( d ) {
             print_data(d, city2);
         });
 
-    c.line()
+    chart.line()
         .data(cities[ 2 ].values)
         .hover(function ( d ) {
             print_data(d, city3);
         });
 
     d3.select('#chart')
-        .call(c);
+        .call(chart);
 
 });
 

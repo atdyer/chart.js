@@ -12,13 +12,13 @@ d3.tsv('data/apple_stock.tsv', function ( d ) {
         .node()
         .getBoundingClientRect().width;
 
-    var c = chart()
+    var chart = d3.chart()
         .width(width)
         .x_axis(d3.axisBottom())
         .y_axis(d3.axisLeft())
         .x_scale(d3.scaleTime());
 
-    c.line()
+    chart.line()
         .data(data.slice(0,25))
         .attr('stroke', 'steelblue')
         .attr('stroke-width', 5.0)
@@ -28,6 +28,6 @@ d3.tsv('data/apple_stock.tsv', function ( d ) {
         .attr('stroke-linejoin', 'round');
 
     d3.select('#chart')
-        .call(c);
+        .call(chart);
 
 });

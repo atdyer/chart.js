@@ -10,14 +10,14 @@ d3.tsv('data/apple_stock.tsv', function ( d ) {
 
     if ( error ) throw error;
 
-    var c = chart()
+    var chart = d3.chart()
         .x_axis(d3.axisBottom())
         .y_axis(d3.axisLeft())
         .x(function ( d ) { return d.date; })
         .y(function ( d ) { return d.close; })
         .x_scale(d3.scaleTime());
 
-    c.line()
+    chart.line()
         .data(data)
         .attr('stroke-width', 1.5)
         .hover(true);
@@ -30,10 +30,10 @@ d3.tsv('data/apple_stock.tsv', function ( d ) {
             .node()
             .getBoundingClientRect().width;
 
-        c.width(width);
+        chart.width(width);
 
         d3.select('#chart')
-            .call(c);
+            .call(chart);
 
     }
 

@@ -14,7 +14,7 @@ d3.tsv('data/apple_stock.tsv', function ( d ) {
         .node()
         .getBoundingClientRect().width;
 
-    var c = chart()
+    var chart = d3.chart()
         .width(width)
         .x_axis(d3.axisBottom())
         .y_axis(d3.axisLeft())
@@ -22,11 +22,11 @@ d3.tsv('data/apple_stock.tsv', function ( d ) {
         .y(function ( d ) { return d.close; })
         .x_scale(d3.scaleTime());
 
-    c.scatter()
+    chart.scatter()
         .data(data)
         .attr('r', 1.5);
 
     d3.select('#chart')
-        .call(c);
+        .call(chart);
 
 });
