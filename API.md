@@ -12,7 +12,7 @@ d3-chart is a small, hackable, d3-esque charting library. It is designed to be u
 
 How to create a chart.
 
-### *d3*.**chart()**
+<a name="chart" href="#chart">#</a> *d3*.**chart()**
 
 ### *chart*.**domain**()
 
