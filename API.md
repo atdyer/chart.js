@@ -12,119 +12,119 @@ d3-chart is a small, hackable, d3-esque charting library. It is designed to be u
 
 How to create a chart.
 
-<a name="chart" href="#chart">#</a> *d3*.**chart()**
+<a name="d3-chart" href="#d3-chart">#</a> *d3*.**chart()**
 
-### *chart*.**domain**()
+<a name="chart-domain" href="#chart-domain">#</a> *chart*.**domain**()
 
-### *chart*.**each**()
+<a name="chart-each" href="#chart-each">#</a> *chart*.**each**()
 
-### *chart*.**height**([*h*])
+<a name="chart-height" href="#chart-height">#</a> *chart*.**height**([*h*])
 
 Returns the outer height of the chart. Internally, the height is maintained according to the [margin convention](http://bl.ocks.org/mbostock/3019563), but the height value returned here will include the top and bottom margins. If *h* is specified, sets the external height of the chart.
 
-### *chart*.**hover**()
+<a name="chart-hover" href="#chart-hover">#</a> *chart*.**hover**()
 
-### *chart*.**id**()
+<a name="chart-id" href="#chart-id">#</a> *chart*.**id**()
 
-### *chart*.**margin**()
+<a name="chart-margin" href="#chart-margin">#</a> *chart*.**margin**()
 
-### *chart*.**mouse_in**()
+<a name="chart-mouse_in" href="#chart-mouse_in">#</a> *chart*.**mouse_in**()
 
-### *chart*.**mouse_out**()
+<a name="chart-mouse_out" href="#chart-mouse_out">#</a> *chart*.**mouse_out**()
 
-### *chart*.**range**()
+<a name="chart-range" href="#chart-range">#</a> *chart*.**range**()
 
-### *chart*.**width**([*w*])
+<a name="chart-width" href="#chart-width">#</a> *chart*.**width**([*w*])
 
 Returns the outer width of the chart. Internally, the width is maintained according to the [margin convention](http://bl.ocks.org/mbostock/3019563), but the width value returned here will include the left and right margins. If *w* is specified, sets the external width of the chart.
 
-### *chart*.**x**()
+<a name="" href="#">#</a> *chart*.**x**()
 
-### *chart*.**x_axis**()
+<a name="" href="#">#</a> *chart*.**x_axis**()
 
-### *chart*.**x_grid**()
+<a name="" href="#">#</a> *chart*.**x_grid**()
 
-### *chart*.**x_label**()
+<a name="" href="#">#</a> *chart*.**x_label**()
 
-### *chart*.**x_location**([*location*])
+<a name="" href="#">#</a> *chart*.**x_location**([*location*])
 
-### *chart*.**x_scale**()
+<a name="" href="#">#</a> *chart*.**x_scale**()
 
-### *chart*.**y**()
+<a name="" href="#">#</a> *chart*.**y**()
 
-### *chart*.**y_axis**()
+<a name="" href="#">#</a> *chart*.**y_axis**()
 
-### *chart*.**y_grid**()
+<a name="" href="#">#</a> *chart*.**y_grid**()
 
-### *chart*.**y_label**()
+<a name="" href="#">#</a> *chart*.**y_label**()
 
-### *chart*.**y_location**([*location*])
+<a name="" href="#">#</a> *chart*.**y_location**([*location*])
 
-### *chart*.**y_scale**()
+<a name="" href="#">#</a> *chart*.**y_scale**()
 
 ## Areas
 
-### *chart*.**area**()
+<a name="" href="#">#</a> *chart*.**area**()
 
-### *area*.**attr**()
+<a name="" href="#">#</a> *area*.**attr**()
 
-### *area*.**data**()
+<a name="" href="#">#</a> *area*.**data**()
 
-### *area*.**hover**()
+<a name="" href="#">#</a> *area*.**hover**()
 
-### *area*.**id**()
+<a name="" href="#">#</a> *area*.**id**()
 
-### *area*.**mouse_in**()
+<a name="" href="#">#</a> *area*.**mouse_in**()
 
-### *area*.**mouse_move**()
+<a name="" href="#">#</a> *area*.**mouse_move**()
 
-### *area*.**mouse_out**()
+<a name="" href="#">#</a> *area*.**mouse_out**()
 
-### *area*.**remove**()
+<a name="" href="#">#</a> *area*.**remove**()
 
 
 ## Lines
 
-### *chart*.**line**()
+<a name="" href="#">#</a> *chart*.**line**()
 
-### *line*.**attr**()
+<a name="" href="#">#</a> *line*.**attr**()
 
-### *line*.**data**()
+<a name="" href="#">#</a> *line*.**data**()
 
-### *line*.**hover**()
+<a name="" href="#">#</a> *line*.**hover**()
 
-### *line*.**id**()
+<a name="" href="#">#</a> *line*.**id**()
 
-### *line*.**mouse_in**()
+<a name="" href="#">#</a> *line*.**mouse_in**()
 
-### *line*.**mouse_move**()
+<a name="" href="#">#</a> *line*.**mouse_move**()
 
-### *line*.**mouse_out**()
+<a name="" href="#">#</a> *line*.**mouse_out**()
 
-### *line*.**remove**()
+<a name="" href="#">#</a> *line*.**remove**()
 
 This method enables or disables mouse hover functionality. When enabled, hovering the mouse over the chart will cause a dot to be drawn on top of the data point closest to the x-coordinate of the mouse. If _option_ is a truthy value, hover will be enabled. If _option_ is a falsey value, hover will be disabled, which is the default. If _option_ is a function, hover will be enabled and the function will be called each time the x-coordinate of the mouse changes. The function will be passed a single argument, a struct containing the ID of the line, and the x- and y- values of the data point that is currently highlighted.
 
 ## Scatters
 
-### *chart*.**scatter**()
+<a name="" href="#">#</a> *chart*.**scatter**()
 
-### *scatter*.**attr**()
+<a name="" href="#">#</a> *scatter*.**attr**()
 
-### *scatter*.**data**()
+<a name="" href="#">#</a> *scatter*.**data**()
 
-### *scatter*.**hover**()
+<a name="" href="#">#</a> *scatter*.**hover**()
 
-### *scatter*.**id**()
+<a name="" href="#">#</a> *scatter*.**id**()
 
-### *scatter*.**mouse_in**()
+<a name="" href="#">#</a> *scatter*.**mouse_in**()
 
-### *scatter*.**mouse_move**()
+<a name="" href="#">#</a> *scatter*.**mouse_move**()
 
-### *scatter*.**mouse_out**()
+<a name="" href="#">#</a> *scatter*.**mouse_out**()
 
-### *scatter*.**remove**()
+<a name="" href="#">#</a> *scatter*.**remove**()
 
 ## Tools
 
-### *d3*.*chart*.**linker**()
+<a name="" href="#">#</a> *d3*.*chart*.**linker**()
