@@ -15,9 +15,7 @@ d3.tsv('data/cities.tsv', type, function ( error, data ) {
         });
 
     var height = 175;
-    var width = d3.select('body')
-                  .node()
-                  .getBoundingClientRect().width;
+    var width = parseInt(d3.select('#chart').style('width'));
 
     var linker = d3.chart.linker();
     var types = [ 'scatter', 'line', 'area' ];

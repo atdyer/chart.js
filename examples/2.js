@@ -10,9 +10,7 @@ d3.tsv('data/apple_stock.tsv', function ( d ) {
 
     if ( error ) throw error;
 
-    var width = d3.select('body')
-        .node()
-        .getBoundingClientRect().width;
+    var width = parseInt(d3.select('#chart').style('width'));
 
     var chart = d3.chart()
         .width(width)

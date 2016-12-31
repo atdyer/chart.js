@@ -26,11 +26,7 @@ d3.tsv('data/apple_stock.tsv', function ( d ) {
 
     function resize() {
 
-        var width = d3.select('body')
-            .node()
-            .getBoundingClientRect().width;
-
-        chart.width(width);
+        chart.width( parseInt( d3.select('#chart').style('width') ) );
 
         d3.select('#chart')
             .call(chart);

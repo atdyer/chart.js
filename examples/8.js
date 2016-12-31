@@ -20,9 +20,7 @@ d3.tsv("data/stocks.tsv", type, function ( error, data ) {
         })
     ];
 
-    var width = d3.select('body')
-        .node()
-        .getBoundingClientRect().width;
+    var width = parseInt(d3.select('#chart').style('width'));
 
     d3.select("#chart")
         .selectAll("div")
