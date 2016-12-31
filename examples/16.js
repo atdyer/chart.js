@@ -10,13 +10,15 @@ d3.tsv('data/apple_stock.tsv', function ( d ) {
 
     if ( error ) throw error;
 
-    data = data.slice(0,25);
+    data = data.slice(0,50);
 
     var chart = d3.chart()
         .width(width)
         .x_axis(d3.axisBottom())
         .y_axis(d3.axisLeft())
-        .x_scale(d3.scaleTime());
+        .x_scale(d3.scaleTime())
+        .domain(d3.extent(data, function ( d ) { return d[0]; }))
+        .range(d3.extent(data, function ( d ) { return d[1]; }));
 
     d3.select('#addarea').on('click', function () {
 
