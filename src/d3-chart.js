@@ -17,6 +17,7 @@ function chart() {
     var x_axis;     // Defaults to d3.axisBottom()
     var x_location; // Defaults to 'bottom'
     var x_grid;     // Defaults to none
+    var x_label;    // Defaults to none
 
     // y-axis
     var y_value = function ( d ) {
@@ -26,6 +27,7 @@ function chart() {
     var y_axis;     // Defaults to d3.axisLeft()
     var y_location; // Defaults to 'left'
     var y_grid;     // Defaults to none
+    var y_label;    // Defaults to none
 
     // Domain and range
     var domain;
@@ -571,6 +573,12 @@ function chart() {
         return _chart;
     };
 
+    _chart.x_label = function ( _ ) {
+        if ( !arguments.length ) return x_label;
+        x_label = _;
+        return _chart;
+    };
+
     _chart.x_location = function ( _ ) {
         if ( !arguments.length ) return x_location;
         x_location = _;
@@ -598,6 +606,12 @@ function chart() {
     _chart.y_grid = function ( _ ) {
         if ( !arguments.length ) return y_grid;
         y_grid = _;
+        return _chart;
+    };
+
+    _chart.y_label = function ( _ ) {
+        if ( !arguments.length ) return y_label;
+        y_label = _;
         return _chart;
     };
 
@@ -676,6 +690,37 @@ function chart() {
                 .style('stroke', '#777')
                 .style('stroke-opacity', 0.35)
                 .style('stroke-dasharray', y_grid);
+
+        }
+
+        if ( x_label ) {
+
+            var x_selection = g.selectAll('.x.label').data([ x_label ]);
+
+            x_selection.enter()
+                .append('text')
+                .attr('class', 'x label')
+                .merge(x_selection)
+                .style('font', '10px sans-serif')
+                .style('text-anchor', 'end')
+                .attr('x', width)
+                .attr('y', _calculate_x_axis_location(x_location) - 6)
+                .text(x_label);
+        }
+
+        if (  y_label ) {
+
+            var y_selection = g.selectAll('.y.label').data([ y_label ]);
+
+            y_selection.enter()
+                .append('text')
+                .attr('class', 'y label')
+                .merge(y_selection)
+                .style('font', '10px sans-serif')
+                .style('text-anchor', 'end')
+                .attr('y', _calculate_y_axis_location(y_location) + 14)
+                .attr('transform', 'rotate(-90)')
+                .text(y_label);
 
         }
 
