@@ -36,10 +36,11 @@ p {
 
 a {
     color: steelblue;
+    text-decoration: none;
 }
 
-a:not(:hover) {
-    text-decoration: none;
+a:hover {
+    color: #2f4c78;
 }
 
 pre,
