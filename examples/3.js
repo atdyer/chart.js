@@ -28,9 +28,8 @@ d3.tsv('data/cities.tsv', type, function ( error, data ) {
         .data(cities[ 0 ].values)
         .hover(true);
 
-    chart.scatter()
+    chart.line()
         .data(cities[ 1 ].values)
-        .attr('r', 1.5)
         .hover(true);
 
     chart.line()

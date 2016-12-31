@@ -91,7 +91,9 @@ Returns the outer width of the chart. Internally, the width is maintained accord
 
 <a name="line-data" href="#line-data">#</a> *line*.**data**()
 
-<a name="line-hover" href="#line-hover">#</a> *line*.**hover**()
+<a name="line-hover" href="#line-hover">#</a> *line*.**hover**([*option*])
+
+This method enables or disables mouse hover functionality. When enabled, hovering the mouse over the chart will cause a dot to be drawn on top of the data point closest to the x-coordinate of the mouse. If _option_ is a truthy value, hover will be enabled. If _option_ is a falsey value, hover will be disabled, which is the default. If _option_ is a function, hover will be enabled and the function will be called each time the x-coordinate of the mouse changes. The function will be passed a single argument, a struct containing the ID of the line, and the x- and y- values of the data point that is currently highlighted.
 
 <a name="line-id" href="#line-id">#</a> *line*.**id**()
 
@@ -102,8 +104,6 @@ Returns the outer width of the chart. Internally, the width is maintained accord
 <a name="line-mouse_out" href="#line-mouse_out">#</a> *line*.**mouse_out**()
 
 <a name="line-remove" href="#line-remove">#</a> *line*.**remove**()
-
-This method enables or disables mouse hover functionality. When enabled, hovering the mouse over the chart will cause a dot to be drawn on top of the data point closest to the x-coordinate of the mouse. If _option_ is a truthy value, hover will be enabled. If _option_ is a falsey value, hover will be disabled, which is the default. If _option_ is a function, hover will be enabled and the function will be called each time the x-coordinate of the mouse changes. The function will be passed a single argument, a struct containing the ID of the line, and the x- and y- values of the data point that is currently highlighted.
 
 ## Scatters
 

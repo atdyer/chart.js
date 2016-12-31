@@ -22,12 +22,14 @@
     <div>
         <p>
             In order to connect hover events between multiple charts, a convenient <code>linker</code> function is
-            provided. A linker is created by calling <code>chart.linker()</code>; note that an actual chart is not
-            needed before creating the linker, simply call the function directly.
-            The provided linker will honor the <code>hover</code>
+            provided. A linker is created by calling
+            <a class="api" href="d3-chart-linker"><code>d3.chart.linker()</code></a>
+            . The provided linker will honor the
+            <a class="api" href="line-hover"><code>.hover()</code></a>
             property of each plottable of every linked chart (i.e. the hover action will only occur if it has been
-            enabled with <code>.hover(true)</code>.
-            Of course, if you don't want to use the provided <code>linker</code>, you can always link
+            enabled with
+            <a class="api" href="line-hover"><code>.hover(true)</code></a>
+            . Of course, if you don't want to use the provided <code>linker</code>, you can always link
             events between charts using chart or plottable events.
         </p>
     </div>
