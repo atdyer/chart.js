@@ -219,9 +219,9 @@ function chart() {
 
         _area.remove = function () {
 
-            var i = lines.indexOf(_area);
+            var i = areas.indexOf(_area);
             if ( i != -1 ) {
-                lines.splice(i, 1);
+                areas.splice(i, 1);
             }
 
         };
@@ -476,7 +476,7 @@ function chart() {
 
         _scatter.remove = function () {
 
-            var i = scatters.indexOf(_line);
+            var i = scatters.indexOf(_scatter);
             if ( i != -1 ) {
                 scatters.splice(i, 1);
             }
