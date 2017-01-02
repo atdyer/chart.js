@@ -21,9 +21,10 @@
     <div id="chart"></div>
     <div>
         <p>
-            This example shows how to resize a chart. Try resizing the window to see how the chart responds. In keeping
-            with the 'chart as a stamp' line of thinking, when the page resizes, the width of the stamp will need to be
-            resized as well. Once the stamp has been updated, reapply the stamp to the page to make the update.
+            This example shows how to resize a chart. Try resizing the window to see how the chart responds. The
+            <code>d3.chart()</code> method returns a configurable function. This function only knows how to draw a
+            chart, not where. If the configuration of this function ever changes, the chart needs to be redrawn
+            by calling the configurable function in order to reflect the changes on the screen.
         </p>
     </div>
 
