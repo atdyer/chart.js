@@ -10,7 +10,30 @@ d3-chart is a small, hackable, d3-esque charting library. It is designed to be u
 
 ## Charts
 
-How to create a chart.
+Charts are created using the d3-chart plugin by calling the <a href="#d3-chart">d3.chart()</a> method. This method returns a configurable function, as described in Mike Bostock's post on [reusable charts](https://bost.ocks.org/mike/chart/). The chart is then configured using getter-setter methods provided by the configurable function. For example:
+
+```javascript
+var chart = d3.chart()
+    .width(640)
+    .height(400);
+```
+
+This creates a chart with a width of 640 pixels and a height of 400 pixels. Well...sort of. It's not actually creating anything visible on the screen. What it's actually creating is a function that knows *how* to draw a chart with a width of 640 pixels and a height of 400 pixels.
+
+So now that we've got a function that knows *how* to draw the chart we want, we need to tell it *where* to draw the chart. This is done by calling the function we've created on a d3 selection.
+
+```javascript
+var chart = d3.chart()
+    .width(640)
+    .height(400);
+
+d3.select('#chart')
+    .call(chart);
+```
+
+This will draw the chart we've configured in the element with ID `chart`. It's important to understand that the chart will only ever be drawn when the configurable function is called. For example, if you were to tack on a `chart.width(400)` to the end of this code, the width of the chart that we've just drawn would not change unless you also included another call to `chart`. An example of a typical update pattern can be found in the [Resizing a Chart](https://atdyer.github.io/d3-chart/examples/6.html) example.
+
+### Chart API
 
 <a name="d3-chart" href="#d3-chart">#</a> *d3*.**chart()**
 
