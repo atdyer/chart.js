@@ -856,6 +856,19 @@ function chart() {
 
     }
 
+    function _gen_id() {
+
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+
+        return 'a' + s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+
+    }
+
     function _calculate_x_axis_location( value ) {
 
         if ( value === 'top' ) {
@@ -897,19 +910,6 @@ function chart() {
         if ( x_scale( value ) ) return x_scale( value );
 
         return x_scale.range()[0];
-
-    }
-
-    function _gen_id() {
-
-        function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-
-        return 'a' + s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-            s4() + '-' + s4() + s4() + s4();
 
     }
 
