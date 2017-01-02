@@ -115,6 +115,7 @@ function chart() {
         var _id = id || _gen_id();
         var _data = [];
         var _path;
+        var _curve;
         var _attributes = d3.map();
 
         _attributes.set( 'fill', _next_color() );
@@ -149,9 +150,16 @@ function chart() {
                        .style('display', 'none')
                        .merge(_line);
 
+            if ( _curve ) {
+                var _old_curve = area.curve();
+                area.curve(_curve);
+            }
+
             _path.attr('d', function ( d ) {
                     return area(d.data());
                 });
+
+            if ( _old_curve ) area.curve( _old_curve );
 
             _attributes.each( function ( _value, _attr ) {
                 _path.attr(_attr, _value);
@@ -168,6 +176,12 @@ function chart() {
                 _attributes.set( arguments[0], arguments[1] );
                 return _area;
             }
+        };
+
+        _area.curve = function ( _ ) {
+            if ( !arguments.length ) return _curve;
+            _curve = _;
+            return _area;
         };
 
         _area.data = function ( _ ) {
@@ -238,6 +252,7 @@ function chart() {
         var _id = id || _gen_id();
         var _data = [];
         var _path;
+        var _curve;
         var _attributes = d3.map();
 
         // Defaults
@@ -274,10 +289,17 @@ function chart() {
                 .style('display', 'none')
                 .merge(_dot);
 
+            if ( _curve ) {
+                var _old_curve = line.curve();
+                line.curve( _curve );
+            }
+
             _path.attr('fill', 'none')
                 .attr('d', function ( d ) {
                     return line(d.data());
                 });
+
+            if ( _old_curve ) line.curve( _old_curve );
 
             _attributes.each( function ( _value, _attr ) {
                 _path.attr(_attr, _value);
@@ -294,6 +316,12 @@ function chart() {
                 _attributes.set( arguments[0], arguments[1] );
                 return _line;
             }
+        };
+
+        _line.curve = function ( _ ) {
+            if ( !arguments.length ) return _curve;
+            _curve = _;
+            return _line;
         };
 
         _line.data = function ( _ ) {

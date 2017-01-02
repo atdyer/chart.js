@@ -2,10 +2,10 @@
 
 d3-chart is a small, hackable, d3-esque charting library. It is designed to be used in concert with D3 4.0. It began as an extension to the time-series-chart.js example from Mike Bostock's post on [reusable charts](https://bost.ocks.org/mike/chart/). As I was building charts for various projects, I often found myself starting with that code and adding functionality or hacking away at it to fit my needs, so I decided to start building my own version that would accumulate these new features. My hope is that this plugin will provide enough functionality to get charts 90% of the way there, and that the documentation and examples will be good enough that the last 10% is easily obtainable by making simple changes to the code as needed.
 
-* [Charts](#charts) - Start by creating a chart
+* [Charts](#charts) - Creating and drawing a chart
 * [Areas](#areas) - Plotting of areas
 * [Lines](#lines) - Plotting of lines
-* [Scatters](#scatters) - Plotting of scatter sets
+* [Scatters](#scatters) - Plotting of scatters
 * [Tools](#tools) - Useful tools that work with charts
 
 ## Charts
@@ -32,6 +32,8 @@ d3.select('#chart')
 ```
 
 This will draw the chart we've configured in the element with ID `chart`. It's important to understand that the chart will only ever be drawn when the configurable function is called. For example, if you were to tack on a `chart.width(400)` to the end of this code, the width of the chart that we've just drawn would not change unless you also included another call to `chart`. An example of a typical update pattern can be found in the [Resizing a Chart](https://atdyer.github.io/d3-chart/examples/6.html) example.
+
+Plottables (i.e. lines, scatters, areas, etc.) are added to the chart as part of the configuration, so updates to the data will also need to be followed by a call to the configurable chart function. Documentation on how to add an configure plottables can be found in their sections of the API documentation.
 
 ### Chart API
 
@@ -91,6 +93,8 @@ Returns the outer width of the chart. Internally, the width is maintained accord
 
 <a name="area-attr" href="#area-attr">#</a> *area*.**attr**()
 
+<a name="area-curve" href="#area-curve">#</a> *area*.**curve**()
+
 <a name="area-data" href="#area-data">#</a> *area*.**data**()
 
 <a name="area-hover" href="#area-hover">#</a> *area*.**hover**()
@@ -111,6 +115,8 @@ Returns the outer width of the chart. Internally, the width is maintained accord
 <a name="chart-line" href="#chart-line">#</a> *chart*.**line**()
 
 <a name="line-attr" href="#line-attr">#</a> *line*.**attr**()
+
+<a name="line-curve" href="#line-curve">#</a> *line*.**curve**()
 
 <a name="line-data" href="#line-data">#</a> *line*.**data**()
 
