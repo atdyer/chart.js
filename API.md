@@ -109,6 +109,10 @@ Returns the outer width of the chart. Internally, the width is maintained accord
 
 <a name="area-remove" href="#area-remove">#</a> *area*.**remove**()
 
+<a name="area-x" href="#area-x">#</a> *area*.**x**()
+
+<a name="area-y" href="#area-y">#</a> *area*.**y**()
+
 
 ## Lines
 
@@ -134,6 +138,10 @@ This method enables or disables mouse hover functionality. When enabled, hoverin
 
 <a name="line-remove" href="#line-remove">#</a> *line*.**remove**()
 
+<a name="line-x" href="#area-x">#</a> *line*.**x**()
+
+<a name="line-y" href="#area-y">#</a> *line*.**y**()
+
 ## Scatters
 
 <a name="chart-scatter" href="#chart-scatter">#</a> *chart*.**scatter**()
@@ -153,6 +161,10 @@ This method enables or disables mouse hover functionality. When enabled, hoverin
 <a name="scatter-mouse_out" href="#scatter-mouse_out">#</a> *scatter*.**mouse_out**()
 
 <a name="scatter-remove" href="#scatter-remove">#</a> *scatter*.**remove**()
+
+<a name="scatter-x" href="#scatter-x">#</a> *scatter*.**x**()
+
+<a name="scatter-y" href="#scatter-y">#</a> *scatter*.**y**()
 
 ## Tools
 

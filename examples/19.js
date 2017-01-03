@@ -21,7 +21,8 @@ d3.tsv('data/apple_stock.tsv', function ( d ) {
     chart.line()
         .data(data)
         .x(function ( d ) { return d.date; })
-        .y(function ( d ) { return d.close; });
+        .y(function ( d ) { return d.close; })
+        .attr('stroke-width', 1.5);
 
     d3.select('#chart')
         .call(chart);
