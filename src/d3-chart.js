@@ -121,9 +121,9 @@ function chart() {
 
         function _area( group ) {
 
-            _x = _x || x;
-            _y0 = _y0 || function () { return 0 };
-            _y1 = _y1 || y;
+            _x = _area.x();
+            _y0 = _area.y0();
+            _y1 = _area.y1();
 
             var area = d3.area()
                 .x( function ( d ) { return x_scale(_x(d)); } )
@@ -251,7 +251,7 @@ function chart() {
         };
 
         _area.y0 = function ( _ ) {
-            if ( !arguments.length ) return _y0 || function () { return 0; };
+            if ( !arguments.length ) return _y0 || _constant( d3.min( _area.data(), _area.y1() ) );
             _y0 = typeof _ === 'function' ? _ : _constant(+_);
             return _area;
         };
@@ -290,8 +290,8 @@ function chart() {
 
         function _line( group ) {
 
-            _x = _x || x;
-            _y = _y || y;
+            _x = _line.x();
+            _y = _line.y();
 
             var line = d3.line()
                 .x( function ( d ) { return x_scale(_x(d)); } )
@@ -446,8 +446,8 @@ function chart() {
 
         function _scatter( group ) {
 
-            _x = _x || x;
-            _y = _y || y;
+            _x = _scatter.x();
+            _y = _scatter.y();
 
             group.attr('id', _id);
 

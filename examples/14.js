@@ -18,12 +18,12 @@ d3.tsv('data/apple_stock.tsv', function ( d ) {
 
     chart.area()
         .data(data.slice(0,25))
+        .y0(function ( d ) { return d[1]-5;})
         .attr('fill', 'steelblue')
         .attr('fill-opacity', 0.85)
-        .attr('stroke-width', 0.85)
+        .attr('stroke-width', 2.0)
         .attr('stroke', 'black')
-        .attr('stroke-opacity', 0.85)
-        .attr('stroke-dasharray', '7,5');
+        .attr('stroke-dasharray', '20,10');
 
     d3.select('#chart')
         .call(chart);

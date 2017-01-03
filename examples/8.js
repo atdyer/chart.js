@@ -43,6 +43,7 @@ d3.tsv("data/stocks.tsv", type, function ( error, data ) {
 
             chart.area()
                 .data(d.values)
+                .y0(0)
                 .attr('fill', '#e7e7e7');
 
             chart.line()

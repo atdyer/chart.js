@@ -113,11 +113,11 @@ Returns the outer width of the chart. Internally, the width is maintained accord
 
 <a name="area-y0" href="#area-y0">#</a> *area*.**y0**([*y*])
 
-If *y* is specified, sets the y0 accessor to the specified function or number and returns this area. If *y* is not specified, returns the current y0 accessor, which defaults to:
+If *y* is specified, sets the y0 accessor to the specified function or number and returns this area. If *y* is not specified, returns the current y0 accessor, which defaults to the minimum y1 value of the data:
 
 ```javascript
 function y() {
-    return 0;
+    return d3.min( area.data(), area.y1() );
 }
 ```
 
