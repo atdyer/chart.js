@@ -107,7 +107,8 @@ function chart() {
         var _path;
         var _curve;
         var _x;
-        var _y;
+        var _y0;
+        var _y1;
 
         var _attributes = d3.map();
         _attributes.set( 'fill', _next_color() );
@@ -120,16 +121,14 @@ function chart() {
 
         function _area( group ) {
 
-            console.log( _x );
-            console.log( _y );
-
             _x = _x || x;
-            _y = _y || y;
+            _y0 = _y0 || function () { return 0 };
+            _y1 = _y1 || y;
 
             var area = d3.area()
                 .x( function ( d ) { return x_scale(_x(d)); } )
-                .y0( height )
-                .y1( function ( d ) { return y_scale(_y(d)); } );
+                .y0( function ( d ) { return y_scale(_y0(d)); } )
+                .y1( function ( d ) { return y_scale(_y1(d)); } );
 
             group.attr('id', _id);
 
@@ -217,15 +216,16 @@ function chart() {
             if ( d ) {
                 _line.attr('x1', x_scale(_area.x()(d)))
                     .attr('x2', x_scale(_area.x()(d)))
-                    .attr('y1', y_scale.range()[0])
-                    .attr('y2', y_scale(_area.y()(d)));
+                    .attr('y1', y_scale(_area.y0()(d)))
+                    .attr('y2', y_scale(_area.y1()(d)));
             }
 
             if ( typeof _hover === 'function' ) {
                 _hover({
                     id: _id,
                     x: _area.x()(d),
-                    y: _area.y()(d)
+                    y0: _area.y0()(d),
+                    y1: _area.y1()(d)
                 });
             }
 
@@ -250,9 +250,15 @@ function chart() {
             return _area;
         };
 
-        _area.y = function ( _ ) {
-            if ( !arguments.length ) return _y || y;
-            _y = _;
+        _area.y0 = function ( _ ) {
+            if ( !arguments.length ) return _y0 || function () { return 0; };
+            _y0 = typeof _ === 'function' ? _ : _constant(+_);
+            return _area;
+        };
+
+        _area.y1 = function ( _ ) {
+            if ( !arguments.length ) return _y1 || y;
+            _y1 = typeof _ === 'function' ? _ : _constant(+_);
             return _area;
         };
 
@@ -898,13 +904,23 @@ function chart() {
             y_scale.domain( range );
         } else {
 
-            var ymin = d3.min( data, function ( d ) { return d3.min( d.data(), d.y() ) } );
-            var ymax = d3.max( data, function ( d ) { return d3.max( d.data(), d.y() ) } );
+            var ymin = d3.min( data, function ( d ) {
+                return d3.min( d.data(), d.y ? d.y() : function ( _d ) { return d3.min([d.y0()(_d), d.y1()(_d)])} )
+            });
+            var ymax = d3.max( data, function ( d ) {
+                return d3.max( d.data(), d.y ? d.y() : function ( _d ) { return d3.max([d.y0()(_d), d.y1()(_d)])} )
+            } );
 
             y_scale.domain([ ymin, ymax ]);
 
         }
 
+    }
+
+    function _constant ( x ) {
+        return function () {
+            return x;
+        }
     }
 
     function _gen_id() {

@@ -111,8 +111,19 @@ Returns the outer width of the chart. Internally, the width is maintained accord
 
 <a name="area-x" href="#area-x">#</a> *area*.**x**()
 
-<a name="area-y" href="#area-y">#</a> *area*.**y**()
+<a name="area-y0" href="#area-y0">#</a> *area*.**y0**([*y*])
 
+If *y* is specified, sets the y0 accessor to the specified function or number and returns this area. If *y* is not specified, returns the current y0 accessor, which defaults to:
+
+```javascript
+function y() {
+    return 0;
+}
+```
+
+<a name="area-y1" href="#area-y1">#</a> *area*.**y1**([*y*])
+
+If *y* is specified, sets the y1 accessor to the specified function or number and returns this area. If *y* is not specified, returns the current y1 accessor, which defaults to the [chart's y accessor](#chart-y).
 
 ## Lines
 

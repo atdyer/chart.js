@@ -1,4 +1,5 @@
 var parseTime = d3.timeParse('%d-%b-%y');
+var width = parseInt(d3.select('#chart').style('width'));
 
 d3.tsv('data/apple_stock.tsv', function ( d ) {
 
@@ -9,8 +10,6 @@ d3.tsv('data/apple_stock.tsv', function ( d ) {
 }, function ( error, data ) {
 
     if ( error ) throw error;
-
-    var width = parseInt(d3.select('#chart').style('width'));
 
     var chart = d3.chart()
         .width(width)
