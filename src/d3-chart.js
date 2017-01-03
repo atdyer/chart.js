@@ -10,7 +10,7 @@ function chart() {
     var width, height;
 
     // x-axis
-    var x_value = function ( d ) {
+    var x = function ( d ) {
         return d[ 0 ];
     };
     var x_scale;    // Defaults to d3.scaleLinear()
@@ -20,7 +20,7 @@ function chart() {
     var x_label;    // Defaults to none
 
     // y-axis
-    var y_value = function ( d ) {
+    var y = function ( d ) {
         return d[ 1 ];
     };
     var y_scale;    // Defaults to d3.scaleLinear()
@@ -35,17 +35,7 @@ function chart() {
 
     // Areas
     var areas = [];
-    var area = d3.area()
-        .x(_X)
-        .y1(_Y);
-
-    // Lines
     var lines = [];
-    var line = d3.line()
-        .x(_X)
-        .y(_Y);
-
-    // Scatters
     var scatters = [];
 
     // Colors
@@ -116,20 +106,32 @@ function chart() {
         var _data = [];
         var _path;
         var _curve;
-        var _attributes = d3.map();
+        var _x;
+        var _y;
 
+        var _attributes = d3.map();
         _attributes.set( 'fill', _next_color() );
 
         var _hover = false;
         var _line;
         var _bisector = d3.bisector(function ( d ) {
-            return x_value(d);
+            return _area.x()(d);
         }).left;
 
         function _area( group ) {
 
+            console.log( _x );
+            console.log( _y );
+
+            _x = _x || x;
+            _y = _y || y;
+
+            var area = d3.area()
+                .x( function ( d ) { return x_scale(_x(d)); } )
+                .y0( height )
+                .y1( function ( d ) { return y_scale(_y(d)); } );
+
             group.attr('id', _id);
-            area.y0(height);
 
             _path = group.selectAll('path')
                 .data( function ( d ) {
@@ -209,21 +211,21 @@ function chart() {
             var i = _bisector(_data, x);
             var d0 = _data[ i - 1 ];
             var d1 = _data[ i ];
-            var d = d0 && d1 ? x - x_value(d0) > x_value(d1) - x ? d1 : d0 :
+            var d = d0 && d1 ? x - _area.x()(d0) > _area.x()(d1) - x ? d1 : d0 :
                 d0 ? d0 : d1;
 
             if ( d ) {
-                _line.attr('x1', _X(d))
-                    .attr('x2', _X(d))
+                _line.attr('x1', x_scale(_area.x()(d)))
+                    .attr('x2', x_scale(_area.x()(d)))
                     .attr('y1', y_scale.range()[0])
-                    .attr('y2', _Y(d));
+                    .attr('y2', y_scale(_area.y()(d)));
             }
 
             if ( typeof _hover === 'function' ) {
                 _hover({
                     id: _id,
-                    x: x_value(d),
-                    y: y_value(d)
+                    x: _area.x()(d),
+                    y: _area.y()(d)
                 });
             }
 
@@ -242,6 +244,18 @@ function chart() {
 
         };
 
+        _area.x = function ( _ ) {
+            if ( !arguments.length ) return _x || x;
+            _x = _;
+            return _area;
+        };
+
+        _area.y = function ( _ ) {
+            if ( !arguments.length ) return _y || y;
+            _y = _;
+            return _area;
+        };
+
         areas.push( _area );
         return _area;
 
@@ -253,9 +267,10 @@ function chart() {
         var _data = [];
         var _path;
         var _curve;
-        var _attributes = d3.map();
+        var _x;
+        var _y;
 
-        // Defaults
+        var _attributes = d3.map();
         _attributes.set( 'stroke', _next_color() );
         _attributes.set( 'stroke-width', 1.0 );
 
@@ -263,11 +278,18 @@ function chart() {
         var _dot;
         var _hover = false;
         var _bisector = d3.bisector(function ( d ) {
-            return x_value(d);
+            return _line.x()(d);
         }).left;
 
 
         function _line( group ) {
+
+            _x = _x || x;
+            _y = _y || y;
+
+            var line = d3.line()
+                .x( function ( d ) { return x_scale(_x(d)); } )
+                .y( function ( d ) { return y_scale(_y(d)); } );
 
             group.attr('id', _id);
 
@@ -290,7 +312,7 @@ function chart() {
                 .merge(_dot);
 
             if ( _curve ) {
-                var _old_curve = line.curve();
+                var global_curve = line.curve();
                 line.curve( _curve );
             }
 
@@ -299,7 +321,7 @@ function chart() {
                     return line(d.data());
                 });
 
-            if ( _old_curve ) line.curve( _old_curve );
+            if ( global_curve ) line.curve( global_curve );
 
             _attributes.each( function ( _value, _attr ) {
                 _path.attr(_attr, _value);
@@ -349,19 +371,19 @@ function chart() {
             var i = _bisector(_data, x);
             var d0 = _data[ i - 1 ];
             var d1 = _data[ i ];
-            var d = d0 && d1 ? x - x_value(d0) > x_value(d1) - x ? d1 : d0 :
+            var d = d0 && d1 ? x - _line.x()(d0) > _line.x()(d1) - x ? d1 : d0 :
                 d0 ? d0 : d1;
 
             if ( d ) {
-                _dot.attr('cx', _X(d))
-                    .attr('cy', _Y(d));
+                _dot.attr('cx', x_scale(_line.x()(d)))
+                    .attr('cy', y_scale(_line.y()(d)));
             }
 
             if ( typeof _hover === 'function' ) {
                 _hover({
                     id: _id,
-                    x: x_value(d),
-                    y: y_value(d)
+                    x: _line.x()(d),
+                    y: _line.y()(d)
                 });
             }
 
@@ -380,6 +402,18 @@ function chart() {
 
         };
 
+        _line.x = function ( _ ) {
+            if ( !arguments.length ) return _x || x;
+            _x = _;
+            return _line;
+        };
+
+        _line.y = function ( _ ) {
+            if ( !arguments.length ) return _y || y;
+            _y = _;
+            return _line;
+        };
+
         lines.push(_line);
         return _line;
 
@@ -390,8 +424,10 @@ function chart() {
         var _id = id || _gen_id();
         var _data = [];
         var _dots;
-        var _attributes = d3.map();
+        var _x;
+        var _y;
 
+        var _attributes = d3.map();
         _attributes.set('fill', _next_color());
         _attributes.set('r', 1.0);
 
@@ -399,10 +435,13 @@ function chart() {
         var _dot;
         var _hover = false;
         var _bisector = d3.bisector(function ( d ) {
-            return x_value(d);
+            return _scatter.x()(d);
         }).left;
 
         function _scatter( group ) {
+
+            _x = _x || x;
+            _y = _y || y;
 
             group.attr('id', _id);
 
@@ -426,10 +465,10 @@ function chart() {
 
             _dots
                 .attr('cx', function ( d ) {
-                    return _X(d);
+                    return x_scale(_x(d));
                 })
                 .attr('cy', function ( d ) {
-                    return _Y(d);
+                    return y_scale(_y(d));
                 });
 
             _attributes.each( function ( _value, _attr) {
@@ -473,12 +512,12 @@ function chart() {
             var i = _bisector(_data, x);
             var d0 = _data[ i - 1 ];
             var d1 = _data[ i ];
-            var d = d0 && d1 ? x - x_value(d0) > x_value(d1) - x ? d1 : d0 :
+            var d = d0 && d1 ? x - _scatter.x()(d0) > _scatter.x()(d1) - x ? d1 : d0 :
                 d0 ? d0 : d1;
 
             if ( d ) {
-                _dot.attr('cx', _X(d))
-                    .attr('cy', _Y(d));
+                _dot.attr('cx', x_scale(_scatter.x()(d)))
+                    .attr('cy', y_scale(_scatter.y()(d)));
 
                 var radius = _attributes.get('r');
                 if ( typeof radius === 'function' ) {
@@ -493,8 +532,8 @@ function chart() {
             if ( typeof _hover === 'function' ) {
                 _hover({
                     id: _id,
-                    x: x_value(d),
-                    y: y_value(d)
+                    x: _scatter.x()(d),
+                    y: _scatter.y()(d)
                 });
             }
 
@@ -511,6 +550,18 @@ function chart() {
                 scatters.splice(i, 1);
             }
 
+        };
+
+        _scatter.x = function ( _ ) {
+            if ( !arguments.length ) return _x || x;
+            _x = _;
+            return _scatter;
+        };
+
+        _scatter.y = function ( _ ) {
+            if ( !arguments.length ) return _y || y;
+            _y = _;
+            return _scatter;
         };
 
         scatters.push(_scatter);
@@ -584,8 +635,8 @@ function chart() {
     };
 
     _chart.x = function ( _ ) {
-        if ( !arguments.length ) return x_value;
-        x_value = _;
+        if ( !arguments.length ) return x;
+        x = _;
         return _chart;
     };
 
@@ -620,8 +671,8 @@ function chart() {
     };
 
     _chart.y = function ( _ ) {
-        if ( !arguments.length ) return y_value;
-        y_value = _;
+        if ( !arguments.length ) return y;
+        y = _;
         return _chart;
     };
 
@@ -837,8 +888,8 @@ function chart() {
             x_scale.domain( domain );
         } else {
 
-            var xmin = d3.min( data, function ( d ) { return d3.min( d.data(), x_value ); } );
-            var xmax = d3.max( data, function ( d ) { return d3.max( d.data(), x_value ); } );
+            var xmin = d3.min( data, function ( d ) { return d3.min( d.data(), d.x() ); } );
+            var xmax = d3.max( data, function ( d ) { return d3.max( d.data(), d.x() ); } );
 
             x_scale.domain([ xmin, xmax ]);
         }
@@ -847,8 +898,8 @@ function chart() {
             y_scale.domain( range );
         } else {
 
-            var ymin = d3.min( data, function ( d ) { return d3.min( d.data(), y_value ) } );
-            var ymax = d3.max( data, function ( d ) { return d3.max( d.data(), y_value ) } );
+            var ymin = d3.min( data, function ( d ) { return d3.min( d.data(), d.y() ) } );
+            var ymax = d3.max( data, function ( d ) { return d3.max( d.data(), d.y() ) } );
 
             y_scale.domain([ ymin, ymax ]);
 
@@ -941,14 +992,6 @@ function chart() {
 
               });
 
-    }
-
-    function _X( d ) {
-        return x_scale(x_value(d));
-    }
-
-    function _Y( d ) {
-        return y_scale(y_value(d));
     }
 
     return _chart;
