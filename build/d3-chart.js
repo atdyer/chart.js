@@ -65,7 +65,7 @@
 
                 var svg = d3.select(this)
                     .selectAll('svg')
-                    .data([ 'chart.js' ]);
+                    .data([ 'd3-chart' ]);
 
                 // If it doesn't exist, create the chart group
                 var enter = svg.enter()
@@ -99,6 +99,11 @@
                 _update_group( g, 'linegroup', lines );
                 _update_group( g, 'scattergroup', scatters );
                 _update_group( g, 'legendgroup', legends );
+
+                // Make sure legends stay on top
+                g.selectAll('.legendgroup').each( function () {
+                    this.parentElement.append( this );
+                });
 
                 _build_hover_area( g );
 
@@ -185,8 +190,8 @@
                 if ( arguments.length === 1 ) return _attributes.get( _ );
                 if ( arguments.length === 2 ) {
                     _attributes.set( arguments[0], arguments[1] );
-                    return _area;
                 }
+                return _area;
             };
 
             _area.curve = function ( _ ) {
@@ -352,8 +357,8 @@
                 if ( arguments.length === 1 ) return _attributes.get( _ );
                 if ( arguments.length === 2 ) {
                     _attributes.set( arguments[0], arguments[1] );
-                    return _line;
                 }
+                return _line;
             };
 
             _line.curve = function ( _ ) {
@@ -499,8 +504,8 @@
                 if ( arguments.length === 1 ) return _attributes.get( _ );
                 if ( arguments.length === 2 ) {
                     _attributes.set( arguments[0], arguments[1] );
-                    return _scatter;
                 }
+                return _scatter;
             };
 
             _scatter.data = function ( _ ) {
@@ -592,39 +597,106 @@
             var _id = id || _gen_id();
             var _items = [];
             var _location = 'ne';
+            var _box_width = 20;
+            var _box_height = 20;
+            var _box_padding = 2;
+            var _margin = {top: 0, right: 0, bottom: 10, left: 10};
+            var _label_padding = 5;
+
+            var _attributes = d3.map();
+            _attributes.set('font-family', 'sans-serif');
+            _attributes.set('font-size', 10);
 
             function _legend ( group ) {
 
                 group.attr( 'id', _id )
-                    .attr('font-family', 'sans-serif')
-                    .attr('font-size', 10)
                     .attr('text-anchor', ( _location === 'nw' || _location === 'sw' ) ? 'start' : 'end');
 
+                _attributes.each( function ( _value, _attr) {
+                    group.attr(_attr, _value);
+                });
+
                 var legend = group.selectAll('g')
-                    .data( ( _location === 'sw' || _location === 'se' ) ? _items.reverse(): _items );
+                    .data( ( _location === 'sw' || _location === 'se' ) ? _items.slice().reverse(): _items );
+
+                legend.exit().remove();
 
                 legend = legend.enter()
-                    .append('g')
-                    .merge(legend)
-                    .attr('transform', function ( d, i ) {
-                        var trans = ( _location === 'sw' || _location === 'se' ) ? height - i*20 - 27: i*20;
-                        return 'translate(0,' + trans + ')';
-                    });
+                    .append( 'g' )
+                    .merge( legend );
 
                 legend
-                    .append( 'rect' )
-                    .attr( 'x', ( _location === 'nw' || _location === 'sw' ) ? 10 : width - 19 )
-                    .attr( 'width', 19 )
-                    .attr( 'height', 19 )
+                    .attr('transform', function ( d, i ) {
+                        var trans_x;
+                        var trans_y;
+
+                        if ( _location === 'nw' || _location === 'sw' ) {
+                            trans_x = 1 + _margin.left;
+                        } else {
+                            trans_x = 1 + width - _box_width - _margin.right;
+                        }
+
+                        if ( _location === 'sw' || _location === 'se' ) {
+                            trans_y = height - _box_height - _margin.bottom - i*(_box_height+_box_padding);
+                        } else {
+                            trans_y = _margin.top + i*(_box_height+_box_padding);
+                        }
+
+                        return 'translate(' + trans_x + ',' + trans_y + ')';
+                    });
+
+                var rectangles = legend.selectAll( 'rect' ).data( function ( d ) { return [d]; } );
+
+                rectangles = rectangles
+                    .enter()
+                    .append('rect')
+                    .merge(rectangles);
+
+                rectangles
+                    .attr( 'width', _box_width )
+                    .attr( 'height', _box_height )
                     .attr( 'fill', function ( d ) { return d.item.attr('fill') || d.item.attr('stroke'); });
 
-                legend.append( 'text' )
-                    .attr( 'x', ( _location === 'nw' || _location === 'sw' ) ? 34 : width - 24 )
-                    .attr( 'y', 9.5 )
-                    .attr( 'dy', '0.32em' )
+                var labels = legend.selectAll( 'text' ).data( function ( d ) { return [d]; } );
+
+                labels = labels
+                    .enter()
+                    .append('text')
+                    .merge(labels);
+
+                labels
+                    .attr( 'dominant-baseline', 'central' )
+                    .attr( 'x', (_location === 'nw' || _location === 'sw') ? _box_width + _label_padding : -_label_padding )
+                    .attr( 'y', _box_height / 2.0 )
                     .text( function ( d ) { return d.label } );
 
             }
+
+            _legend.attr = function ( _ ) {
+                if ( arguments.length === 1 ) return _attributes.get( _ );
+                if ( arguments.length === 2 ) {
+                    _attributes.set( arguments[0], arguments[1] );
+                }
+                return _legend;
+            };
+
+            _legend.box_height = function ( _ ) {
+                if ( !arguments.length ) return _box_height;
+                _box_height = _;
+                return _legend;
+            };
+
+            _legend.box_padding = function ( _ ) {
+                if ( !arguments.length ) return _box_padding;
+                _box_padding = _;
+                return _legend;
+            };
+
+            _legend.box_width = function ( _ ) {
+                if ( !arguments.length ) return _box_width;
+                _box_width = _;
+                return _legend;
+            };
 
             _legend.id = function () {
                 return _id;
@@ -637,8 +709,14 @@
                     });
                     return item ? item.item : null;
                 }
-                if ( typeof item === 'string' ) item = { attr: function () { return item; } }
+                if ( typeof item === 'string' ) item = { attr: function () { return item; } };
                 if ( arguments.length === 2 ) _items.push( { label: label, item: item });
+                return _legend;
+            };
+
+            _legend.label_padding = function ( _ ) {
+                if ( !arguments.length ) return _label_padding;
+                _label_padding = _;
                 return _legend;
             };
 
@@ -646,6 +724,31 @@
                 if ( !arguments.length ) return _location;
                 _location = _;
                 return _legend;
+            };
+
+            _legend.margin = function ( _ ) {
+                if ( !arguments.length ) return _margin;
+                _margin.top = _.top === 0 ? 0 : ( _.top || _margin.top );
+                _margin.right = _.right === 0 ? 0 : _.right || _margin.right;
+                _margin.bottom = _.bottom === 0 ? 0 : _.bottom || _margin.bottom;
+                _margin.left = _.left === 0 ? 0 : _.left || _margin.left;
+                return _legend;
+            };
+
+            _legend.remove = function ( _ ) {
+                if ( !arguments.length ) {
+                    var i = legends.indexOf(_legend);
+                    if ( i != -1 ) {
+                        legends.splice(i, 1);
+                    }
+                } else {
+                    var index = _items.findIndex( function ( e ) {
+                        return typeof _ === 'string' ? e.label === _ : e.item === _;
+                    });
+                    if ( index !== -1 ) {
+                        _items.splice( index, 1 );
+                    }
+                }
             };
 
             legends.push( _legend );
