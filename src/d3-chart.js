@@ -33,10 +33,13 @@ function chart() {
     var domain;
     var range;
 
-    // Areas
+    // Plottables
     var areas = [];
     var lines = [];
     var scatters = [];
+
+    // Legends
+    var legends = [];
 
     // Colors
     var _current_color = 0;
@@ -89,6 +92,7 @@ function chart() {
             _update_group( g, 'areagroup', areas );
             _update_group( g, 'linegroup', lines );
             _update_group( g, 'scattergroup', scatters );
+            _update_group( g, 'legendgroup', legends );
 
             _build_hover_area( g );
 
@@ -576,6 +580,74 @@ function chart() {
     };
 
 
+    // Legend
+    _chart.legend = function ( id ) {
+
+        var _id = id || _gen_id();
+        var _items = [];
+        var _location = 'ne';
+
+        function _legend ( group ) {
+
+            group.attr( 'id', _id )
+                .attr('font-family', 'sans-serif')
+                .attr('font-size', 10)
+                .attr('text-anchor', ( _location === 'nw' || _location === 'sw' ) ? 'start' : 'end');
+
+            var legend = group.selectAll('g')
+                .data( ( _location === 'sw' || _location === 'se' ) ? _items.reverse(): _items );
+
+            legend = legend.enter()
+                .append('g')
+                .merge(legend)
+                .attr('transform', function ( d, i ) {
+                    var trans = ( _location === 'sw' || _location === 'se' ) ? height - i*20 - 27: i*20;
+                    return 'translate(0,' + trans + ')';
+                });
+
+            legend
+                .append( 'rect' )
+                .attr( 'x', ( _location === 'nw' || _location === 'sw' ) ? 10 : width - 19 )
+                .attr( 'width', 19 )
+                .attr( 'height', 19 )
+                .attr( 'fill', function ( d ) { return d.item.attr('fill') || d.item.attr('stroke'); });
+
+            legend.append( 'text' )
+                .attr( 'x', ( _location === 'nw' || _location === 'sw' ) ? 34 : width - 24 )
+                .attr( 'y', 9.5 )
+                .attr( 'dy', '0.32em' )
+                .text( function ( d ) { return d.label } );
+
+        }
+
+        _legend.id = function () {
+            return _id;
+        };
+
+        _legend.item = function ( label, item ) {
+            if ( arguments.length === 1 ){
+                item = _items.find( function ( current ) {
+                    return current.label === label;
+                });
+                return item ? item.item : null;
+            }
+            if ( typeof item === 'string' ) item = { attr: function () { return item; } }
+            if ( arguments.length === 2 ) _items.push( { label: label, item: item });
+            return _legend;
+        };
+
+        _legend.location = function ( _ ) {
+            if ( !arguments.length ) return _location;
+            _location = _;
+            return _legend;
+        };
+
+        legends.push( _legend );
+        return _legend;
+
+    };
+
+
     // Chart API
     _chart.domain = function ( _ ) {
         if ( !arguments.length ) return domain;
@@ -714,7 +786,7 @@ function chart() {
 
 
     // Helper functions
-    function _build_axes( g ) {
+    function _build_axes ( g ) {
 
         if ( x_axis ) {
             x_axis.scale( x_scale );
@@ -811,7 +883,7 @@ function chart() {
 
     }
 
-    function _build_hover_area( g ) {
+    function _build_hover_area ( g ) {
 
         var mouse_area = g.selectAll('#m' + id)
                           .data([ 'mousearea' ]);
@@ -878,7 +950,7 @@ function chart() {
 
     }
 
-    function _build_scales() {
+    function _build_scales () {
 
         x_scale = x_scale || d3.scaleLinear();
         y_scale = y_scale || d3.scaleLinear();
@@ -923,7 +995,7 @@ function chart() {
         }
     }
 
-    function _gen_id() {
+    function _gen_id () {
 
         function s4() {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -936,7 +1008,7 @@ function chart() {
 
     }
 
-    function _calculate_x_axis_location( value ) {
+    function _calculate_x_axis_location ( value ) {
 
         if ( value === 'top' ) {
             return y_scale.range()[ 1 ];
@@ -958,7 +1030,7 @@ function chart() {
 
     }
 
-    function _calculate_y_axis_location( value ) {
+    function _calculate_y_axis_location ( value ) {
 
         if ( value === 'right' ) {
             return x_scale.range()[ 1 ];
@@ -980,14 +1052,14 @@ function chart() {
 
     }
 
-    function _next_color() {
+    function _next_color () {
 
         if ( _current_color >= _colors.length ) _current_color = 0;
         return _colors[ _current_color++ ];
 
     }
 
-    function _update_group( g, c, d ) {
+    function _update_group ( g, c, d ) {
 
         var _selection = g.selectAll('g')
                       .filter('.' + c)

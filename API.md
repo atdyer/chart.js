@@ -6,6 +6,7 @@ d3-chart is a small, hackable, d3-esque charting library. It is designed to be u
 * [Areas](#areas) - Plotting of areas
 * [Lines](#lines) - Plotting of lines
 * [Scatters](#scatters) - Plotting of scatters
+* [Legends](#legends) - Customizable legends
 * [Tools](#tools) - Useful tools that work with charts
 
 ## Charts
@@ -176,6 +177,16 @@ This method enables or disables mouse hover functionality. When enabled, hoverin
 <a name="scatter-x" href="#scatter-x">#</a> *scatter*.**x**()
 
 <a name="scatter-y" href="#scatter-y">#</a> *scatter*.**y**()
+
+## Legends
+
+<a name="chart-legend" href="#chart-legend">#</a> *chart*.**legend**()
+
+<a name="legend-id" href="#legend-id">#</a> *legend*.**id**()
+
+<a name="legend-item" href="#legend-item">#</a> *legend*.**item**()
+
+<a name="legend-location" href="#legend-location">#</a> *legend*.**location**()
 
 ## Tools
 
