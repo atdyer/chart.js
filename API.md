@@ -1,6 +1,12 @@
 # d3-chart API
 
-d3-chart is a small, hackable, d3-esque charting library. It is designed to be used in concert with D3 4.0. It began as an extension to the time-series-chart.js example from Mike Bostock's post on [reusable charts](https://bost.ocks.org/mike/chart/). As I was building charts for various projects, I often found myself starting with that code and adding functionality or hacking away at it to fit my needs, so I decided to start building my own version that would accumulate these new features. My hope is that this plugin will provide enough functionality to get charts 90% of the way there, and that the documentation and examples will be good enough that the last 10% is easily obtainable by making simple changes to the code as needed.
+d3-chart is a charting plugin for D3 4.0. It began as an extension to the time-series-chart.js example from Mike Bostock's post on [reusable charts](https://bost.ocks.org/mike/chart/) and has gradually evolved into a full-fledged charting plugin for D3. Many charting and plotting libraries and tools use D3 in the backend, but they tend to shy away from the typical D3 style of coding. For example, from the [C3.js](https://c3js.org) website:
+
+> C3 makes it easy to generate D3-based charts by wrapping the code required to construct the entire chart. We don't need to write D3 code any more.
+
+That's great if you have no intention of using D3 for anything other than charting, but if you are comfortable with and already working in a D3 environment, there's no reason to load a library that hides the D3 functionality from you.
+
+The d3-chart plugin provides you with extensions to D3 for generating D3 charts using the D3 coding conventions you've become familiar with (e.g. configurable functions and method chaining). Essentially I've compiled all of that margin/axis/scale code that you see in all of the D3 examples down to a more reusable API and thrown in a few features that I find myself constantly rewriting every time I make chart.
 
 * [Charts](#charts) - Creating and drawing a chart
 * [Areas](#areas) - Plotting of areas
