@@ -92,11 +92,11 @@ Returns the outer width of the chart. Internally, the width is maintained accord
 
 <a name="chart-area" href="#chart-area">#</a> *chart*.**area**()
 
-<a name="area-attr" href="#area-attr">#</a> *area*.**attr**()
+<a name="area-attr" href="#area-attr">#</a> *area*.**attr**(*name*[, *value*])
 
 <a name="area-curve" href="#area-curve">#</a> *area*.**curve**()
 
-<a name="area-data" href="#area-data">#</a> *area*.**data**()
+<a name="area-data" href="#area-data">#</a> *area*.**data**([*data*])
 
 <a name="area-hover" href="#area-hover">#</a> *area*.**hover**()
 
@@ -130,11 +130,11 @@ If *y* is specified, sets the y1 accessor to the specified function or number an
 
 <a name="chart-line" href="#chart-line">#</a> *chart*.**line**()
 
-<a name="line-attr" href="#line-attr">#</a> *line*.**attr**()
+<a name="line-attr" href="#line-attr">#</a> *line*.**attr**(*name*[, *value*])
 
 <a name="line-curve" href="#line-curve">#</a> *line*.**curve**()
 
-<a name="line-data" href="#line-data">#</a> *line*.**data**()
+<a name="line-data" href="#line-data">#</a> *line*.**data**([*data*])
 
 <a name="line-hover" href="#line-hover">#</a> *line*.**hover**([*option*])
 
@@ -158,9 +158,9 @@ This method enables or disables mouse hover functionality. When enabled, hoverin
 
 <a name="chart-scatter" href="#chart-scatter">#</a> *chart*.**scatter**()
 
-<a name="scatter-attr" href="#scatter-attr">#</a> *scatter*.**attr**()
+<a name="scatter-attr" href="#scatter-attr">#</a> *scatter*.**attr**(*name*[, *value*])
 
-<a name="scatter-data" href="#scatter-data">#</a> *scatter*.**data**()
+<a name="scatter-data" href="#scatter-data">#</a> *scatter*.**data**([*data*])
 
 <a name="scatter-hover" href="#scatter-hover">#</a> *scatter*.**hover**()
 
@@ -180,13 +180,35 @@ This method enables or disables mouse hover functionality. When enabled, hoverin
 
 ## Legends
 
-<a name="chart-legend" href="#chart-legend">#</a> *chart*.**legend**()
+<a name="chart-legend" href="#chart-legend">#</a> *chart*.**legend**([*id*])
+
+<a name="legend-attr" href="#legend-attr">#</a> *legend*.**attr**(*name*[, *value*])
+
+<a name="legend-box_height" href="#legend-box_height">#</a> *legend*.**box_height**([*height*])
+
+<a name="legend-box_width" href="#legend-box_width">#</a> *legend*.**box_width**([*width*])
 
 <a name="legend-id" href="#legend-id">#</a> *legend*.**id**()
 
-<a name="legend-item" href="#legend-item">#</a> *legend*.**item**()
+<a name="legend-item" href="#legend-item">#</a> *legend*.**item**(*label*[, *item*])
 
-<a name="legend-location" href="#legend-location">#</a> *legend*.**location**()
+<a name="legend-label_padding" href="#legend-label_padding">#</a> *legend*.**label_padding**([*padding*])
+
+<a name="legend-location" href="#legend-location">#</a> *legend*.**location**([*location*])
+
+<a name="legend-margin" href="#legend-margin">#</a> *legend*.**margin**([*margins*])
+
+If *margins* is specified, updates the margins as show in [legend placement and spacing](#). The *margins* object can have up to four properties, one for each side.
+
+```javascript
+var margins = { top: ..., right: ..., bottom: ..., left: ... };
+```
+
+Sides not included in the *margins* object will not be updated. If the *margins* object is not specified, returns the current margins.
+
+<a name="legend-remove" href="#legend-remove">#</a> *legend*.**remove**([*item*])
+
+If *item* is specified, removes the item from the legend. *item* can be either the label associated with an item or the item object itself. If *item* is not specified, removes the legend from the chart.
 
 ## Tools
 
