@@ -182,29 +182,47 @@ This method enables or disables mouse hover functionality. When enabled, hoverin
 
 <a name="chart-legend" href="#chart-legend">#</a> *chart*.**legend**([*id*])
 
+Creates a new legend in *chart*. If *id* is specified, the legend will be created with that ID, otherwise one will be generated.
+
 <a name="legend-attr" href="#legend-attr">#</a> *legend*.**attr**(*name*[, *value*])
 
 <a name="legend-box_height" href="#legend-box_height">#</a> *legend*.**box_height**([*height*])
 
+If *height* is specified, sets the height of the color box. If *height* is not specified, returns the current color box height. The default box height is 20px.
+
+<a name="legend-box_padding" href="#legend-box_padding">#</a> *legend*.**box_padding**([*padding*])
+
+If *padding* is specified, sets the amount of vertical space between legend items, as shown in [legend placement and spacing](#). If *padding* is not specified, returns the current box padding. The default spacing is 2px.
+
 <a name="legend-box_width" href="#legend-box_width">#</a> *legend*.**box_width**([*width*])
+
+If *width* is specified, sets the width of the color box. If *width* is not specified, returns the current color box width. The default box width is 20px.
 
 <a name="legend-id" href="#legend-id">#</a> *legend*.**id**()
 
+Returns the ID of the legend. If a specific ID is desired, it can be set when creating the legend with [chart.legend()](chart-legend).
+
 <a name="legend-item" href="#legend-item">#</a> *legend*.**item**(*label*[, *item*])
+
+If *item* is not specified, returns the item associated with *label*. If *item* is specified, adds *item* to the legend with the label *label*. *item* can be either a plottable, such as an [area](#chart-area), [line](#chart-line), or [scatter](#chart-scatter), or it can be a color string, such as 'steelblue' or '#000000'.
 
 <a name="legend-label_padding" href="#legend-label_padding">#</a> *legend*.**label_padding**([*padding*])
 
+If *padding* is specified, sets the amount of space between the label and the color box, as shown in [legend placement and spacing](#). If *padding* is not specified, returns the current padding. The default label padding is 5px.
+
 <a name="legend-location" href="#legend-location">#</a> *legend*.**location**([*location*])
+
+If *location* is specified, sets the location of the legend. Can be one of 'nw', 'ne', 'se', 'sw' as shown in [legend placement and spacing](#). If *location* is not specified, returns the current location of the legend. The default location is 'ne'.
 
 <a name="legend-margin" href="#legend-margin">#</a> *legend*.**margin**([*margins*])
 
-If *margins* is specified, updates the margins as show in [legend placement and spacing](#). The *margins* object can have up to four properties, one for each side.
+If *margins* is specified, updates the margins as shown in [legend placement and spacing](#). The *margins* object can have up to four properties, one for each side.
 
 ```javascript
 var margins = { top: ..., right: ..., bottom: ..., left: ... };
 ```
 
-Sides not included in the *margins* object will not be updated. If the *margins* object is not specified, returns the current margins.
+Sides not included in the *margins* object will not be updated. If the *margins* object is not specified, returns the current margins. The default top, right, bottom, and left margins area 0px, 0px, 10px, and 10px, respectively.
 
 <a name="legend-remove" href="#legend-remove">#</a> *legend*.**remove**([*item*])
 
