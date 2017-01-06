@@ -92,12 +92,39 @@ function chart() {
             _update_group( g, 'areagroup', areas );
             _update_group( g, 'linegroup', lines );
             _update_group( g, 'scattergroup', scatters );
-            _update_group( g, 'legendgroup', legends );
+            // _update_group( g, 'legendgroup', legends );
+
+            legends.forEach( function ( legend ) {
+                var lg = legend.container();
+                var custom = !!lg;
+                if ( lg ) {
+                    lg = lg.selectAll( 'svg' ).filter( '#cl' + legend.id()  ).data( [legend] );
+                    lg = lg.enter()
+                        .append( 'svg' )
+                        .attr('id', 'cl' + legend.id() )
+                        .merge( lg );
+                } else {
+                    lg = g;
+                }
+
+                _update_group( lg, 'legendgroup', [legend] );
+
+                if ( custom ) {
+                    lg.call(function ( s ) {
+
+                        var bbox = s.node().getBBox();
+                        s.attr('width', bbox.width)
+                            .attr('height', bbox.height);
+                        s.selectAll( '.legendgroup' )
+                            .attr('transform', 'translate(' + (-bbox.x) + ',' + (-bbox.y) + ')');
+                    });
+                }
+            });
 
             // Make sure legends stay on top
-            g.selectAll('.legendgroup').each( function () {
-                this.parentElement.append( this );
-            });
+            // g.selectAll('.legendgroup').each( function () {
+            //     this.parentElement.append( this );
+            // });
 
             _build_hover_area( g );
 
@@ -590,6 +617,7 @@ function chart() {
 
         var _id = id || _gen_id();
         var _items = [];
+        var _container;
         var _location = 'ne';
         var _box_width = 20;
         var _box_height = 20;
@@ -689,6 +717,12 @@ function chart() {
         _legend.box_width = function ( _ ) {
             if ( !arguments.length ) return _box_width;
             _box_width = _;
+            return _legend;
+        };
+
+        _legend.container = function ( _ ) {
+            if ( !arguments.length ) return _container;
+            _container = _;
             return _legend;
         };
 
