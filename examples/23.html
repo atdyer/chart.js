@@ -17,8 +17,10 @@
         #legend {
             position: relative;
             left: 960px;
+            width: 0;
+            height: 0;
             top: 0;
-            margin-bottom: -80px;
+            margin-bottom: 0;
         }
     </style>
 
@@ -31,6 +33,19 @@
     </div>
     <div id="legend"></div>
     <div id="chart"></div>
+    <div>
+        <p>
+            It is sometimes desirable to place the legend outside of the chart area, for example, when there is not
+            enough whitespace in the chart or the page layout requires the legend to be in a specific location. Call
+            <a class="api" href="legend-container"><code>legend.container()</code></a>,
+            which accepts a D3 selection of a DOM element, to place the legend somewhere else on the page. When the chart
+            is drawn, an SVG containing the legend will be added to the specified container. Note that the SVG will be
+            sized to fit the bounding box of the legend (i.e. calls to
+            <a class="api" href="legend-margin"><code>legend.margin()</code></a>
+            will not have any effect on this legend). Additionally, the horizontal alignment (east/west) will be
+            honored, but the vertical alignment (north/south) has no effect.
+        </p>
+    </div>
 
     <script src="examples.js"></script>
     <script src="23.js"></script>

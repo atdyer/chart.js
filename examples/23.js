@@ -18,6 +18,7 @@ d3.tsv('data/cities.tsv', type, function ( error, data ) {
 
     var chart = d3.chart()
         .width(width)
+        .margin({top:0})
         .x_axis(d3.axisBottom())
         .y_axis(d3.axisLeft())
         .x_scale(d3.scaleTime())

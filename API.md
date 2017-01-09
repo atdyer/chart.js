@@ -198,7 +198,7 @@ If *height* is specified, sets the height of the color box. If *height* is not s
 
 <a name="legend-box_padding" href="#legend-box_padding">#</a> *legend*.**box_padding**([*padding*])
 
-If *padding* is specified, sets the amount of vertical space between legend items, as shown in [legend placement and spacing](#). If *padding* is not specified, returns the current box padding. The default spacing is 2px.
+If *padding* is specified, sets the amount of vertical space between legend items, as shown in [Legend Placement and Spacing](https://atdyer.github.io/d3-chart/examples/24.html). If *padding* is not specified, returns the current box padding. The default spacing is 2px.
 
 <a name="legend-box_width" href="#legend-box_width">#</a> *legend*.**box_width**([*width*])
 
@@ -214,15 +214,15 @@ If *item* is not specified, returns the item associated with *label*. If *item* 
 
 <a name="legend-label_padding" href="#legend-label_padding">#</a> *legend*.**label_padding**([*padding*])
 
-If *padding* is specified, sets the amount of space between the label and the color box, as shown in [legend placement and spacing](#). If *padding* is not specified, returns the current padding. The default label padding is 5px.
+If *padding* is specified, sets the amount of space between the label and the color box, as shown in [Legend Placement and Spacing](https://atdyer.github.io/d3-chart/examples/24.html). If *padding* is not specified, returns the current padding. The default label padding is 5px.
 
 <a name="legend-location" href="#legend-location">#</a> *legend*.**location**([*location*])
 
-If *location* is specified, sets the location of the legend. Can be one of 'nw', 'ne', 'se', 'sw' as shown in [legend placement and spacing](#). If *location* is not specified, returns the current location of the legend. The default location is 'ne'.
+If *location* is specified, sets the location of the legend. Can be one of 'nw', 'ne', 'se', 'sw' as shown in [Legend Placement and Spacing](https://atdyer.github.io/d3-chart/examples/24.html). If *location* is not specified, returns the current location of the legend. The default location is 'ne'.
 
 <a name="legend-margin" href="#legend-margin">#</a> *legend*.**margin**([*margins*])
 
-If *margins* is specified, updates the margins as shown in [legend placement and spacing](#). The *margins* object can have up to four properties, one for each side.
+If *margins* is specified, updates the margins as shown in [Legend Placement and Spacing](https://atdyer.github.io/d3-chart/examples/24.html). The *margins* object can have up to four properties, one for each side.
 
 ```javascript
 var margins = { top: ..., right: ..., bottom: ..., left: ... };

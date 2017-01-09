@@ -92,39 +92,8 @@ function chart() {
             _update_group( g, 'areagroup', areas );
             _update_group( g, 'linegroup', lines );
             _update_group( g, 'scattergroup', scatters );
-            // _update_group( g, 'legendgroup', legends );
 
-            legends.forEach( function ( legend ) {
-                var lg = legend.container();
-                var custom = !!lg;
-                if ( lg ) {
-                    lg = lg.selectAll( 'svg' ).filter( '#cl' + legend.id()  ).data( [legend] );
-                    lg = lg.enter()
-                        .append( 'svg' )
-                        .attr('id', 'cl' + legend.id() )
-                        .merge( lg );
-                } else {
-                    lg = g;
-                }
-
-                _update_group( lg, 'legendgroup', [legend] );
-
-                if ( custom ) {
-                    lg.call(function ( s ) {
-
-                        var bbox = s.node().getBBox();
-                        s.attr('width', bbox.width)
-                            .attr('height', bbox.height);
-                        s.selectAll( '.legendgroup' )
-                            .attr('transform', 'translate(' + (-bbox.x) + ',' + (-bbox.y) + ')');
-                    });
-                }
-            });
-
-            // Make sure legends stay on top
-            // g.selectAll('.legendgroup').each( function () {
-            //     this.parentElement.append( this );
-            // });
+            _update_legends( g );
 
             _build_hover_area( g );
 
@@ -737,7 +706,10 @@ function chart() {
                 });
                 return item ? item.item : null;
             }
-            if ( typeof item === 'string' ) item = { attr: function () { return item; } };
+            if ( typeof item === 'string' ) {
+                var color = item;
+                item = { attr: function () { return color; } };
+            }
             if ( arguments.length === 2 ) _items.push( { label: label, item: item });
             return _legend;
         };
@@ -1216,6 +1188,43 @@ function chart() {
                   _item(d3.select(this));
 
               });
+
+    }
+
+    function _update_legends ( g ) {
+
+        legends.forEach( function ( legend ) {
+
+            var lg = legend.container();
+            var custom = !!lg;
+            if ( lg ) {
+                lg = lg.selectAll( 'svg' ).filter( '#cl' + legend.id()  ).data( [legend] );
+                lg = lg.enter()
+                       .append( 'svg' )
+                       .attr('id', 'cl' + legend.id() )
+                       .merge( lg );
+            } else {
+                lg = g;
+            }
+
+            _update_group( lg, 'legendgroup', [legend] );
+
+            if ( custom ) {
+                lg.call(function ( s ) {
+
+                    var bbox = s.node().getBBox();
+                    s.attr('width', bbox.width)
+                     .attr('height', bbox.height);
+                    s.selectAll( '.legendgroup' )
+                     .attr('transform', 'translate(' + (-bbox.x) + ',' + (-bbox.y) + ')');
+                });
+            }
+
+        });
+
+        g.selectAll('.legendgroup').each( function () {
+            this.parentElement.appendChild( this );
+        });
 
     }
 
