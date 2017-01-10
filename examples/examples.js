@@ -3,7 +3,7 @@ d3.select('body')
     .selectAll('.api')
     .each(function () {
         var a = d3.select(this);
-        a.attr('href', 'https://github.com/atdyer/d3-chart/blob/master/API.md#' + a.attr('href'));
+        a.attr('href', 'https://github.com/atdyer/d3-chart/blob/gh-pages/API.md#' + a.attr('href'));
     });
 
 // Fetch and highlight code
