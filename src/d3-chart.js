@@ -91,15 +91,16 @@ function chart() {
             _build_axes( g );
 
             _update_group( g, 'areagroup', areas );
-            _update_group( g, 'bargroup', bars );
             _update_group( g, 'linegroup', lines );
             _update_group( g, 'scattergroup', scatters );
+
+            _build_hover_area( g );
+
+            _update_group( g, 'bargroup', bars );
 
             _build_labels( g );
 
             _update_legends( g );
-
-            _build_hover_area( g );
 
         });
 
@@ -283,9 +284,11 @@ function chart() {
         var _bars;
         var _x;
         var _y;
+        var _hover;
 
         var _attributes = d3.map();
         _attributes.set( 'fill', _next_color() );
+        _attributes.set( 'pointer-events', 'all' );
 
         var _styles = d3.map();
         _styles.set( 'shape-rendering', 'crispEdges' );
@@ -304,6 +307,23 @@ function chart() {
                 .append('rect')
                 .attr('class', 'bar')
                 .merge( _bars );
+
+            _bars.on( 'mouseover touchstart', function (d, i, nodes) {
+                if ( _hover ) {
+                    var b = d3.select(nodes[i]);
+                    b.attr('fill', d3.color(_attributes.get('fill')).darker());
+                    if ( typeof _hover === 'function' ) {
+                        _hover.call( this, d, i, nodes );
+                    }
+                }
+            });
+
+            _bars.on( 'mouseout touchend touchcancel', function (d, i, nodes) {
+                if ( _hover ) {
+                    var b = d3.select(nodes[i]);
+                    b.attr('fill', _attributes.get('fill'));
+                }
+            });
 
             _bars.attr('x', function ( d ) { return x_scale(_x(d)); })
                 .attr('y', function ( d ) { return y_scale(_y(d)); })
@@ -330,6 +350,12 @@ function chart() {
         _bar.data = function ( _ ) {
             if ( !arguments.length ) return _data;
             _data = _;
+            return _bar;
+        };
+
+        _bar.hover = function ( _ ) {
+            if ( !arguments.length ) return _hover;
+            _hover = _;
             return _bar;
         };
 

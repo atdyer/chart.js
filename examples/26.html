@@ -3,7 +3,7 @@
 <head>
 
     <meta charset="UTF-8">
-    <title>Hover Events - d3-chart</title>
+    <title>Bar Chart Hover Events - d3-chart</title>
 
     <script src="lib/d3.v4.min.js"></script>
     <script src="../build/d3-chart.js"></script>
@@ -18,9 +18,23 @@
 
     <div class="title">
         <a href="https://github.com/atdyer/d3-chart.git"><h1>d3-chart</h1></a>
-        <h1>Hover Events</h1>
+        <h1>Bar Chart Hover Events</h1>
     </div>
     <div id="chart"></div>
+    <div>
+        <p>
+            Hover events can be enabled on bar charts using
+            <a class="api" href="bar-hover"><code>bar.hover()</code></a>.
+            If a truthy value is passed, hovering the mouse over a bar will cause the bar to become a darker color. If
+            a function is passed, in addition to the bar becoming a darker color the function will be called just as in
+            <a href="https://github.com/d3/d3-selection/blob/master/README.md#selection_on"><code>selection.on()</code></a>
+            and as described in the <a class="api" href="bar-hover">API documentation</a>.
+        </p>
+        <p>
+            This example shows how to respond to these events by placing the percentage value above a bar when it
+            is hovered.
+        </p>
+    </div>
 
     <script src="examples.js"></script>
     <script src="26.js"></script>

@@ -137,6 +137,10 @@ If *y* is specified, sets the y1 accessor to the specified function or number an
 
 <a name="bar-data" href="#bar-data">#</a> *bar*.**data**([*data*])
 
+<a name="bar-hover" href="#bar-hover">#</a> *bar*.**hover**([*option*])
+
+Enables or disables hover functionality. When enabled, hovering the mouse over a bar in the bar chart will cause the bar to become a darker color. If *option* is a truthy value, hover will be enabled. If *option* is a falsey value, hover will be disabled, which is the default. If *option* is a function, hover will be enabled and the function will be called just as in [selection.on()](https://github.com/d3/d3-selection/blob/master/README.md#selection_on), i.e. it will be passed the current datum (*d*), the current index (*i*), and the current group (*bars*), with *this* as the current DOM element. See [Bar Chart Hover Events](https://atdyer.github.io/d3-chart/examples/26.html) for an example.
+
 <a name="bar-id" href="#bar-id">#</a> *bar*.**id**()
 
 <a name="bar-style" href="#bar-style">#</a> *bar*.**style**(*name*[, *value*])
@@ -157,7 +161,7 @@ If *y* is specified, sets the y1 accessor to the specified function or number an
 
 <a name="line-hover" href="#line-hover">#</a> *line*.**hover**([*option*])
 
-This method enables or disables mouse hover functionality. When enabled, hovering the mouse over the chart will cause a dot to be drawn on top of the data point closest to the x-coordinate of the mouse. If _option_ is a truthy value, hover will be enabled. If _option_ is a falsey value, hover will be disabled, which is the default. If _option_ is a function, hover will be enabled and the function will be called each time the x-coordinate of the mouse changes. The function will be passed a single argument, an object containing the ID of the line and the x- and y- values of the data point that is currently highlighted.
+Enables or disables mouse hover functionality. When enabled, hovering the mouse over the chart will cause a dot to be drawn on top of the data point closest to the x-coordinate of the mouse. If _option_ is a truthy value, hover will be enabled. If _option_ is a falsey value, hover will be disabled, which is the default. If _option_ is a function, hover will be enabled and the function will be called each time the x-coordinate of the mouse changes. The function will be passed a single argument, an object containing the ID of the line and the x- and y- values of the data point that is currently highlighted.
 
 <a name="line-id" href="#line-id">#</a> *line*.**id**()
 
