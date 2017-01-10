@@ -41,6 +41,7 @@
 
         // Plottables
         var areas = [];
+        var bars = [];
         var lines = [];
         var scatters = [];
 
@@ -96,6 +97,7 @@
                 _build_axes( g );
 
                 _update_group( g, 'areagroup', areas );
+                _update_group( g, 'bargroup', bars );
                 _update_group( g, 'linegroup', lines );
                 _update_group( g, 'scattergroup', scatters );
 
@@ -275,6 +277,92 @@
 
             areas.push( _area );
             return _area;
+
+        };
+
+        _chart.bar = function ( id ) {
+
+            var _id = id || _gen_id();
+            var _data = [];
+            var _bars;
+            var _x;
+            var _y;
+
+            var _attributes = d3.map();
+            _attributes.set( 'fill', _next_color() );
+
+            var _styles = d3.map();
+            _styles.set( 'shape-rendering', 'crispEdges' );
+
+            function _bar( group ) {
+
+                _x = _bar.x();
+                _y = _bar.y();
+
+                group.attr('id', _id);
+
+                _bars = group.selectAll('.bar')
+                    .data( _data );
+
+                _bars = _bars.enter()
+                    .append('rect')
+                    .attr('class', 'bar')
+                    .merge( _bars );
+
+                _bars.attr('x', function ( d ) { return x_scale(_x(d)); })
+                    .attr('y', function ( d ) { return y_scale(_y(d)); })
+                    .attr('width', x_scale.bandwidth())
+                    .attr('height', function ( d ) { return height - y_scale(_y(d)); });
+
+                _attributes.each( function ( _value, _attr ) {
+                    _bars.attr(_attr, _value);
+                });
+
+                _styles.each( function ( _value, _style ) {
+                    _bars.style(_style, _value);
+                });
+            }
+
+            _bar.attr = function ( _ ) {
+                if ( arguments.length === 1 ) return _attributes.get( _ );
+                if ( arguments.length === 2 ) {
+                    _attributes.set( arguments[0], arguments[1] );
+                }
+                return _bar;
+            };
+
+            _bar.data = function ( _ ) {
+                if ( !arguments.length ) return _data;
+                _data = _;
+                return _bar;
+            };
+
+            _bar.id = function () {
+                return _id;
+            };
+
+            _bar.style = function ( _ ) {
+                if ( arguments.length === 1 ) return _styles.get( _ );
+                if ( arguments.length === 2 ) {
+                    _styles.set( arguments[0], arguments[1] );
+                }
+                return _bar;
+            };
+
+            _bar.x = function ( _ ) {
+                if ( !arguments.length ) return _x || x;
+                _x = _;
+                return _bar;
+            };
+
+            _bar.y = function ( _ ) {
+                if ( !arguments.length ) return _y || y;
+                _y = _;
+                return _bar;
+            };
+
+            bars.push(_bar);
+            return _bar;
 
         };
 
@@ -1035,16 +1123,19 @@
             mouse_area.on('mousemove touchmove', function () {
 
                 var mouse = d3.mouse(this);
-                var x = x_scale.invert(mouse[ 0 ]);
 
-                data.forEach(function ( d ) {
-                    if ( d.hover() ) {
-                        d.mouse_move(x);
+                if ( x_scale.invert ) {
+                    var x = x_scale.invert( mouse[ 0 ] );
+
+                    data.forEach( function ( d ) {
+                        if ( d.hover() ) {
+                            d.mouse_move( x );
+                        }
+                    } );
+
+                    if ( typeof mouse_move === 'function' ) {
+                        mouse_move( id, x );
                     }
-                });
-
-                if ( typeof mouse_move === 'function' ) {
-                    mouse_move(id, x);
                 }
 
             });
@@ -1074,7 +1165,7 @@
             x_scale.range([ 0, width ]);
             y_scale.range([ height, 0 ]);
 
-            var data = [].concat( areas, lines, scatters );
+            var data = [].concat( areas, bars, lines, scatters );
 
             // Update domains
             if ( domain ) {

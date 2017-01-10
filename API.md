@@ -6,6 +6,7 @@ The d3-chart plugin provides you with extensions to D3 for generating charts usi
 
 * [Charts](#charts) - Creating and drawing a chart
 * [Areas](#areas) - Plotting of areas
+* [Bars](#bars) - Plotting of bars
 * [Lines](#lines) - Plotting of lines
 * [Scatters](#scatters) - Plotting of scatters
 * [Legends](#legends) - Customizable legends
@@ -48,7 +49,7 @@ Plottables (i.e. lines, scatters, areas, etc.) are added to the chart as part of
 
 <a name="chart-height" href="#chart-height">#</a> *chart*.**height**([*h*])
 
-Returns the outer height of the chart. Internally, the height is maintained according to the [margin convention](http://bl.ocks.org/mbostock/3019563), but the height value returned here will include the top and bottom margins. If *h* is specified, sets the external height of the chart.
+Returns the outer height of the chart. Internally, the height is maintained according to the [margin convention](http://bl.ocks.org/mbostock/3019563), but the height value returned here will include the top and bottom margins. If *h* is specified, sets the outer height of the chart.
 
 <a name="chart-hover" href="#chart-hover">#</a> *chart*.**hover**()
 
@@ -64,7 +65,7 @@ Returns the outer height of the chart. Internally, the height is maintained acco
 
 <a name="chart-width" href="#chart-width">#</a> *chart*.**width**([*w*])
 
-Returns the outer width of the chart. Internally, the width is maintained according to the [margin convention](http://bl.ocks.org/mbostock/3019563), but the width value returned here will include the left and right margins. If *w* is specified, sets the external width of the chart.
+Returns the outer width of the chart. Internally, the width is maintained according to the [margin convention](http://bl.ocks.org/mbostock/3019563), but the width value returned here will include the left and right margins. If *w* is specified, sets the outer width of the chart.
 
 <a name="chart-x" href="#chart-x">#</a> *chart*.**x**()
 
@@ -128,6 +129,22 @@ function y() {
 
 If *y* is specified, sets the y1 accessor to the specified function or number and returns this area. If *y* is not specified, returns the current y1 accessor, which defaults to the [chart's y accessor](#chart-y).
 
+## Bars
+
+<a name="chart-bar" href="#chart-bar">#</a> *chart*.**bar**()
+
+<a name="bar-attr" href="#bar-attr">#</a> *bar*.**attr**(*name*[, *value*])
+
+<a name="bar-data" href="#bar-data">#</a> *bar*.**data**([*data*])
+
+<a name="bar-id" href="#bar-id">#</a> *bar*.**id**()
+
+<a name="bar-style" href="#bar-style">#</a> *bar*.**style**(*name*[, *value*])
+
+<a name="bar-x" href="#bar-x">#</a> *bar*.**x**()
+
+<a name="bar-y" href="#bar-y">#</a> *bar*.**y**()
+
 ## Lines
 
 <a name="chart-line" href="#chart-line">#</a> *chart*.**line**()
@@ -152,9 +169,9 @@ This method enables or disables mouse hover functionality. When enabled, hoverin
 
 <a name="line-remove" href="#line-remove">#</a> *line*.**remove**()
 
-<a name="line-x" href="#area-x">#</a> *line*.**x**()
+<a name="line-x" href="#line-x">#</a> *line*.**x**()
 
-<a name="line-y" href="#area-y">#</a> *line*.**y**()
+<a name="line-y" href="#line-y">#</a> *line*.**y**()
 
 ## Scatters
 

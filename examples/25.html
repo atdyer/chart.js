@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
-    <title>Simple Line Chart - d3-chart</title>
+    <title>Simple Bar Chart - d3-chart</title>
 
     <script src="lib/d3.v4.min.js"></script>
     <script src="../build/d3-chart.js"></script>
@@ -14,21 +15,24 @@
 
 </head>
 <body>
+
     <div class="title">
         <a href="https://github.com/atdyer/d3-chart.git"><h1>d3-chart</h1></a>
-        <h1>Simple Line Chart</h1>
+        <h1>Simple Bar Chart</h1>
     </div>
     <div id="chart"></div>
     <div>
         <p>
-            Similar to the d3 example, <a href="https://bl.ocks.org/mbostock/3883245">Line Chart</a>, this example
-            shows how to create a basic line chart with dates on the x-axis. Lines are added to a chart using
-            <a class="api" href="chart-line"><code>chart.line()</code></a>.
+            This example is a recreation of Mike Bostock's <a href="https://bl.ocks.org/mbostock/3885304">Bar Chart</a>
+            example. Note that with bar charts (or any chart that uses
+            <a href="https://github.com/d3/d3-scale#ordinal-scales">ordinal scales</a>), the domain <em>must</em> be
+            specified using
+            <a class="api" href="chart-domain"><code>chart.domain()</code></a>.
         </p>
     </div>
 
     <script src="examples.js"></script>
-    <script src="1.js"></script>
-
+    <script src="25.js"></script>
+    
 </body>
 </html>
