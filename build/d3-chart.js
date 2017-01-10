@@ -101,6 +101,8 @@
                 _update_group( g, 'linegroup', lines );
                 _update_group( g, 'scattergroup', scatters );
 
+                _build_labels( g );
+
                 _update_legends( g );
 
                 _build_hover_area( g );
@@ -1053,37 +1055,6 @@
 
             }
 
-            if ( x_label ) {
-
-                var x_selection = g.selectAll('.x.label').data([ x_label ]);
-
-                x_selection.enter()
-                    .append('text')
-                    .attr('class', 'x label')
-                    .merge(x_selection)
-                    .style('font', '10px sans-serif')
-                    .style('text-anchor', 'end')
-                    .attr('x', width)
-                    .attr('y', _calculate_x_axis_location(x_location) - 6)
-                    .text(x_label);
-            }
-
-            if (  y_label ) {
-
-                var y_selection = g.selectAll('.y.label').data([ y_label ]);
-
-                y_selection.enter()
-                    .append('text')
-                    .attr('class', 'y label')
-                    .merge(y_selection)
-                    .style('font', '10px sans-serif')
-                    .style('text-anchor', 'end')
-                    .attr('y', _calculate_y_axis_location(y_location) + 14)
-                    .attr('transform', 'rotate(-90)')
-                    .text(y_label);
-
-            }
-
         }
 
         function _build_hover_area ( g ) {
@@ -1153,6 +1124,42 @@
                 }
 
             });
+
+        }
+
+        function _build_labels ( g ) {
+
+            if ( x_label ) {
+
+                var x_selection = g.selectAll('.x.label').data([ x_label ]);
+
+                x_selection.enter()
+                           .append('text')
+                           .attr('class', 'x label')
+                           .merge(x_selection)
+                           .style('font', '10px sans-serif')
+                           .style('text-anchor', 'end')
+                           .attr('x', width - 6)
+                           .attr('y', _calculate_x_axis_location(x_location) - 6)
+                           .text(x_label);
+            }
+
+            if (  y_label ) {
+
+                var y_selection = g.selectAll('.y.label').data([ y_label ]);
+
+                y_selection.enter()
+                           .append('text')
+                           .attr('class', 'y label')
+                           .merge(y_selection)
+                           .style('font', '10px sans-serif')
+                           .style('text-anchor', 'end')
+                           .attr('x', -6)
+                           .attr('y', _calculate_y_axis_location(y_location) + 14)
+                           .attr('transform', 'rotate(-90)')
+                           .text(y_label);
+
+            }
 
         }
 

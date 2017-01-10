@@ -1,7 +1,7 @@
-var parseDate = d3.timeParse("%b %Y");
+var parseDate = d3.timeParse('%b %Y');
 var linker = d3.chart.linker();
 
-d3.tsv("data/stocks.tsv", type, function ( error, data ) {
+d3.tsv('data/stocks.tsv', type, function ( error, data ) {
 
     if ( error ) throw error;
 
@@ -22,11 +22,11 @@ d3.tsv("data/stocks.tsv", type, function ( error, data ) {
 
     var width = parseInt(d3.select('#chart').style('width'));
 
-    d3.select("#chart")
-        .selectAll("div")
+    d3.select('#chart')
+        .selectAll('div')
         .data(symbols)
         .enter()
-        .append("div")
+        .append('div')
         .each(function ( d ) {
 
             var range = [ 0, d3.max(d.values, function(d) { return d.price; }) ];
@@ -38,6 +38,7 @@ d3.tsv("data/stocks.tsv", type, function ( error, data ) {
                 .domain(domain)
                 .range(range)
                 .x_scale(d3.scaleTime())
+                .x_label(d.key)
                 .x(function ( d ) { return d.date; })
                 .y(function ( d ) { return d.price; });
 
@@ -54,14 +55,7 @@ d3.tsv("data/stocks.tsv", type, function ( error, data ) {
 
             linker.link(chart);
 
-            var stamp = chart(d3.select(this));
-
-            stamp.append('text')
-                .attr('x', chart.width() - chart.margin().left - chart.margin().right - 6)
-                .attr('y', chart.height() - chart.margin().top - chart.margin().bottom - 6 )
-                .attr('text-anchor', 'end')
-                .style('font', '10px sans-serif')
-                .text( d.key );
+            d3.select(this).call(chart);
 
         });
 });
