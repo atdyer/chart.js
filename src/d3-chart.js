@@ -1090,6 +1090,7 @@ function chart() {
             var mouse = d3.mouse(this);
 
             if ( x_scale.invert ) {
+
                 var x = x_scale.invert( mouse[ 0 ] );
 
                 data.forEach( function ( d ) {
@@ -1101,6 +1102,7 @@ function chart() {
                 if ( typeof mouse_move === 'function' ) {
                     mouse_move( id, x );
                 }
+
             }
 
         });
