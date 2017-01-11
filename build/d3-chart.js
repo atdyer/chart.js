@@ -409,7 +409,9 @@
 
             // Hover stuff
             var _dot;
+            var _hover_in;
             var _hover = false;
+            var _hover_out;
             var _bisector = d3.bisector(function ( d ) {
                 return _line.x()(d);
             }).left;
@@ -460,9 +462,6 @@
                     _path.attr(_attr, _value);
                 });
 
-                _dot.attr('r', 3)
-                    .attr('fill', _attributes.get('stroke'));
-
             }
 
             _line.attr = function ( _ ) {
@@ -491,39 +490,83 @@
                 return _line;
             };
 
+            _line.hover_in = function ( _ ) {
+                if ( !arguments.length ) return _hover_in;
+                _hover_in = _;
+                return _line;
+            };
+
+            _line.hover_out = function ( _ ) {
+                if ( !arguments.length ) return _hover_out;
+                _hover_out = _;
+                return _line;
+            };
+
             _line.id = function () {
                 return _id;
             };
 
             _line.mouse_in = function () {
-                _dot.style('display', null);
+
+                _dot.style('display', null)
+                    .attr('r', 3)
+                    .attr('fill', _attributes.get('stroke'));
+
+                if ( typeof _hover_in === 'function' ) {
+                    _hover_in.call(_dot.node());
+                }
+
             };
 
             _line.mouse_move = function ( x ) {
 
-                var i = _bisector(_data, x);
-                var d0 = _data[ i - 1 ];
-                var d1 = _data[ i ];
-                var d = d0 && d1 ? x - _line.x()(d0) > _line.x()(d1) - x ? d1 : d0 :
-                    d0 ? d0 : d1;
+                if ( _line.x()(_data[0]) <= x && x <= _line.x()(_data[_data.length-1]) ) {
 
-                if ( d ) {
-                    _dot.attr('cx', x_scale(_line.x()(d)))
-                        .attr('cy', y_scale(_line.y()(d)));
-                }
+                    var d, i = _bisector(_data, x);
+                    var d0 = _data[ i - 1 ];
+                    var d1 = _data[ i ];
+                    if ( d0 && d1 ) {
+                        if ( x - _line.x()(d0) > _line.x()(d1) - x ) {
+                            d = d1;
+                        } else {
+                            d = d0;
+                            i = i - 1;
+                        }
+                    } else {
+                        if ( d0 ) {
+                            d = d0;
+                            i = i - 1;
+                        } else {
+                            d = d1;
+                        }
+                    }
 
-                if ( typeof _hover === 'function' ) {
-                    _hover({
-                        id: _id,
-                        x: _line.x()(d),
-                        y: _line.y()(d)
-                    });
+                    if ( d ) {
+                        _dot.style('display', null)
+                            .attr('cx', x_scale(_line.x()(d)))
+                            .attr('cy', y_scale(_line.y()(d)));
+
+                        if ( typeof _hover === 'function' ) {
+                            _hover.call( _path.node(), d, i, _data, _dot.node() );
+                        }
+
+                    }
+
+                } else {
+
+                    _line.mouse_out();
+
                 }
 
             };
 
             _line.mouse_out = function () {
+
                 _dot.style('display', 'none');
+                if ( typeof _hover_out === 'function' ) {
+                    _hover_out.call( _dot.node() );
+                }
+
             };
 
             _line.remove = function () {
@@ -566,7 +609,9 @@
 
             // Hover stuff
             var _dot;
+            var _hover_in;
             var _hover = false;
+            var _hover_out;
             var _bisector = d3.bisector(function ( d ) {
                 return _scatter.x()(d);
             }).left;
@@ -632,48 +677,86 @@
                 return _scatter;
             };
 
+            _scatter.hover_in = function ( _ ) {
+                if ( !arguments.length ) return _hover_in;
+                _hover_in = _;
+                return _scatter;
+            };
+
+            _scatter.hover_out = function ( _ ) {
+                if ( !arguments.length ) return _hover_out;
+                _hover_out = _;
+                return _scatter;
+            };
+
             _scatter.id = function () {
                 return _id;
             };
 
             _scatter.mouse_in = function () {
                 _dot.style('display', null);
+                if ( typeof _hover_in === 'function' ) {
+                    _hover_in.call( _dot.node() );
+                }
             };
 
             _scatter.mouse_move = function ( x ) {
 
-                var i = _bisector(_data, x);
-                var d0 = _data[ i - 1 ];
-                var d1 = _data[ i ];
-                var d = d0 && d1 ? x - _scatter.x()(d0) > _scatter.x()(d1) - x ? d1 : d0 :
-                    d0 ? d0 : d1;
+                if ( _scatter.x()(_data[0]) <= x && x <= _scatter.x()(_data[_data.length-1]) ) {
 
-                if ( d ) {
-                    _dot.attr('cx', x_scale(_scatter.x()(d)))
-                        .attr('cy', y_scale(_scatter.y()(d)));
-
-                    var radius = _attributes.get('r');
-                    if ( typeof radius === 'function' ) {
-                        radius = radius(d) + 2;
+                    var d, i = _bisector(_data, x);
+                    var d0 = _data[ i - 1 ];
+                    var d1 = _data[ i ];
+                    if ( d0 && d1 ) {
+                        if ( x - _scatter.x()(d0) > _scatter.x()(d1) - x ) {
+                            d = d1;
+                        } else {
+                            d = d0;
+                            i = i - 1;
+                        }
                     } else {
-                        radius = radius + 2;
+                        if ( d0 ) {
+                            d = d0;
+                            i = i - 1;
+                        } else {
+                            d = d1;
+                        }
                     }
 
-                    _dot.attr('r', radius);
-                }
+                    if ( d ) {
 
-                if ( typeof _hover === 'function' ) {
-                    _hover({
-                        id: _id,
-                        x: _scatter.x()(d),
-                        y: _scatter.y()(d)
-                    });
+                        _dot.style('display', null)
+                            .attr('cx', x_scale(_scatter.x()(d)))
+                            .attr('cy', y_scale(_scatter.y()(d)));
+
+                        var radius = _attributes.get('r');
+                        if ( typeof radius === 'function' ) {
+                            radius = radius(d) + 2;
+                        } else {
+                            radius = radius + 2;
+                        }
+
+                        _dot.attr('r', radius);
+
+                        if ( typeof _hover === 'function' ) {
+                            _hover.call( _dots.nodes()[i], d, i, _data, _dot.node() );
+                        }
+
+                    }
+
+                } else {
+
+                    _scatter.mouse_out();
+
                 }
 
             };
 
             _scatter.mouse_out = function () {
                 _dot.style('display', 'none');
+                if ( typeof _hover_out === 'function' ) {
+                    _hover_out.call( _dot.node() );
+                }
             };
 
             _scatter.remove = function () {
@@ -832,7 +915,16 @@
                     var color = item;
                     item = { attr: function () { return color; } };
                 }
-                if ( arguments.length === 2 ) _items.push( { label: label, item: item });
+                if ( arguments.length === 2 ) {
+                    var i = _items.findIndex( function ( current ) {
+                        return current.item === item || color === current.item.attr();
+                    });
+                    if ( i > -1 ) {
+                        _items[i] = { label: label, item: item };
+                    } else {
+                        _items.push( { label: label, item: item } );
+                    }
+                }
                 return _legend;
             };
 
@@ -1101,11 +1193,11 @@
                                    .attr('fill', 'none')
                                    .attr('pointer-events', 'all');
 
-            var data = [].concat( areas, lines, scatters );
+            var continuous_data = [].concat( areas, lines, scatters );
 
             mouse_area.on('mouseover touchstart', function () {
 
-                data.forEach(function ( d ) {
+                continuous_data.forEach(function ( d ) {
                     if ( d.hover() ) {
                         d.mouse_in();
                     }
@@ -1125,7 +1217,7 @@
 
                     var x = x_scale.invert( mouse[ 0 ] );
 
-                    data.forEach( function ( d ) {
+                    continuous_data.forEach( function ( d ) {
                         if ( d.hover() ) {
                             d.mouse_move( x );
                         }
@@ -1141,7 +1233,7 @@
 
             mouse_area.on('mouseout touchend touchcancel', function () {
 
-                data.forEach(function ( d ) {
+                continuous_data.forEach(function ( d ) {
                     if ( d.hover() ) {
                         d.mouse_out();
                     }

@@ -187,6 +187,14 @@ Enables or disables mouse hover functionality. When enabled, hovering the mouse 
 
 <a name="scatter-hover" href="#scatter-hover">#</a> *scatter*.**hover**()
 
+<a name="scatter-hover_in" href="scatter-hover_in">#</a> *scatter*.**hover_in**([*e*])
+
+If the function *e* is specified, it will be called after the hover dot is displayed in any call to [*scatter*.**mouse_in**()](#scatter-mouse_in). The hover dot DOM element will be bound to *this*. If *e* is not specified, returns the function if one has been specified.
+
+<a name="scatter-hover_out" href="scatter-hover_out">#</a> *scatter*.**hover_out**([*e*])
+
+If the function *e* is specified, it will be called after the hover dot is hidden in any call to [*scatter*.**mouse_out**()](#scatter-mouse_out). The hover dot DOM element will be bound to *this*. If *e* is not specified, returns the function if one has been specified.
+
 <a name="scatter-id" href="#scatter-id">#</a> *scatter*.**id**()
 
 <a name="scatter-mouse_in" href="#scatter-mouse_in">#</a> *scatter*.**mouse_in**()
@@ -227,7 +235,7 @@ Returns the ID of the legend. If a specific ID is desired, it can be set when cr
 
 <a name="legend-item" href="#legend-item">#</a> *legend*.**item**(*label*[, *item*])
 
-If *item* is not specified, returns the item associated with *label*. If *item* is specified, adds *item* to the legend with the label *label*. *item* can be either a plottable, such as an [area](#chart-area), [line](#chart-line), or [scatter](#chart-scatter), or it can be a color string, such as 'steelblue' or '#000000'.
+If *item* is not specified, returns the item associated with *label*. If *item* is specified and is not already in the legend, adds *item* to the legend with the label *label*. If the item is already in the legend, the label associated with that item is updated. *item* can be either a plottable, such as an [area](#chart-area), [line](#chart-line), or [scatter](#chart-scatter), or it can be a color string, such as 'steelblue' or '#000000'.
 
 <a name="legend-label_padding" href="#legend-label_padding">#</a> *legend*.**label_padding**([*padding*])
 

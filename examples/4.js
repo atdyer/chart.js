@@ -78,8 +78,8 @@ d3.tsv('data/cities.tsv', type, function ( error, data ) {
 
 function print_data( data, element ) {
     var d = {
-        date: formatTime(data.x),
-        temperature: data.y
+        date: formatTime(data.date),
+        temperature: data.temperature
     };
     element.text(JSON.stringify(d, null, 2));
     hljs.highlightBlock(element.nodes()[ 0 ]);
