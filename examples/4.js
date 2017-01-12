@@ -82,7 +82,7 @@ function print_data( data, element ) {
         temperature: data.temperature
     };
     element.text(JSON.stringify(d, null, 2));
-    hljs.highlightBlock(element.nodes()[ 0 ]);
+    hljs.highlightBlock(element.node());
 }
 
 function type( d, _, columns ) {

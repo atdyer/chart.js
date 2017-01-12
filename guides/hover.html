@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hover Events - d3-chart</title>
+
+    <script src="../lib/d3.v4.min.js"></script>
+    <script src="../build/d3-chart.js"></script>
+
+    <link href="../index.css" rel="stylesheet">
+
+    <script src="../lib/highlight.min.js"></script>
+    <link href="../lib/styles/github-gist.css" rel="stylesheet">
+
+</head>
+<body>
+
+    <div class="title">
+        <h1>d3-chart</h1>
+        <h1>Hover Events</h1>
+    </div>
+
+    <div>
+        <h2>Hover vs. Mouse</h2>
+        <p>
+            Each plottable has two sets of 'hover' related methods:
+        </p>
+        <pre><code>
+            .hover_in()
+            .hover()
+            .hover_out()
+        </code></pre>
+        <p>and</p>
+        <pre><code>
+            .mouse_in()
+            .mouse_move()
+            .mouse_out()
+        </code></pre>
+        <p>
+            This may seem redundant, and while the two are closely related, they serve very different purposes.
+            The <code>.hover()</code> set of methods are the getter/setter methods. They are used to get or set the
+            function to be called during each event. So passing a function to <code>.hover_in()</code> sets the function
+            that will be called when the mouse enters the hover area. <code>.hover()</code> sets the function that is
+            called when the mouse is moved while in the hover area, and <code>.hover_out()</code> sets the function that
+            is called when the mouse leaves the hover area.
+        </p>
+        <p>
+            On the other hand, the <code>.mouse_()</code> set of methods are the actual event handlers. When the mouse
+            enters the hover area, the <code>.mouse_in()</code> method is called and is responsible for calling the
+            function that was set using <code>.hover_in()</code>. Similarly, the <code>.mouse_move()</code> method is
+            called when the mouse moves, and is responsible for calling the function set by <code>.hover()</code>, and
+            the <code>.mouse_out()</code> method is called when the mouse leaves the hover area, and is responsible for
+            calling the function set by <code>.hover_out()</code>.
+        </p>
+        <p>
+            It's important to keep the getter/setter methods separate from the event handlers because we don't want the
+            event firing when using the getter. Additionally, as a result of keeping them separated, the
+            <code>.hover()</code> set of methods are chainable, and should be used in the context of building a chart,
+            while the <code>.mouse()</code> set of methods are <em>not</em> chainable, and should be used in the context
+            of an event firing.
+        </p>
+    </div>
+
+    <div>
+        <h2>When Are Events Fired?</h2>
+    </div>
+
+    <div>
+        <h2>Hover Areas</h2>
+    </div>
+
+    <div>
+        <h2>Customizing Events</h2>
+    </div>
+
+    <script src="guides.js"></script>
+
+</body>
+</html>

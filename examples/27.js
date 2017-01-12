@@ -9,7 +9,12 @@ d3.tsv( 'data/apple_stock.tsv', function ( d ) {
 
     if ( error ) throw error;
 
+    data = data.slice(0,5);
+
     var width = parseInt( d3.select( '#chart' ).style( 'width' ) );
+    var extent = d3.extent(data, function ( d ) { return new Date(d.date.getTime()); } );
+    extent[0].setDate(extent[0].getDate()-1);
+    extent[1].setDate(extent[1].getDate()+1);
 
     var chart = d3.chart()
         .width( width )
@@ -17,7 +22,8 @@ d3.tsv( 'data/apple_stock.tsv', function ( d ) {
         .y( function ( d ) { return d.price; })
         .x_axis( d3.axisBottom() )
         .y_axis( d3.axisLeft() )
-        .x_scale( d3.scaleTime() );
+        .x_scale( d3.scaleTime() )
+        .domain(extent);
 
     var line = chart.line()
         .data( data )

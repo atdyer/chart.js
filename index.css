@@ -1,0 +1,57 @@
+@import url(//fonts.googleapis.com/css?family=PT+Serif|PT+Serif:b|PT+Serif:i|PT+Sans|PT+Sans:b);
+
+body {
+    font-family: "PT Serif", serif;
+    max-width: 960px;
+    margin: 1em auto 4em auto;
+}
+
+body > div {
+    margin-bottom: 2em;
+}
+
+.title {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 2px solid #ccc;
+}
+
+.columns {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.col-6 {
+    width: 50%;
+}
+
+h1,
+h2,
+h3 {
+    text-rendering: optimizeLegibility;
+}
+
+p {
+    line-height: 1.5em;
+}
+
+a {
+    color: steelblue;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #2f4c78;
+}
+
+code.hljs {
+    display: inline;
+    padding: 0 .2em;
+}
+
+pre code.hljs {
+    display: block;
+}

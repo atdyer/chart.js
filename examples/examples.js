@@ -18,6 +18,6 @@ var code = d3.select('body')
 d3.text(js, function ( error, data ) {
     code.text(data.trim());
     d3.selectAll('pre code').each(function () {
-        hljs.highlightBlock(d3.select(this).nodes()[0]);
+        hljs.highlightBlock(d3.select(this).node());
     });
 });

@@ -189,11 +189,11 @@ Enables or disables mouse hover functionality. When enabled, hovering the mouse 
 
 <a name="scatter-hover_in" href="scatter-hover_in">#</a> *scatter*.**hover_in**([*e*])
 
-If the function *e* is specified, it will be called after the hover dot is displayed in any call to [*scatter*.**mouse_in**()](#scatter-mouse_in). The hover dot DOM element will be bound to *this*. If *e* is not specified, returns the function if one has been specified.
+If the function *e* is specified, it will be called after the hover dot is displayed in any call to [*scatter*.**mouse_in**()](#scatter-mouse_in). The hover dot DOM element will be bound to *this*. If *e* is not specified, returns the function if one has been previously specified.
 
 <a name="scatter-hover_out" href="scatter-hover_out">#</a> *scatter*.**hover_out**([*e*])
 
-If the function *e* is specified, it will be called after the hover dot is hidden in any call to [*scatter*.**mouse_out**()](#scatter-mouse_out). The hover dot DOM element will be bound to *this*. If *e* is not specified, returns the function if one has been specified.
+If the function *e* is specified, it will be called after the hover dot is hidden in any call to [*scatter*.**mouse_out**()](#scatter-mouse_out). The hover dot DOM element will be bound to *this*. If *e* is not specified, returns the function if one has been previously specified.
 
 <a name="scatter-id" href="#scatter-id">#</a> *scatter*.**id**()
 
