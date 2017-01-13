@@ -48,6 +48,7 @@ function chart() {
 
     // Hover callbacks
     var mouse_in, mouse_move, mouse_out;
+    var last_mouse_x;
 
 
     // The charting function
@@ -94,7 +95,7 @@ function chart() {
             _update_group( g, 'linegroup', lines );
             _update_group( g, 'scattergroup', scatters );
 
-            // _build_hover_area( g );
+            _build_hover_area( g );
 
             _update_group( g, 'bargroup', bars );
 
@@ -429,6 +430,8 @@ function chart() {
         var _curve;
         var _x;
         var _y;
+        var _x_extent;
+        var _y_extent;
 
         var _attributes = d3.map();
         _attributes.set( 'stroke', _next_color() );
@@ -436,7 +439,6 @@ function chart() {
 
         // Hover stuff
         var _dot;
-        var _hover_area;
         var _hover_in;
         var _hover;
         var _hover_out;
@@ -456,19 +458,12 @@ function chart() {
 
             group.attr('id', _id);
 
-
-
             _path = group.selectAll('path')
                 .data(function ( d ) {
                     return [ d ];
                 });
             _dot = group.selectAll('.hoverdot')
                 .data([ 'hoverdot' ]);
-
-            _hover_area = group.selectAll('.hoverarea')
-                .data([ 'hoverarea' ]);
-
-
 
             _path = _path.enter()
                 .append('path')
@@ -478,45 +473,9 @@ function chart() {
             _dot = _dot.enter()
                 .append('circle')
                 .attr('class', 'hoverdot')
+                .attr('pointer-events', 'none')
                 .style('display', 'none')
                 .merge(_dot);
-
-            _hover_area = _hover_area.enter()
-                .append('rect')
-                .attr('class', 'hoverarea')
-                .attr('id', 'h' + _line.id() )
-                .merge(_hover_area);
-
-
-
-            var extent = d3.extent( _data, _line.x() );
-            _hover_area
-                .attr('x', x_scale(extent[0]))
-                .attr('width', x_scale(extent[1]) - x_scale(extent[0]))
-                .attr('height', height)
-                .attr('stroke', 'red')
-                .attr('fill', 'none')
-                .attr('pointer-events', 'all');
-
-            _hover_area.on( 'mousemove touchmove', function () {
-
-                // d3.event.bubbles = true;
-                var e = d3.event;
-                console.log( e.x, e.y, '\t', e.movementX, e.movementY );
-
-                // var s = d3.select( group.node().parentNode )
-                //     .selectAll( '.hoverarea' )
-                //     .filter(function ( a ) {
-                //         return d3.select(this).attr('id') !== 'h' + _line.id();
-                //     });
-                //
-                // s.dispatch('mousemoveend');
-
-
-            });
-
-
-
 
             if ( _curve ) { line.curve( _curve ); }
 
@@ -548,6 +507,8 @@ function chart() {
         _line.data = function ( _ ) {
             if ( !arguments.length ) return _data;
             _data = _;
+            _x_extent = null;
+            _y_extent = null;
             return _line;
         };
 
@@ -604,8 +565,6 @@ function chart() {
         };
 
         _line.mouse_in = function () {
-
-            console.log( 'yo' );
 
             _dot.style('display', null)
                 .attr('r', 3)
@@ -664,10 +623,20 @@ function chart() {
             return _line;
         };
 
+        _line.x_extent = function () {
+            if ( !_x_extent ) _x_extent = d3.extent( _data, _line.x() );
+            return _x_extent;
+        };
+
         _line.y = function ( _ ) {
             if ( !arguments.length ) return _y || y;
             _y = _;
             return _line;
+        };
+
+        _line.y_extent = function () {
+            if ( !_y_extent ) _y_extent  = d3.extent( _data, _line.y() );
+            return _y_extent;
         };
 
         lines.push(_line);
@@ -1275,66 +1244,35 @@ function chart() {
 
         var continuous_data = [].concat( areas, lines, scatters );
 
-        mouse_area.on('mouseover touchstart', function () {
-
-            var mouse = d3.mouse(this);
+        mouse_area.on( 'mousemove touchmove mouseover touchstart mouseout touchend touchcancel', function () {
 
             if ( x_scale.invert ) {
 
-                var x = x_scale.invert( mouse[0] );
+                var mouse = d3.mouse( this );
+                var x =  x_scale.invert( mouse[0] );
+                var y = mouse[1];
 
                 continuous_data.forEach( function ( d ) {
 
-                    console.log( x, d.find(x));
+                    if ( d.hover_in() || d.hover() || d.hover_out() ) {
 
-                    if ( ( d.hover_in() || d.hover() || d.hover_out() ) && d.find( x ) > -1 ) {
+                        var extent = d.x_extent();
+                        var current = x >= extent[ 0 ] && x <= extent[ 1 ];
+                        var last = last_mouse_x >= extent[ 0 ] && last_mouse_x <= extent[ 1 ];
+                        var vertical = y < 0 || y > height;
 
-                        d.mouse_in();
+                        current ?
+                            last ? d.mouse_move(x) : d.mouse_in() :
+                            last ? d.mouse_out() : false;
+
+                        vertical ? d.mouse_out() : false;
 
                     }
 
                 });
 
-            }
+                last_mouse_x = x;
 
-            if ( typeof mouse_in === 'function' ) {
-                mouse_in(id);
-            }
-
-        });
-
-        mouse_area.on('mousemove touchmove', function () {
-
-            var mouse = d3.mouse(this);
-
-            if ( x_scale.invert ) {
-
-                var x = x_scale.invert( mouse[ 0 ] );
-
-                continuous_data.forEach( function ( d ) {
-                    if ( d.hover() ) {
-                        d.mouse_move( x );
-                    }
-                } );
-
-                if ( typeof mouse_move === 'function' ) {
-                    mouse_move( id, x );
-                }
-
-            }
-
-        });
-
-        mouse_area.on('mouseout touchend touchcancel', function () {
-
-            continuous_data.forEach(function ( d ) {
-                if ( d.hover() ) {
-                    d.mouse_out();
-                }
-            });
-
-            if ( typeof mouse_out === 'function' ) {
-                mouse_out(id);
             }
 
         });
