@@ -53,11 +53,17 @@ Returns the outer height of the chart. Internally, the height is maintained acco
 
 <a name="chart-hover" href="#chart-hover">#</a> *chart*.**hover**()
 
+<a name="chart-hover_in" href="#chart-hover_in">#</a> *chart*.**hover_in**()
+
+<a name="chart-hover_out" href="#chart-hover_out">#</a> *chart*.**hover_out**()
+
 <a name="chart-id" href="#chart-id">#</a> *chart*.**id**()
 
 <a name="chart-margin" href="#chart-margin">#</a> *chart*.**margin**()
 
 <a name="chart-mouse_in" href="#chart-mouse_in">#</a> *chart*.**mouse_in**()
+
+<a name="chart-mouse_move" href="#chart-mouse_move">#</a> *chart*.**mouse_move**()
 
 <a name="chart-mouse_out" href="#chart-mouse_out">#</a> *chart*.**mouse_out**()
 
@@ -103,6 +109,10 @@ Returns the outer width of the chart. Internally, the width is maintained accord
 
 <a name="area-hover" href="#area-hover">#</a> *area*.**hover**()
 
+<a name="area-hover_in" href="#area-hover_in">#</a> *area*.**hover_in**()
+
+<a name="area-hover_out" href="area-hover_out">#</a> *area*.**hover_out**()
+
 <a name="area-id" href="#area-id">#</a> *area*.**id**()
 
 <a name="area-mouse_in" href="#area-mouse_in">#</a> *area*.**mouse_in**()
@@ -141,7 +151,17 @@ If *y* is specified, sets the y1 accessor to the specified function or number an
 
 Enables or disables hover functionality. When enabled, hovering the mouse over a bar in the bar chart will cause the bar to become a darker color. If *option* is a truthy value, hover will be enabled. If *option* is a falsey value, hover will be disabled, which is the default. If *option* is a function, hover will be enabled and the function will be called just as in [selection.on()](https://github.com/d3/d3-selection/blob/master/README.md#selection_on), i.e. it will be passed the current datum (*d*), the current index (*i*), and the current group (*bars*), with *this* as the current DOM element. See [Bar Chart Hover Events](https://atdyer.github.io/d3-chart/examples/26.html) for an example.
 
+<a name="bar-hover_in" href="#bar-hover_in">#</a> *bar*.**hover_in**()
+
+<a name="bar-hover_out" href="#bar-hover_out">#</a> *bar*.**hover_out**()
+
 <a name="bar-id" href="#bar-id">#</a> *bar*.**id**()
+
+<a name="bar-mouse_in" href="#bar-mouse_in">#</a> *bar*.**mouse_in**()
+
+<a name="bar-mouse_move" href="#bar-mouse_move">#</a> *bar*.**mouse_move**()
+
+<a name="bar-mouse_out" href="#bar-mouse_out">#</a> *bar*.**mouse_out**()
 
 <a name="bar-style" href="#bar-style">#</a> *bar*.**style**(*name*[, *value*])
 
@@ -162,6 +182,10 @@ Enables or disables hover functionality. When enabled, hovering the mouse over a
 <a name="line-hover" href="#line-hover">#</a> *line*.**hover**([*option*])
 
 Enables or disables mouse hover functionality. When enabled, hovering the mouse over the chart will cause a dot to be drawn on top of the data point closest to the x-coordinate of the mouse. If _option_ is a truthy value, hover will be enabled. If _option_ is a falsey value, hover will be disabled, which is the default. If _option_ is a function, hover will be enabled and the function will be called each time the x-coordinate of the mouse changes. The function will be passed a single argument, an object containing the ID of the line and the x- and y- values of the data point that is currently highlighted.
+
+<a name="line-hover_in" href="#line-hover_in">#</a> *line*.**hover_in**()
+
+<a name="line-hover_out" href="#line-hover_out">#</a> *line*.**hover_out**()
 
 <a name="line-id" href="#line-id">#</a> *line*.**id**()
 
@@ -262,3 +286,13 @@ If *item* is specified, removes the item from the legend. *item* can be either t
 ## Tools
 
 <a name="d3-chart-linker" href="#d3-chart-linker">#</a> *d3*.*chart*.**linker**()
+
+<a name="linker-hover" href="#linker-hover">#</a> *linker*.**hover**()
+
+<a name="linker-hover_in" href="#linker-hover_in">#</a> *linker*.**hover_in**()
+
+<a name="linker-hover_out" href="#linker-hover_out">#</a> *linker*.**hover_out**()
+
+<a name="linker-link" href="#linker-link">#</a> *linker*.**link**()
+
+<a name="linker-unlink" href="#linker-unlink">#</a> *linker*.**unlink**()

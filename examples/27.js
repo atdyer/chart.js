@@ -31,19 +31,20 @@ d3.tsv( 'data/apple_stock.tsv', function ( d ) {
     d3.select( '#chart' )
         .call( chart );
 
-    function show_price ( d, dot ) {
+    function show_price ( d ) {
 
         var date = formatTime(d.date);
         var price = '$' + d.price.toFixed(2);
 
         legend.item( date + ': ' + price, line );
 
-        d3.select( dot )
+        d3.select( this )
             .attr( 'r', 5 )
             .attr( 'stroke', line.attr( 'stroke' ) )
             .attr( 'stroke-width', line.attr( 'stroke-width' ) )
             .attr( 'fill', 'white' )
             .attr( 'fill-opacity', 0.5 );
+
         d3.select( '#chart' ).call( chart );
 
     }

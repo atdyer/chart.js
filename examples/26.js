@@ -25,8 +25,6 @@ d3.tsv("data/letters.tsv", function(d) {
          .data( data )
          .hover_in( function ( d, i, nodes ) {
 
-             console.log( d );
-
              var bar = d3.select(this); // Alternatively, d3.select(nodes[i]);
              var label = d3.select(this.parentNode).selectAll('.label').data([d]);
 

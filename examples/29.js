@@ -19,14 +19,14 @@ d3.tsv( 'data/apple_stock.tsv', function ( d ) {
         .y_axis( d3.axisLeft() )
         .x_scale( d3.scaleTime() );
 
-    var scatter = chart.scatter()
+    var area = chart.area()
         .data( data )
         .hover( show_price )
         .hover_out( hide_price );
 
     var legend = chart.legend()
         .location( 'nw' )
-        .item( 'AAPL', scatter );
+        .item( 'AAPL', area );
 
     d3.select( '#chart' )
         .call( chart );
@@ -36,14 +36,12 @@ d3.tsv( 'data/apple_stock.tsv', function ( d ) {
         var date = formatTime(d.date);
         var price = '$' + d.price.toFixed(2);
 
-        legend.item( date + ': ' + price, scatter );
+        legend.item( date + ': ' + price, area );
 
         d3.select( this )
-            .attr( 'r', 5 )
-            .attr( 'stroke', scatter.attr( 'fill' ) )
-            .attr( 'stroke-width', 1.5 )
-            .attr( 'fill', 'white' )
-            .attr( 'fill-opacity', 0.5 );
+            .attr( 'stroke', 'black' )
+            .attr( 'stroke-width', 1 )
+            .attr( 'stroke-dasharray', '4,2' );
 
         d3.select( '#chart' ).call( chart );
 
@@ -51,7 +49,7 @@ d3.tsv( 'data/apple_stock.tsv', function ( d ) {
 
     function hide_price () {
 
-        legend.item( 'AAPL', scatter );
+        legend.item( 'AAPL', area );
         d3.select( '#chart' ).call( chart );
 
     }

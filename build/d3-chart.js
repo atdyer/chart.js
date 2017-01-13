@@ -39,6 +39,9 @@
         var domain;
         var range;
 
+        // Plotting group
+        var g;
+
         // Plottables
         var areas = [];
         var bars = [];
@@ -53,8 +56,8 @@
         var _colors = [ "#377eb8", "#e41a1c", "#4daf4a", "#984ea3", "#ff7f00", "#ffff33", "#a65628", "#f781bf", "#999999" ];
 
         // Hover callbacks
-        var mouse_in, mouse_move, mouse_out;
-        var last_mouse_x;
+        var hover_in, hover, hover_out;
+        var last_mouse_x, last_mouse_y;
 
 
         // The charting function
@@ -72,7 +75,7 @@
                 // If it doesn't exist, create the chart group
                 var enter = svg.enter()
                     .append('svg');
-                var g = enter.append('g');
+                g = enter.append('g');
 
                 // Add the axes
                 g.append('g')
@@ -91,6 +94,7 @@
 
                 // Update the inner dimensions
                 g = svg.select('g')
+                    .attr('id', id )
                     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
                 _build_scales();
@@ -126,15 +130,16 @@
             var _x;
             var _y0;
             var _y1;
+            var _x_extent, _y_extent;
 
             var _attributes = d3.map();
             _attributes.set( 'fill', _next_color() );
 
-            var _hover;
+            var _hover_in, _hover, _hover_out;
             var _line;
             var _bisector = d3.bisector(function ( d ) {
                 return _area.x()(d);
-            }).left;
+            }).right;
 
             function _area( group ) {
 
@@ -163,10 +168,11 @@
                     .merge(_path);
 
                 _line = _line.enter()
-                           .append('line')
-                           .attr('class', 'hoverline')
-                           .style('display', 'none')
-                           .merge(_line);
+                    .append('line')
+                    .attr('class', 'hoverline')
+                    .attr('shape-rendering', 'crispEdges')
+                    .style('display', 'none')
+                    .merge(_line);
 
                 if ( _curve ) { area.curve(_curve); }
 
@@ -177,9 +183,6 @@
                 _attributes.each( function ( _value, _attr ) {
                     _path.attr(_attr, _value);
                 });
-
-                _line.style('stroke', d3.color(_attributes.get('fill')).darker())
-                     .style('shape-rendering', 'crispEdges');
 
             }
 
@@ -200,6 +203,8 @@
             _area.data = function ( _ ) {
                 if ( !arguments.length ) return _data;
                 _data = _;
+                _x_extent = null;
+                _y_extent = null;
                 return _area;
             };
 
@@ -209,42 +214,62 @@
                 return _area;
             };
 
+            _area.hover_in = function ( _ ) {
+                if ( !arguments.length ) return _hover_in;
+                _hover_in = _;
+                return _area;
+            };
+
+            _area.hover_out = function ( _ ) {
+                if ( !arguments.length ) return _hover_out;
+                _hover_out = _;
+                return _area;
+            };
+
             _area.id = function ( _ ) {
                 return _id;
             };
 
             _area.mouse_in = function () {
-                _line.style('display', null);
+
+                _line.style('display', null)
+                    .attr('stroke', d3.color(_attributes.get('fill')).darker());
+
+                if ( typeof _hover_in === 'function' ) {
+                    _hover_in.call(_line.node(), _path.nodes());
+                }
+
             };
 
             _area.mouse_move = function ( x ) {
 
-                var i = _bisector(_data, x);
-                var d0 = _data[ i - 1 ];
-                var d1 = _data[ i ];
-                var d = d0 && d1 ? x - _area.x()(d0) > _area.x()(d1) - x ? d1 : d0 :
-                    d0 ? d0 : d1;
+                var i = _nearest_index( _area, _bisector, x );
+                var d = _data[i];
 
                 if ( d ) {
+
                     _line.attr('x1', x_scale(_area.x()(d)))
                         .attr('x2', x_scale(_area.x()(d)))
                         .attr('y1', y_scale(_area.y0()(d)))
                         .attr('y2', y_scale(_area.y1()(d)));
-                }
 
-                if ( typeof _hover === 'function' ) {
-                    _hover({
-                        id: _id,
-                        x: _area.x()(d),
-                        y0: _area.y0()(d),
-                        y1: _area.y1()(d)
-                    });
+                    if ( typeof _hover === 'function' ) {
+                        _hover.call(_line.node(), d, 0, _path.nodes() );
+                    }
+
+                } else {
+
+                    _area.mouse_out();
+
                 }
 
             };
 
             _area.mouse_out = function () {
                 _line.style('display', 'none');
+                if ( typeof _hover_out === 'function' ) {
+                    _hover_out.call( _line.node(), _path.nodes() );
+                }
             };
 
             _area.remove = function () {
@@ -262,6 +287,11 @@
                 return _area;
             };
 
+            _area.x_extent = function () {
+                if ( !_x_extent ) _x_extent = d3.extent( _data, _area.x() );
+                return _x_extent;
+            };
+
             _area.y0 = function ( _ ) {
                 if ( !arguments.length ) return _y0 || _constant( d3.min( _area.data(), _area.y1() ) );
                 _y0 = typeof _ === 'function' ? _ : _constant(+_);
@@ -272,6 +302,15 @@
                 if ( !arguments.length ) return _y1 || y;
                 _y1 = typeof _ === 'function' ? _ : _constant(+_);
                 return _area;
+            };
+
+            _area.y_extent = function () {
+                if ( !_y_extent ) {
+                    var _y0 = d3.extent( _data, _area.y0() );
+                    var _y1 = d3.extent( _data, _area.y1() );
+                    _y_extent = [ d3.min([_y0[0], _y0[1]]), d3.max([_y0[1], _y1[1]]) ];
+                }
+                return _y_extent;
             };
 
             areas.push( _area );
@@ -434,10 +473,8 @@
             var _data = [];
             var _path;
             var _curve;
-            var _x;
-            var _y;
-            var _x_extent;
-            var _y_extent;
+            var _x, _x_extent;
+            var _y, _y_extent;
 
             var _attributes = d3.map();
             _attributes.set( 'stroke', _next_color() );
@@ -518,36 +555,6 @@
                 return _line;
             };
 
-            _line.find = function ( x ) {
-
-                if ( _line.x()(_data[0]) <= x && x <= _line.x()(_data[_data.length-1]) ) {
-
-                    var d, i = _bisector( _data, x );
-
-                    var d0 = _data[ i - 1 ];
-                    var d1 = _data[ i ];
-
-                    if ( d0 && d1 ) {
-                        if ( x - _line.x()( d0 ) > _line.x()( d1 ) - x ) {
-                            d = d1;
-                        } else {
-                            d = d0;
-                            i = i - 1;
-                        }
-                    } else {
-                        if ( d0 ) {
-                            d = d0;
-                            i = i - 1;
-                        } else {
-                            d = d1;
-                        }
-                    }
-                }
-
-                return d ? i : -1;
-
-            };
-
             _line.hover = function ( _ ) {
                 if ( !arguments.length ) return _hover;
                 _hover = _;
@@ -577,24 +584,23 @@
                     .attr('fill', _attributes.get('stroke'));
 
                 if ( typeof _hover_in === 'function' ) {
-                    _hover_in.call(_path.node(), _dot.node());
+                    _hover_in.call(_dot.node(), _path.nodes());
                 }
 
             };
 
             _line.mouse_move = function ( x ) {
 
-                var i = _line.find( x );
+                var i = _nearest_index( _line, _bisector, x );
                 var d = _data[i];
 
                 if ( d ) {
 
-                    _dot.style('display', null)
-                        .attr('cx', x_scale(_line.x()(d)))
+                    _dot.attr('cx', x_scale(_line.x()(d)))
                         .attr('cy', y_scale(_line.y()(d)));
 
                     if ( typeof _hover === 'function' ) {
-                        _hover.call( _path.node(), d, _dot.node() );
+                        _hover.call(_dot.node(), d, 0, _path.nodes() );
                     }
 
                 } else {
@@ -606,12 +612,10 @@
             };
 
             _line.mouse_out = function () {
-
                 _dot.style('display', 'none');
                 if ( typeof _hover_out === 'function' ) {
-                    _hover_out.call( _dot.node() );
+                    _hover_out.call( _dot.node(), _path.nodes() );
                 }
-
             };
 
             _line.remove = function () {
@@ -655,8 +659,8 @@
             var _id = id || _gen_id();
             var _data = [];
             var _dots;
-            var _x;
-            var _y;
+            var _x, _x_extent;
+            var _y, _y_extent;
 
             var _attributes = d3.map();
             _attributes.set('fill', _next_color());
@@ -669,7 +673,7 @@
             var _hover_out;
             var _bisector = d3.bisector(function ( d ) {
                 return _scatter.x()(d);
-            }).left;
+            }).right;
 
             function _scatter( group ) {
 
@@ -708,8 +712,6 @@
                     _dots.attr(_attr, _value);
                 });
 
-                _dot.attr('fill', _attributes.get('fill'));
-
             }
 
             _scatter.attr = function ( _ ) {
@@ -723,6 +725,8 @@
             _scatter.data = function ( _ ) {
                 if ( !arguments.length ) return _data;
                 _data = _;
+                _x_extent = null;
+                _y_extent = null;
                 return _scatter;
             };
 
@@ -749,54 +753,29 @@
             };
 
             _scatter.mouse_in = function () {
-                _dot.style('display', null);
+
+                _dot.style('display', null)
+                    .attr('fill', _attributes.get('fill'))
+                    .attr('r', _attributes.get('r') + 2 );
+
                 if ( typeof _hover_in === 'function' ) {
-                    _hover_in.call( _dot.node() );
+                    _hover_in.call( _dot.node(), _dots.nodes() );
                 }
+
             };
 
             _scatter.mouse_move = function ( x ) {
 
-                if ( _scatter.x()(_data[0]) <= x && x <= _scatter.x()(_data[_data.length-1]) ) {
+                var i = _nearest_index( _scatter, _bisector, x );
+                var d = _data[i];
 
-                    var d, i = _bisector(_data, x);
-                    var d0 = _data[ i - 1 ];
-                    var d1 = _data[ i ];
-                    if ( d0 && d1 ) {
-                        if ( x - _scatter.x()(d0) > _scatter.x()(d1) - x ) {
-                            d = d1;
-                        } else {
-                            d = d0;
-                            i = i - 1;
-                        }
-                    } else {
-                        if ( d0 ) {
-                            d = d0;
-                            i = i - 1;
-                        } else {
-                            d = d1;
-                        }
-                    }
+                if ( d ) {
 
-                    if ( d ) {
+                    _dot.attr('cx', x_scale(_scatter.x()(d)))
+                        .attr('cy', y_scale(_scatter.y()(d)));
 
-                        _dot.style('display', null)
-                            .attr('cx', x_scale(_scatter.x()(d)))
-                            .attr('cy', y_scale(_scatter.y()(d)));
-
-                        var radius = _attributes.get('r');
-                        if ( typeof radius === 'function' ) {
-                            radius = radius(d) + 2;
-                        } else {
-                            radius = radius + 2;
-                        }
-
-                        _dot.attr('r', radius);
-
-                        if ( typeof _hover === 'function' ) {
-                            _hover.call( _dots.nodes()[i], d, i, _data, _dot.node() );
-                        }
-
+                    if ( typeof _hover === 'function' ) {
+                        _hover.call( _dot.node(), d, i, _dots.nodes() );
                     }
 
                 } else {
@@ -810,7 +789,7 @@
             _scatter.mouse_out = function () {
                 _dot.style('display', 'none');
                 if ( typeof _hover_out === 'function' ) {
-                    _hover_out.call( _dot.node() );
+                    _hover_out.call( _dot.node(), _dots.nodes() );
                 }
             };
 
@@ -829,10 +808,20 @@
                 return _scatter;
             };
 
+            _scatter.x_extent = function () {
+                if ( !_x_extent ) _x_extent = d3.extent( _data, _scatter.x() );
+                return _x_extent;
+            };
+
             _scatter.y = function ( _ ) {
                 if ( !arguments.length ) return _y || y;
                 _y = _;
                 return _scatter;
+            };
+
+            _scatter.y_extent = function () {
+                if ( !_y_extent ) _y_extent = d3.extent( _data, _scatter.y() );
+                return _y_extent;
             };
 
             scatters.push(_scatter);
@@ -1048,8 +1037,20 @@
         };
 
         _chart.hover = function ( _ ) {
-            if ( !arguments.length ) return mouse_move;
-            mouse_move = _;
+            if ( !arguments.length ) return hover;
+            hover = _;
+            return _chart;
+        };
+
+        _chart.hover_in = function ( _ ) {
+            if ( !arguments.length ) return hover_in;
+            hover_in = _;
+            return _chart;
+        };
+
+        _chart.hover_out = function ( _ ) {
+            if ( !arguments.length ) return hover_out;
+            hover_out = _;
             return _chart;
         };
 
@@ -1066,16 +1067,37 @@
             return _chart;
         };
 
-        _chart.mouse_in = function ( _ ) {
-            if ( !arguments.length ) return mouse_in;
-            mouse_in = _;
-            return _chart;
+        _chart.mouse_in = function () {
+
+            var continuous_data = [].concat( areas, lines, scatters );
+            _hover.call( this, continuous_data );
+
+            if ( typeof hover_in === 'function' ) {
+                hover_in.call( g.node() );
+            }
+
         };
 
-        _chart.mouse_out = function ( _ ) {
-            if ( !arguments.length ) return mouse_out;
-            mouse_out = _;
-            return _chart;
+        _chart.mouse_move = function () {
+
+            var continuous_data = [].concat( areas, lines, scatters );
+            _hover.call( this, continuous_data );
+
+            if ( typeof hover === 'function' ) {
+                hover.call( g.node() );
+            }
+
+        };
+
+        _chart.mouse_out = function () {
+
+            var continuous_data = [].concat( areas, lines, scatters );
+            _hover.call( this, continuous_data );
+
+            if ( typeof hover_out === 'function' ) {
+                hover_out.call( g.node() );
+            }
+
         };
 
         _chart.range = function ( _ ) {
@@ -1164,11 +1186,11 @@
 
 
         // Helper functions
-        function _build_axes ( g ) {
+        function _build_axes ( _g ) {
 
             if ( x_axis ) {
                 x_axis.scale( x_scale );
-                g.select('.x.axis')
+                _g.select('.x.axis')
                     .attr('transform', 'translate(0,' + _calculate_x_axis_location( x_location ) + ')')
                     .style('shape-rendering', 'crispEdges')
                     .call(x_axis);
@@ -1176,7 +1198,7 @@
             }
             if ( y_axis ) {
                 y_axis.scale( y_scale );
-                g.select('.y.axis')
+                _g.select('.y.axis')
                     .attr('transform', 'translate(' + _calculate_y_axis_location( y_location ) + ',0)')
                     .style('shape-rendering', 'crispEdges')
                     .call(y_axis);
@@ -1187,7 +1209,7 @@
 
             if ( x_grid ) {
 
-                var _x_minor = g.select('.x.axis.minor')
+                var _x_minor = _g.select('.x.axis.minor')
                     .attr('transform', 'translate(0,' + y_scale.range()[ 0 ] + ')')
                     .style('shape-rendering', 'crispEdges')
                     .call(
@@ -1209,7 +1231,7 @@
 
             if ( y_grid ) {
 
-                var _y_minor = g.select('.y.axis.minor')
+                var _y_minor = _g.select('.y.axis.minor')
                     .style('shape-rendering', 'crispEdges')
                     .call(
                         d3.axisLeft(y_scale).tickSizeInner(-width)
@@ -1230,9 +1252,9 @@
 
         }
 
-        function _build_hover_area ( g ) {
+        function _build_hover_area ( _g ) {
 
-            var mouse_area = g.selectAll('#m' + id)
+            var mouse_area = _g.selectAll('#m' + id)
                               .data([ 'mousearea' ]);
 
             mouse_area.exit()
@@ -1248,48 +1270,17 @@
                                    .attr('fill', 'none')
                                    .attr('pointer-events', 'all');
 
-            var continuous_data = [].concat( areas, lines, scatters );
-
-            mouse_area.on( 'mousemove touchmove mouseover touchstart mouseout touchend touchcancel', function () {
-
-                if ( x_scale.invert ) {
-
-                    var mouse = d3.mouse( this );
-                    var x =  x_scale.invert( mouse[0] );
-                    var y = mouse[1];
-
-                    continuous_data.forEach( function ( d ) {
-
-                        if ( d.hover_in() || d.hover() || d.hover_out() ) {
-
-                            var extent = d.x_extent();
-                            var current = x >= extent[ 0 ] && x <= extent[ 1 ];
-                            var last = last_mouse_x >= extent[ 0 ] && last_mouse_x <= extent[ 1 ];
-                            var vertical = y < 0 || y > height;
-
-                            current ?
-                                last ? d.mouse_move(x) : d.mouse_in() :
-                                last ? d.mouse_out() : false;
-
-                            vertical ? d.mouse_out() : false;
-
-                        }
-
-                    });
-
-                    last_mouse_x = x;
-
-                }
-
-            });
+            mouse_area.on( 'mouseover touchstart', _chart.mouse_in );
+            mouse_area.on( 'mousemove touchmove', _chart.mouse_move );
+            mouse_area.on( 'mouseout touchend touchcancel', _chart.mouse_out );
 
         }
 
-        function _build_labels ( g ) {
+        function _build_labels ( _g ) {
 
             if ( x_label ) {
 
-                var x_selection = g.selectAll('.x.label').data([ x_label ]);
+                var x_selection = _g.selectAll('.x.label').data([ x_label ]);
 
                 x_selection.enter()
                            .append('text')
@@ -1304,7 +1295,7 @@
 
             if (  y_label ) {
 
-                var y_selection = g.selectAll('.y.label').data([ y_label ]);
+                var y_selection = _g.selectAll('.y.label').data([ y_label ]);
 
                 y_selection.enter()
                            .append('text')
@@ -1360,9 +1351,53 @@
 
         }
 
-        function _constant ( x ) {
+        function _calculate_x_axis_location ( _v ) {
+
+            if ( _v === 'top' ) {
+                return y_scale.range()[ 1 ];
+            }
+
+            if ( typeof _v === 'string' ) {
+                if ( _v.slice(-1) === '%' ) {
+                    var percent = parseFloat( _v ) / 100.0;
+                    return d3.interpolateNumber( y_scale.range()[0], y_scale.range()[1] )( percent );
+                }
+                if ( _v.slice(-2) === 'px' ) {
+                    return parseFloat( _v );
+                }
+            }
+
+            if ( y_scale( _v ) ) return y_scale( _v );
+
+            return y_scale.range()[ 0 ];
+
+        }
+
+        function _calculate_y_axis_location ( _v ) {
+
+            if ( _v === 'right' ) {
+                return x_scale.range()[ 1 ];
+            }
+
+            if ( typeof _v === 'string' ) {
+                if ( _v.slice(-1) === '%' ) {
+                    var percent = parseFloat( _v ) / 100.0;
+                    return d3.interpolateNumber( x_scale.range()[0], x_scale.range()[1] )( percent );
+                }
+                if ( _v.slice(-2) === 'px' ) {
+                    return parseFloat( _v );
+                }
+            }
+
+            if ( x_scale( _v ) ) return x_scale( _v );
+
+            return x_scale.range()[0];
+
+        }
+
+        function _constant ( _x ) {
             return function () {
-                return x;
+                return _x;
             }
         }
 
@@ -1379,47 +1414,75 @@
 
         }
 
-        function _calculate_x_axis_location ( value ) {
+        function _hover( _d ) {
 
-            if ( value === 'top' ) {
-                return y_scale.range()[ 1 ];
+            if ( x_scale.invert ) {
+
+                var mouse = d3.mouse( this );
+                var x = x_scale.invert( mouse[0] );
+                var y = mouse[1];
+
+                _d.forEach( function ( d ) {
+
+                    if ( d.hover_in() || d.hover() || d.hover_out() ) {
+
+                        var extent = d.x_extent();
+                        var x_in = x >= extent[ 0 ] && x <= extent[ 1 ];
+                        var y_in = y >= 0 && y <= height;
+                        var m_in = x_in && y_in;
+                        var last_x_in = last_mouse_x >= extent[ 0 ] && last_mouse_x <= extent[ 1 ];
+                        var last_y_in = last_mouse_y >= 0 && last_mouse_y <= height;
+                        var last_m_in = last_x_in && last_y_in;
+
+                        if ( m_in ) {
+                            if ( !last_m_in ) {
+                                d.mouse_in();
+                            }
+                            d.mouse_move(x);
+                        } else if ( last_m_in ) {
+                            d.mouse_out();
+                        }
+
+                    }
+
+                });
+
+                last_mouse_x = x;
+                last_mouse_y = y;
+
             }
-
-            if ( typeof value === 'string' ) {
-                if ( value.slice(-1) === '%' ) {
-                    var percent = parseFloat( value ) / 100.0;
-                    return d3.interpolateNumber( y_scale.range()[0], y_scale.range()[1] )( percent );
-                }
-                if ( value.slice(-2) === 'px' ) {
-                    return parseFloat( value );
-                }
-            }
-
-            if ( y_scale( value ) ) return y_scale( value );
-
-            return y_scale.range()[ 0 ];
 
         }
 
-        function _calculate_y_axis_location ( value ) {
+        function _nearest_index ( _p, _b, _x ) {
 
-            if ( value === 'right' ) {
-                return x_scale.range()[ 1 ];
+            var _data = _p.data();
+
+            if ( _p.x()(_data[0]) <= _x && _x <= _p.x()(_data[_data.length-1]) ) {
+
+                var d, i = _b( _data, _x );
+
+                var d0 = _data[ i - 1 ];
+                var d1 = _data[ i ];
+
+                if ( d0 && d1 ) {
+                    if ( _x - _p.x()( d0 ) > _p.x()( d1 ) - _x ) {
+                        d = d1;
+                    } else {
+                        d = d0;
+                        i = i - 1;
+                    }
+                } else {
+                    if ( d0 ) {
+                        d = d0;
+                        i = i - 1;
+                    } else {
+                        d = d1;
+                    }
+                }
             }
 
-            if ( typeof value === 'string' ) {
-                if ( value.slice(-1) === '%' ) {
-                    var percent = parseFloat( value ) / 100.0;
-                    return d3.interpolateNumber( x_scale.range()[0], x_scale.range()[1] )( percent );
-                }
-                if ( value.slice(-2) === 'px' ) {
-                    return parseFloat( value );
-                }
-            }
-
-            if ( x_scale( value ) ) return x_scale( value );
-
-            return x_scale.range()[0];
+            return d ? i : -1;
 
         }
 
@@ -1430,11 +1493,11 @@
 
         }
 
-        function _update_group ( g, c, d ) {
+        function _update_group ( _g, _c, _d ) {
 
-            var _selection = g.selectAll('g')
-                          .filter('.' + c)
-                          .data(d, function ( item ) {
+            var _selection = _g.selectAll('g')
+                          .filter('.' + _c)
+                          .data(_d, function ( item ) {
                               return item.id();
                           });
 
@@ -1443,7 +1506,7 @@
 
             _selection.enter()
                   .append('g')
-                  .attr('class', c)
+                  .attr('class', _c)
                   .merge(_selection)
                   .each(function ( _item ) {
 
@@ -1453,7 +1516,7 @@
 
         }
 
-        function _update_legends ( g ) {
+        function _update_legends ( _g ) {
 
             legends.forEach( function ( legend ) {
 
@@ -1466,7 +1529,7 @@
                            .attr('id', 'cl' + legend.id() )
                            .merge( lg );
                 } else {
-                    lg = g;
+                    lg = _g;
                 }
 
                 _update_group( lg, 'legendgroup', [legend] );
@@ -1484,7 +1547,7 @@
 
             });
 
-            g.selectAll('.legendgroup').each( function () {
+            _g.selectAll('.legendgroup').each( function () {
                 this.parentElement.appendChild( this );
             });
 
@@ -1497,18 +1560,18 @@
     // Tools
     chart.linker = function () {
 
-        var charts = {};
+        var charts = d3.map();
 
         function _linker() {
         }
 
         _linker.link = function ( chart ) {
 
-            charts[ chart.id() ] = chart;
+            charts.set( chart.id(), chart );
 
             chart.hover(_linker.hover)
-                 .mouse_out(_linker.mouse_out)
-                 .mouse_in(_linker.mouse_over);
+                .hover_in(_linker.hover_in)
+                .hover_out(_linker.hover_out);
 
             return _linker;
 
@@ -1516,55 +1579,89 @@
 
         _linker.unlink = function ( chart ) {
 
-            delete charts[ chart.id() ];
+            charts.remove( chart.id() );
 
             chart.hover(null)
-                 .mouse_out(null)
-                 .mouse_in(null);
+                .hover_in(null)
+                .hover_out(null);
 
             return _linker;
 
         };
 
-        _linker.hover = function ( id, x ) {
+        _linker.hover = function () {
 
-            for ( var key in charts ) {
-                if ( key !== id && charts.hasOwnProperty(key) ) {
-                    charts[ key ].each(function ( item ) {
-                        if ( item.hover() ) {
-                            item.mouse_move(x);
-                        }
-                    });
+            var caller = this;
+            var caller_id = d3.select(caller).attr('id');
+
+            charts.each(function ( chart, id ) {
+                if ( id !== caller_id ) {
+                    var hover = chart.hover();
+                    chart.hover(null);
+                    chart.mouse_move.call(caller);
+                    chart.hover(hover);
                 }
-            }
+            });
+
+            // for ( var key in charts ) {
+            //     if ( key !== id && charts.hasOwnProperty(key) ) {
+            //         charts[ key ].each(function ( item ) {
+            //             if ( item.hover() ) {
+            //                 item.mouse_move(x);
+            //             }
+            //         });
+            //     }
+            // }
 
         };
 
-        _linker.mouse_out = function ( id ) {
+        _linker.hover_in = function () {
 
-            for ( var key in charts ) {
-                if ( key !== id && charts.hasOwnProperty(key) ) {
-                    charts[ key ].each(function ( item ) {
-                        if ( item.hover() ) {
-                            item.mouse_out();
-                        }
-                    });
+            var caller = this;
+            var caller_id = d3.select(caller).attr('id');
+            charts.each(function ( chart, id ) {
+                if ( id !== caller_id ) {
+                    var hover_in = chart.hover_in();
+                    chart.hover_in(null);
+                    chart.mouse_in.call(caller);
+                    chart.hover_in(hover_in);
                 }
-            }
+            });
+
+            // for ( var key in charts ) {
+            //     if ( key !== id && charts.hasOwnProperty(key) ) {
+            //         charts[ key ].each(function ( item ) {
+            //             if ( item.hover() ) {
+            //                 item.mouse_out();
+            //             }
+            //         });
+            //     }
+            // }
 
         };
 
-        _linker.mouse_over = function ( id ) {
+        _linker.hover_out = function () {
 
-            for ( var key in charts ) {
-                if ( key != id && charts.hasOwnProperty(key) ) {
-                    charts[ key ].each(function ( item ) {
-                        if ( item.hover() ) {
-                            item.mouse_in();
-                        }
-                    });
+            var caller = this;
+            var caller_id = d3.select(caller).attr('id');
+            charts.each(function ( chart, id ) {
+                if ( id !== caller_id ) {
+                    var hover_out = chart.hover_out();
+                    chart.hover_out(null);
+                    chart.mouse_out.call(caller);
+                    chart.hover_out(hover_out);
                 }
-            }
+            });
+
+            // for ( var key in charts ) {
+            //     if ( key != id && charts.hasOwnProperty(key) ) {
+            //         charts[ key ].each(function ( item ) {
+            //             if ( item.hover() ) {
+            //                 item.mouse_in();
+            //             }
+            //         });
+            //     }
+            // }
 
         };
 
