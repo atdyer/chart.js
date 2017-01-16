@@ -708,7 +708,7 @@
                         return y_scale(_y(d));
                     });
 
-                _attributes.each( function ( _value, _attr) {
+                _attributes.each( function ( _value, _attr ) {
                     _dots.attr(_attr, _value);
                 });
 
@@ -753,11 +753,7 @@
             };
 
             _scatter.mouse_in = function () {
-
-                _dot.style('display', null)
-                    .attr('fill', _attributes.get('fill'))
-                    .attr('r', _attributes.get('r') + 2 );
-
+                _dot.style('display', null);
                 if ( typeof _hover_in === 'function' ) {
                     _hover_in.call( _dot.node(), _dots.nodes() );
                 }
@@ -1603,16 +1599,6 @@
                 }
             });
 
-            // for ( var key in charts ) {
-            //     if ( key !== id && charts.hasOwnProperty(key) ) {
-            //         charts[ key ].each(function ( item ) {
-            //             if ( item.hover() ) {
-            //                 item.mouse_move(x);
-            //             }
-            //         });
-            //     }
-            // }
-
         };
 
         _linker.hover_in = function () {
@@ -1628,16 +1614,6 @@
                 }
             });
 
-            // for ( var key in charts ) {
-            //     if ( key !== id && charts.hasOwnProperty(key) ) {
-            //         charts[ key ].each(function ( item ) {
-            //             if ( item.hover() ) {
-            //                 item.mouse_out();
-            //             }
-            //         });
-            //     }
-            // }
-
         };
 
         _linker.hover_out = function () {
@@ -1652,16 +1628,6 @@
                     chart.hover_out(hover_out);
                 }
             });
-
-            // for ( var key in charts ) {
-            //     if ( key != id && charts.hasOwnProperty(key) ) {
-            //         charts[ key ].each(function ( item ) {
-            //             if ( item.hover() ) {
-            //                 item.mouse_in();
-            //             }
-            //         });
-            //     }
-            // }
 
         };
 

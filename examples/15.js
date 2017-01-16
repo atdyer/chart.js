@@ -22,10 +22,19 @@ d3.tsv('data/apple_stock.tsv', function ( d ) {
         .attr('fill', 'steelblue')
         .attr('fill-opacity', 0.85)
         .attr('stroke', 'black')
-        .attr('stroke-opacity', 0.45)
+        .attr('stroke-opacity', 0.65)
         .attr('stroke-width', 1.5)
-        .attr('stroke-dasharray', '10,4')
-        .hover(true);
+        .hover(function (d, i, nodes) {
+            var radius = +d3.select(nodes[i]).attr('r') + 4;
+            d3.select(this)
+                .style('transition', 'stroke-dashoffset 0.1s ease-in, r 0.1s ease-in')
+                .attr('fill', 'none')
+                .attr('stroke', 'black')
+                .attr('stroke-width', 1.5)
+                .attr('stroke-dashoffset', radius)
+                .attr('stroke-dasharray', '2%,1%')
+                .attr('r', radius);
+        });
 
     d3.select('#chart')
         .call(chart);

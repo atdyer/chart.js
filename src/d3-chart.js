@@ -702,7 +702,7 @@ function chart() {
                     return y_scale(_y(d));
                 });
 
-            _attributes.each( function ( _value, _attr) {
+            _attributes.each( function ( _value, _attr ) {
                 _dots.attr(_attr, _value);
             });
 
@@ -747,11 +747,7 @@ function chart() {
         };
 
         _scatter.mouse_in = function () {
-
-            _dot.style('display', null)
-                .attr('fill', _attributes.get('fill'))
-                .attr('r', _attributes.get('r') + 2 );
-
+            _dot.style('display', null);
             if ( typeof _hover_in === 'function' ) {
                 _hover_in.call( _dot.node(), _dots.nodes() );
             }
