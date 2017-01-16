@@ -129,6 +129,8 @@ function chart() {
         var _attributes = d3.map();
         _attributes.set( 'fill', _next_color() );
 
+        var _styles = d3.map();
+
         var _hover_in, _hover, _hover_out;
         var _line;
         var _bisector = d3.bisector(function ( d ) {
@@ -178,13 +180,15 @@ function chart() {
                 _path.attr(_attr, _value);
             });
 
+            _styles.each( function ( _value, _style ) {
+                _path.style(_style, _value);
+            });
+
         }
 
         _area.attr = function ( _ ) {
             if ( arguments.length === 1 ) return _attributes.get( _ );
-            if ( arguments.length === 2 ) {
-                _attributes.set( arguments[0], arguments[1] );
-            }
+            if ( arguments.length === 2 ) _attributes.set( arguments[0], arguments[1] );
             return _area;
         };
 
@@ -273,6 +277,12 @@ function chart() {
                 areas.splice(i, 1);
             }
 
+        };
+
+        _area.style = function ( _ ) {
+            if ( arguments.length === 1 ) return _styles.get( _ );
+            if ( arguments.length === 2 ) _styles.set( arguments[0], arguments[1] );
+            return _area;
         };
 
         _area.x = function ( _ ) {
