@@ -133,9 +133,8 @@
             var _x_extent, _y_extent;
 
             var _attributes = d3.map();
-            _attributes.set( 'fill', _next_color() );
-
             var _styles = d3.map();
+            _attributes.set( 'fill', _next_color() );
 
             var _hover_in, _hover, _hover_out;
             var _line;
@@ -237,7 +236,7 @@
             _area.mouse_in = function () {
 
                 _line.style('display', null)
-                    .attr('stroke', d3.color(_attributes.get('fill')).darker());
+                    .attr('stroke', d3.color(_styles.get('fill') || _attributes.get('fill')).darker());
 
                 if ( typeof _hover_in === 'function' ) {
                     _hover_in.call(_line.node(), _path.nodes());
@@ -341,11 +340,10 @@
             var _hover_out;
 
             var _attributes = d3.map();
-            _attributes.set( 'fill', _next_color() );
-            _attributes.set( 'pointer-events', 'all' );
-
             var _styles = d3.map();
-            _styles.set( 'shape-rendering', 'crispEdges' );
+            _attributes.set( 'pointer-events', 'all' );
+            _attributes.set( 'fill', _next_color() );
+            _attributes.set( 'shape-rendering', 'crispEdges' );
 
             function _bar( group ) {
 
@@ -396,9 +394,7 @@
 
             _bar.attr = function ( _ ) {
                 if ( arguments.length === 1 ) return _attributes.get( _ );
-                if ( arguments.length === 2 ) {
-                    _attributes.set( arguments[0], arguments[1] );
-                }
+                if ( arguments.length === 2 ) _attributes.set( arguments[0], arguments[1] );
                 return _bar;
             };
 
@@ -454,9 +450,7 @@
 
             _bar.style = function ( _ ) {
                 if ( arguments.length === 1 ) return _styles.get( _ );
-                if ( arguments.length === 2 ) {
-                    _styles.set( arguments[0], arguments[1] );
-                }
+                if ( arguments.length === 2 ) _styles.set( arguments[0], arguments[1] );
                 return _bar;
             };
 
@@ -487,6 +481,7 @@
             var _y, _y_extent;
 
             var _attributes = d3.map();
+            var _styles = d3.map();
             _attributes.set( 'stroke', _next_color() );
             _attributes.set( 'stroke-width', 1.0 );
 
@@ -541,13 +536,15 @@
                     _path.attr(_attr, _value);
                 });
 
+                _styles.each( function ( _value, _style ) {
+                    _path.style(_style, _value);
+                })
+
             }
 
             _line.attr = function ( _ ) {
                 if ( arguments.length === 1 ) return _attributes.get( _ );
-                if ( arguments.length === 2 ) {
-                    _attributes.set( arguments[0], arguments[1] );
-                }
+                if ( arguments.length === 2 ) _attributes.set( arguments[0], arguments[1] );
                 return _line;
             };
 
@@ -589,9 +586,7 @@
 
             _line.mouse_in = function () {
 
-                _dot.style('display', null)
-                    .attr('r', 3)
-                    .attr('fill', _attributes.get('stroke'));
+                _dot.style('display', null);
 
                 if ( typeof _hover_in === 'function' ) {
                     _hover_in.call(_dot.node(), _path.nodes());
@@ -607,7 +602,9 @@
                 if ( d ) {
 
                     _dot.attr('cx', x_scale(_line.x()(d)))
-                        .attr('cy', y_scale(_line.y()(d)));
+                        .attr('cy', y_scale(_line.y()(d)))
+                        .attr('r', 3)
+                        .attr('fill', _path.style('stroke'));
 
                     if ( typeof _hover === 'function' ) {
                         _hover.call(_dot.node(), d, 0, _path.nodes() );
@@ -635,6 +632,12 @@
                     lines.splice(i, 1);
                 }
 
+            };
+
+            _line.style = function ( _ ) {
+                if ( arguments.length === 1 ) return _styles.get( _ );
+                if ( arguments.length === 2 ) _styles.set( arguments[0], arguments[1] );
+                return _line;
             };
 
             _line.x = function ( _ ) {
@@ -673,8 +676,9 @@
             var _y, _y_extent;
 
             var _attributes = d3.map();
-            _attributes.set('fill', _next_color());
+            var _styles = d3.map();
             _attributes.set('r', 1.0);
+            _attributes.set('fill', _next_color());
 
             // Hover stuff
             var _dot;
@@ -722,13 +726,15 @@
                     _dots.attr(_attr, _value);
                 });
 
+                _styles.each( function ( _value, _style ) {
+                    _dots.style(_style, _value);
+                })
+
             }
 
             _scatter.attr = function ( _ ) {
                 if ( arguments.length === 1 ) return _attributes.get( _ );
-                if ( arguments.length === 2 ) {
-                    _attributes.set( arguments[0], arguments[1] );
-                }
+                if ( arguments.length === 2 ) _attributes.set( arguments[0], arguments[1] );
                 return _scatter;
             };
 
@@ -777,8 +783,13 @@
 
                 if ( d ) {
 
+                    var dot = d3.select(_dots.nodes()[i]);
+
                     _dot.attr('cx', x_scale(_scatter.x()(d)))
                         .attr('cy', y_scale(_scatter.y()(d)));
+
+                    _dot.attr('r', +dot.attr('r') + 2);
+                    _dot.attr('fill', dot.style('fill'));
 
                     if ( typeof _hover === 'function' ) {
                         _hover.call( _dot.node(), d, i, _dots.nodes() );
@@ -806,6 +817,12 @@
                     scatters.splice(i, 1);
                 }
 
+            };
+
+            _scatter.style = function ( _ ) {
+                if ( arguments.length === 1 ) return _styles.get( _ );
+                if ( arguments.length === 2 ) _styles.set( arguments[0], arguments[1] );
+                return _scatter;
             };
 
             _scatter.x = function ( _ ) {
@@ -850,6 +867,7 @@
             var _label_padding = 5;
 
             var _attributes = d3.map();
+            var _styles = d3.map();
             _attributes.set('font-family', 'sans-serif');
             _attributes.set('font-size', 10);
 
@@ -858,8 +876,12 @@
                 group.attr( 'id', _id )
                     .attr('text-anchor', ( _location === 'nw' || _location === 'sw' ) ? 'start' : 'end');
 
-                _attributes.each( function ( _value, _attr) {
+                _attributes.each( function ( _value, _attr ) {
                     group.attr(_attr, _value);
+                });
+
+                _styles.each( function ( _value, _style ) {
+                    group.style(_style, _value);
                 });
 
                 var legend = group.selectAll('g')
@@ -1013,6 +1035,11 @@
                         _items.splice( index, 1 );
                     }
                 }
+            };
+
+            _legend.style = function ( _ ) {
+                if ( arguments.length === 1 ) return _styles.get( _ );
+                if ( arguments.length === 2 ) _styles.set( arguments[0], arguments[1] );
             };
 
             legends.push( _legend );

@@ -28,8 +28,8 @@ d3.tsv('data/apple_stock.tsv', function ( d ) {
             var radius = +d3.select(nodes[i]).attr('r') + 4;
             d3.select(this)
                 .style('transition', 'stroke-dashoffset 0.1s ease-in, r 0.1s ease-in')
-                .attr('fill', 'none')
-                .attr('stroke', 'black')
+                .style('fill', 'none')
+                .style('stroke', 'black')
                 .attr('stroke-width', 1.5)
                 .attr('stroke-dashoffset', radius)
                 .attr('stroke-dasharray', '2%,1%')

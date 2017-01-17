@@ -18,7 +18,7 @@ d3.tsv('data/apple_stock.tsv', function ( d ) {
 
     chart.line()
         .data(data.slice(0,25))
-        .attr('stroke', 'steelblue')
+        .style('stroke', 'steelblue')
         .attr('stroke-width', 5.0)
         .attr('opacity', 0.85)
         .attr('stroke-dasharray', '15,10')

@@ -283,6 +283,8 @@ Sides not included in the *margins* object will not be updated. If the *margins*
 
 If *item* is specified, removes the item from the legend. *item* can be either the label associated with an item or the item object itself. If *item* is not specified, removes the legend from the chart.
 
+<a name="legend-style" href="#legend-style">#</a> *legend*.**style**(*name*[,*value*])
+
 ## Tools
 
 <a name="d3-chart-linker" href="#d3-chart-linker">#</a> *d3*.*chart*.**linker**()
