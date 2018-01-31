@@ -25,9 +25,9 @@
     "postpublish": "zip -j build/d3-chart.zip -- LICENSE README.md build/d3-chart.js build/d3-chart.min.js"
   },
   "devDependencies": {
-    "rollup": "0.27",
-    "tape": "4",
-    "uglify-js": "2"
+    "rollup": "^0.27",
+    "tape": "^4",
+    "uglify-js": "^2"
   },
   "dependencies": {
     "d3-array": "^1.0.2",
