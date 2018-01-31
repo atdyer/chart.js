@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chart Margins - d3-chart</title>
+
+    <script src="../lib/d3.v4.min.js"></script>
+    <script src="../build/d3-chart.js"></script>
+
+    <link href="examples.css" rel="stylesheet">
+
+    <script src="../lib/highlight.min.js"></script>
+    <link href="../lib/styles/github-gist.css" rel="stylesheet">
+
+</head>
+<body>
+
+    <div class="title">
+        <a href="https://github.com/atdyer/d3-chart.git"><h1>d3-chart</h1></a>
+        <h1>Chart Margins</h1>
+    </div>
+    <div id="chart"></div>
+    <div>
+        <p>
+            Chart margins are the spacing between edges of the svg that contains the chart and the chart itself. The
+            default margins, in pixels, are:
+        </p>
+        <pre><code class="js hljs javascript">var margin = {
+    top: 20,
+    right: 20,
+    bottom: 20,
+    left: 30
+}</code></pre>
+        <p>
+            Margins can be specified using <a class="api" href="chart-margin"><code>chart.margin()</code></a>, which
+            accepts an object with any of the <code>top</code>, <code>right</code>, <code>bottom</code>,
+            <code>left</code> properties defined. Only those properties which are included will be updated. Larger
+            margins can be particularly useful, as in this case, when very wide numbers are displayed with an axis.
+        </p>
+    </div>
+
+    <script src="examples.js"></script>
+    <script src="30.js"></script>
+
+</body>
+</html>

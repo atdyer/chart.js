@@ -59,7 +59,11 @@ Returns the outer height of the chart. Internally, the height is maintained acco
 
 <a name="chart-id" href="#chart-id">#</a> *chart*.**id**()
 
-<a name="chart-margin" href="#chart-margin">#</a> *chart*.**margin**()
+<a name="chart-margin" href="#chart-margin">#</a> *chart*.**margin**([*m*])
+
+Returns the margin object, which include the `top`, `right`, `bottom`, and `left` margins, defined in pixels. If *m*
+is specified, any of the `top`, `right`, `bottom`, or `left` properties defined on the *m* object will be used to set
+the corresponding margin value.
 
 <a name="chart-mouse_in" href="#chart-mouse_in">#</a> *chart*.**mouse_in**()
 
